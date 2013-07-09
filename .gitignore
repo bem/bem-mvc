@@ -1,0 +1,13 @@
+bem-bl
+bemhtml
+bem-control
+islands-components
+node_modules
+.DS_Store
+.idea
+.project
+.svn
+.bem/cache
+desktop.bundles/*/*.*
+!desktop.bundles/*/*.bemjson.js
+!desktop.bundles/.bem/*
