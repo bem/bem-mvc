@@ -542,7 +542,7 @@
             var decl = MODEL.decls[modelParams.name];
 
             if (!decl)
-                throw new Error('unknown model: "' + this.name + '"');
+                throw new Error('unknown model: "' + modelParams.name + '"');
 
             // выставляем id из поля типа 'id' или из декларации
             $.each(decl, function(name, field) {

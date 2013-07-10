@@ -28,80 +28,41 @@ BEM.TEST.decl('i-model', function() {
         });
     });
 
-    describe('type models-list', function() {
-        var onAdd = jasmine.createSpy('onAdd'),
-            onRemove = jasmine.createSpy('onRemove');
-
-        BEM.MODEL.decl('outer-model-with-list', {
-            list: {
-                type: 'models-list',
-                modelName: 'inner-model-in-list'
-            }
-        });
-        BEM.MODEL.decl('inner-model-in-list', {
-            field: 'string'
-        });
-
-        var model = BEM.MODEL.create('outer-model-with-list', {
-            list: [
-                {
-                    field: 'blah'
-                },
-                {
-                    field: 'bla bla'
-                }
-            ]
-        });
-
-        model.on('list', 'add', onAdd);
-
-        model.on('list', 'remove', onRemove);
-
-        var newModel = model.get('list').add({ field: 'bla bla blaaa' });
-
-        model.get('list').remove(newModel.id);
-
-        expect(onAdd).toHaveBeenCalled();
-        expect(onRemove).toHaveBeenCalled();
-    });
-
-    //todo: Переформатировать тесты. Статические методы выделить в отдельный кусок
-    describe('global get', function() {
-        BEM.MODEL.decl('model', {
+    describe('get', function() {
+        BEM.MODEL.decl('model-for-get', {
             f1: { type: 'string' }
         });
 
-        BEM.MODEL.decl('sub-model', {
+        BEM.MODEL.decl('sub-model-for-get', {
             s1: { type: 'string' }
         });
 
-        var model = BEM.MODEL.create({ name: 'model', id: 1 }, { f1: 1 }),
-            model10 = BEM.MODEL.create({ name: 'model', id: 10 }, { f1: 1 }),
-            subModel = BEM.MODEL.create({ name: 'sub-model', id: 1, parentName: 'model', parentId: 1 }, { f1: 1 }),
-            subModel2 = BEM.MODEL.create({ name: 'sub-model', id: 2, parentModel: model }, { f1: 1 });
+        var model = BEM.MODEL.create({ name: 'model-for-get', id: 1 }, { f1: 1 }),
+            model10 = BEM.MODEL.create({ name: 'model-for-get', id: 10 }, { f1: 1 }),
+            subModel = BEM.MODEL.create({ name: 'sub-model-for-get', id: 1, parentName: 'model-for-get', parentId: 1 }, { f1: 1 }),
+            subModel2 = BEM.MODEL.create({ name: 'sub-model-for-get', id: 2, parentModel: model }, { f1: 1 });
 
         it('should find model', function() {
-            expect(BEM.MODEL.get('model').length).toEqual(2);
-            expect(BEM.MODEL.get({ name: 'model', id: '*' }).length).toEqual(2);
-            expect(BEM.MODEL.get({ name: 'model', id: 1 }).length).toEqual(1);
-            expect(BEM.MODEL.get({ name: 'model', id: 1 })[0]).toEqual(model);
-            expect(BEM.MODEL.get({ name: 'model', id: 10 })[0]).toEqual(model10);
+            expect(BEM.MODEL.get('model-for-get').length).toEqual(2);
+            expect(BEM.MODEL.get({ name: 'model-for-get', id: '*' }).length).toEqual(2);
+            expect(BEM.MODEL.get({ name: 'model-for-get', id: 1 }).length).toEqual(1);
+            expect(BEM.MODEL.get({ name: 'model-for-get', id: 1 })[0]).toEqual(model);
+            expect(BEM.MODEL.get({ name: 'model-for-get', id: 10 })[0]).toEqual(model10);
         });
 
         it('should find sub model', function() {
-            expect(BEM.MODEL.get('sub-model').length).toEqual(2);
-            expect(BEM.MODEL.get({ name: 'sub-model', id: '*' }).length).toEqual(2);
+            expect(BEM.MODEL.get('sub-model-for-get').length).toEqual(2);
+            expect(BEM.MODEL.get({ name: 'sub-model-for-get', id: '*' }).length).toEqual(2);
 
-            expect(BEM.MODEL.get({ name: 'sub-model', id: '1' })[0]).toEqual(subModel);
-            expect(BEM.MODEL.get({ name: 'sub-model', id: '1', parentModel: model }, true)[0]).toEqual(subModel);
-            expect(BEM.MODEL.get({ name: 'sub-model', id: '1', parentName: 'model', parentId: 1 }, true)[0]).toEqual(subModel);
-            expect(BEM.MODEL.get({ name: 'sub-model', id: '1', parentPath: model.path() }, true)[0]).toEqual(subModel);
+            expect(BEM.MODEL.get({ name: 'sub-model-for-get', id: '1' })[0]).toBe(subModel);
+            expect(BEM.MODEL.get({ name: 'sub-model-for-get', id: '1', parentModel: model }, true)[0]).toBe(subModel);
+            expect(BEM.MODEL.get({ name: 'sub-model-for-get', id: '1', parentName: 'model-for-get', parentId: 1 }, true)[0]).toEqual(subModel);
+            expect(BEM.MODEL.get({ name: 'sub-model-for-get', id: '1', parentPath: model.path() }, true)[0]).toEqual(subModel);
 
-            expect(BEM.MODEL.get({ name: 'sub-model', id: '2', parentPath: model.path() }, true)[0]).toEqual(subModel2);
+            expect(BEM.MODEL.get({ name: 'sub-model-for-get', id: '2', parentPath: model.path() }, true)[0]).toEqual(subModel2);
         });
     });
 
-    //todo: Переформатировать тесты. Статические методы выделить в отдельный кусок
     describe('global events', function() {
         BEM.MODEL.decl('event-model', {
             field: { type: 'string' }
@@ -123,12 +84,12 @@ BEM.TEST.decl('i-model', function() {
             expect(createCallback).toHaveBeenCalled();
         });
 
-        var changeCallback = jasmine.createSpy('spyCallback'),
-            fieldChangeCallback = jasmine.createSpy('spyCallback'),
-            unCallback = jasmine.createSpy('spyCallback'),
-            subModelCallback = jasmine.createSpy('spyCallback'),
-            customCallback = jasmine.createSpy('spyCallback'),
-            destructCallback = jasmine.createSpy('spyCallback'),
+        var changeCallback = jasmine.createSpy('changeCallback'),
+            fieldChangeCallback = jasmine.createSpy('fieldChangeCallback'),
+            unCallback = jasmine.createSpy('unCallback'),
+            subModelCallback = jasmine.createSpy('subModelCallback'),
+            customCallback = jasmine.createSpy('customCallback'),
+            destructCallback = jasmine.createSpy('destructCallback'),
 
             ctx = { ctx: 1 },
 
