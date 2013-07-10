@@ -31,7 +31,7 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             expect(onFieldChange).toHaveBeenCalled();
             setTimeout(function() { // событие на модели триггериться позже
                 expect(onModelChange).toHaveBeenCalled();
-            });
+            }, 100);
 
             model.destruct();
             expect(BEM.MODEL.get('list-inner-model').length).toEqual(0);

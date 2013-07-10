@@ -18,6 +18,9 @@
         },
         {
             block: 'i-model'
+        },
+        {
+            block: 'i-glue'
         }
     ]
 })
