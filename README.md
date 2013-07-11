@@ -175,5 +175,5 @@ BEMJSON в таком случае будет выглядеть так:
 ## Ссылки
 JS Docs:
 
-*  [Models API](https://github.com/dosyara/yamvc/common.blocks/i-model/i-model.md)
-*  [i-glue](https://github.com/dosyara/yamvc/common.blocks/i-glue/i-glue.md)
+*  [Models API](https://github.com/dosyara/yamvc/blob/master/common.blocks/i-model/i-model.md)
+*  [i-glue](https://github.com/dosyara/yamvc/blob/master/common.blocks/i-glue/i-glue.md)
