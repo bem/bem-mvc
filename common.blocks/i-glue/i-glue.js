@@ -1,3 +1,6 @@
+/**
+ * Блок для проклеивания моделей и DOM
+ */
 BEM.DOM.decl('i-glue', {
 
     onSetMod: {
