@@ -1,6 +1,6 @@
 # Yet another MVC for i-bem
 
-Набор i-bem блоков для реализации MVC-паттерна. Предоставляет API для работы с моделями и блоки для автоматического провязывания моделей с интрфейсом.
+Набор i-bem блоков для реализации MVC-паттерна. Предоставляет API для работы с моделями и блоки для автоматического провязывания моделей с интерфейсом.
 
 Требования к моделям
 *   Декларативный стиль описания моделей
@@ -14,18 +14,18 @@
 *   Провязка с контролами из [bem-controls](https://github.com/bem/bem-controls)
 
 ## Модели
-Для использвания моделей необходимо задекларировать ее, указав имя модели и описав поля.
+Для использования модели необходимо задекларировать её, указав имя модели и описав поля.
 ````javascript
 BEM.MODEL.decl('model', {
-  name: 'string',
-  birth: { 
-    type: 'string',
-    preprocess: function(value) {
-      return value.year + '.' + value.month + '.' + value.day;
-    }
-  },
-  height: 'number',
-  weight: 'number'
+    name: 'string',
+    birth: { 
+        type: 'string',
+        preprocess: function(value) {
+            return value.year + '.' + value.month + '.' + value.day;
+        }
+    },
+    height: 'number',
+    weight: 'number'
 });
 ````
 Типы полей
@@ -34,19 +34,19 @@ BEM.MODEL.decl('model', {
 *  boolean – булеан
 *  model – модель
 *  array – массив произвольных данных
-*  model-list – список однотипных моделей
+*  model-list – список моделей одного типа
 
 Чтобы создать модель, нужно указать имя модели и, если нужно, передать инициализационные параметры
 ````javascript
 var model = BEM.MODEL.create('model', {
-  name: 'Claudia Schiffer',
-  birth: {
-    year: 1970,
-    month: 8,
-    day: 25
-  },
-  weight: 75,
-  height: 180.5
+    name: 'Claudia Schiffer',
+    birth: {
+        year: 1970,
+        month: 8,
+        day: 25
+    },
+    weight: 75,
+    height: 180.5
 });
 ````
 
@@ -58,12 +58,12 @@ var model = BEM.MODEL.get('model')[0];
 Теперь можно устанавливать поля модели
 ````javascript
 model
-  .set('weight', '80') // будет приведено к number
-  .set('height', 180)
-  .update({
-    weight: 80,
-    height: 180
-  });
+    .set('weight', '80') // будет приведено к number
+    .set('height', 180)
+    .update({
+        weight: 80,
+        height: 180
+    });
 ````
 
 И получать их значения
@@ -71,50 +71,50 @@ model
 model.get('weight'); // 80
 model.get('birth'); // '1970.8.25'
 
-model.toJSON();      // все поля модели
+model.toJSON(); // все поля модели
 ````
 
 О изменениях можно узнавать с помощью событий
 ````javascript
 model.on('weight', 'change', function() {
-  alert('Пора худеть!');
+    alert('Пора худеть!');
 });
 ````
 
 Чтобы валидировать модель, нужно задать правила валидации
 ````javascript
 BEM.MODEL.decl('model-with-validation', {
-  name: 'string',
-  birth: { 
-    type: 'string',
-    preprocess: function(value) {
-      return value.year + '.' + value.month + '.' + value.day;
-    }
-  },
-  height: { 
-    type: 'number',
-    validation: {             // задать функцию валидации
-      validate: function(value) {
-        if (value < 170) return false; 
-      }
-    }
-  },
-  weight: {
-    type: 'number',
-    validation: {
-      rules: {               // или правила валидации:
-        required: true,      // стандартное
-        toFat: {             // и кастомное
-          needToValidate: function() {        // проверить нужно ли выполнять валидацию
-            if (this.get('height') > 170) return true;
-          },
-          validate: function(value) {
-            if (value > 90) return false;
-          }
+    name: 'string',
+    birth: { 
+        type: 'string',
+        preprocess: function(value) {
+            return value.year + '.' + value.month + '.' + value.day;
         }
-      }
+    },
+    height: { 
+        type: 'number',
+        validation: {             // задать функцию валидации
+            validate: function(value) {
+                if (value < 170) return false; 
+            }
+        }
+    },
+    weight: {
+        type: 'number',
+        validation: {
+            rules: {               // или правила валидации:
+                required: true,      // стандартное
+                toFat: {             // и кастомное
+                    needToValidate: function() {        // проверить нужно ли выполнять валидацию
+                        if (this.get('height') > 170) return true;
+                    },
+                    validate: function(value) {
+                        if (value > 90) return false;
+                    }
+                }
+            }
+        }
     }
-  }
 });
 ````
 И проверить на валидность
