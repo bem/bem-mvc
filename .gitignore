@@ -1,7 +1,4 @@
-bem-bl
-bemhtml
-bem-control
-islands-components
+libs
 node_modules
 .DS_Store
 .idea
