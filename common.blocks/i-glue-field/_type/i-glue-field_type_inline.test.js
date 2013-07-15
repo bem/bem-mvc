@@ -4,7 +4,6 @@ BEM.TEST.decl('i-glue-field_type_inline', function() {
         str: 'string'
     });
 
-
     describe('glue field type inline', function() {
 
         BEM.DOM.decl('b-glued-field', {
@@ -14,8 +13,14 @@ BEM.TEST.decl('i-glue-field_type_inline', function() {
             }
         });
 
+        var model;
+        afterEach(function() {
+            $('.b-glued-field').remove();
+            model.destruct();
+        });
+
         it('should glue field', function() {
-            var model = BEM.MODEL.create('glue-field-inline-model', {
+            model = BEM.MODEL.create('glue-field-inline-model', {
                 num: 1,
                 str: 'a'
             })
@@ -48,9 +53,6 @@ BEM.TEST.decl('i-glue-field_type_inline', function() {
 
             model.set('num', 42);
             expect($('.b-glued-field').bem('b-glued-field').elem('bla').text()).toEqual('42.00');
-
-            $('.b-glued-field').remove();
-            model.destruct();
         });
 
 

@@ -15,8 +15,14 @@ BEM.TEST.decl('i-glue-field_type_checkbox', function() {
             }
         });
 
+        var model;
+        afterEach(function() {
+            $('.b-glued-field').remove();
+            model.destruct();
+        });
+
         it('should glue field', function() {
-            var model = BEM.MODEL.create('glue-field-checkbox-model', {
+            model = BEM.MODEL.create('glue-field-checkbox-model', {
                 num: 1,
                 str: 's',
                 bool: false
@@ -62,9 +68,6 @@ BEM.TEST.decl('i-glue-field_type_checkbox', function() {
                 checkbox.delMod('checked');
                 expect(model.get('bool')).toEqual(false);
             }, 100);
-
-            $('.b-glued-field').remove();
-            model.destruct();
         });
 
 

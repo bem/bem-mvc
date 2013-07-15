@@ -4,7 +4,6 @@ BEM.TEST.decl('i-glue-field_type_input', function() {
         str: 'string'
     });
 
-
     describe('glue field type input', function() {
 
         BEM.DOM.decl('b-glued-field', {
@@ -14,11 +13,17 @@ BEM.TEST.decl('i-glue-field_type_input', function() {
             }
         });
 
+        var model;
+        afterEach(function() {
+            $('.b-glued-field').remove();
+            model.destruct();
+        });
+
         it('should glue field', function() {
-            var model = BEM.MODEL.create('glue-field-input-model', {
+            model = BEM.MODEL.create('glue-field-input-model', {
                 num: 1,
                 str: 's'
-            })
+            });
 
             BEM.DOM.append('body', BEMHTML.apply({
                 block: 'b-glued-field',
@@ -57,9 +62,6 @@ BEM.TEST.decl('i-glue-field_type_input', function() {
 
             input.val('13');
             expect(model.get('num')).toEqual(13);
-
-            $('.b-glued-field').remove();
-            model.destruct();
         });
 
 

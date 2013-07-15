@@ -15,11 +15,17 @@ BEM.TEST.decl('i-glue-field_type_mod', function() {
             }
         });
 
+        var model;
+        afterEach(function() {
+            $('.b-glued-field').remove();
+            model.destruct();
+        });
+
         it('should glue field', function() {
-            var model = BEM.MODEL.create('glue-field-mod-model', {
+            model = BEM.MODEL.create('glue-field-mod-model', {
                 num: 1,
                 str: 'a'
-            })
+            });
 
             BEM.DOM.append('body', BEMHTML.apply({
                 block: 'b-glued-field',
@@ -72,9 +78,6 @@ BEM.TEST.decl('i-glue-field_type_mod', function() {
 
             model.set('bool', true);
             expect(block.getMod(block.elem('bla-bool'), 'test')).toEqual('yes');
-
-            $('.b-glued-field').remove();
-            model.destruct();
         });
 
 

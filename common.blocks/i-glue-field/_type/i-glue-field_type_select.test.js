@@ -14,11 +14,17 @@ BEM.TEST.decl('i-glue-field_type_select', function() {
             }
         });
 
+        var model;
+        afterEach(function() {
+            $('.b-glued-field').remove();
+            model.destruct();
+        });
+
         it('should glue field', function() {
-            var model = BEM.MODEL.create('glue-field-select-model', {
+            model = BEM.MODEL.create('glue-field-select-model', {
                 num: 1,
                 str: 's'
-            })
+            });
 
             BEM.DOM.append('body', BEMHTML.apply({
                 block: 'b-glued-field',
@@ -82,9 +88,6 @@ BEM.TEST.decl('i-glue-field_type_select', function() {
 
             select.val('c');
             expect(model.get('str')).toEqual('c');
-
-            $('.b-glued-field').remove();
-            model.destruct();
         });
 
 
