@@ -2,38 +2,18 @@
 
 //process.env.YENV = 'production';
 
+require('bem-environ/lib/nodes');
+
 MAKE.decl('Arch', {
 
     blocksLevelsRegexp: /^.+?\.blocks/,
 
     bundlesLevelsRegexp: /^.+?\.bundles$/,
 
-    getLibraries: function() {
-
-        return {
-            'bem-bl': {
-                type: 'git',
-                url: 'git://github.com/bem/bem-bl.git',
-                treeish: '0.3'
-            },
-            'bem-control': {
-                type: 'git',
-                url: 'git://github.com/bem/bem-controls.git',
-                treeish: '362fec5d7499275a1b40fc582a68ebc8a3557a1a'
-            },
-            'islands-components': {
-                type: 'git',
-                url: 'git://github.yandex-team.ru/lego/islands-components.git',
-                treeish: 'v1'
-            },
-            'bemhtml': {
-                type: 'git',
-                url: 'git://github.com/bem/bemhtml.git',
-                treeish: 'master'
-            }
-        };
-
-    }
+    libraries: [
+        'bem-bl @ 0.3',
+        'bem-controls @ 362fec5d7499275a1b40fc582a68ebc8a3557a1a'
+    ]
 
 });
 
