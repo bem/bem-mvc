@@ -10,9 +10,7 @@ exports.getConfig = function() {
     return extend(this.__base() || {}, {
 
         bundleBuildLevels: [
-            'bem-bl/blocks-common',
-            'bem-bl/blocks-test',
-            'bem-bl/blocks-desktop',
+            'bem-core/common.blocks',
             'bem-controls/common.blocks',
             'bem-controls/desktop.blocks'
         ]
