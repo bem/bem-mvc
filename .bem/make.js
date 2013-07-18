@@ -11,8 +11,8 @@ MAKE.decl('Arch', {
     bundlesLevelsRegexp: /^.+?\.bundles$/,
 
     libraries: [
-        'bem-bl @ 0.3',
-        'bem-controls @ 362fec5d7499275a1b40fc582a68ebc8a3557a1a'
+        'bem-core @ v1',
+        'bem-controls @ v2'
     ]
 
 });
@@ -27,7 +27,7 @@ MAKE.decl('BundleNode', {
             'deps.js',
             'bemhtml',
             'test.js',
-            'js',
+            'browser.js+bemhtml',
             'css',
             'ie.css',
             'ie6.css',
@@ -39,6 +39,14 @@ MAKE.decl('BundleNode', {
     },
 
     'create-test.js-optimizer-node': function(tech, sourceNode, bundleNode) {
+
+        sourceNode.getFiles().forEach(function(f) {
+            this['create-js-optimizer-node'](tech, this.ctx.arch.getNode(f), bundleNode);
+        }, this);
+
+    },
+
+    'create-browser.js+bemhtml-optimizer-node': function(tech, sourceNode, bundleNode) {
 
         sourceNode.getFiles().forEach(function(f) {
             this['create-js-optimizer-node'](tech, this.ctx.arch.getNode(f), bundleNode);

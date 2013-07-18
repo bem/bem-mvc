@@ -1,5 +1,5 @@
 ({
-    block: 'b-page',
+    block: 'page',
     title: 'tests',
     head: [
         { elem: 'css', url: '_tests.css', ie: false },
