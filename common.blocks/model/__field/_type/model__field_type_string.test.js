@@ -1,42 +1,48 @@
-BEM.TEST.decl('i-model__field', function() {
+/*BEM.TEST.decl('i-model__field_type_string', function() {
 
-    // COMMON FIELD
-    describe('Field with no type', function() {
-        BEM.MODEL.decl('no-type-field', {
+    describe('Field with type "string"', function() {
+        BEM.MODEL.decl('string-type-field', {
             f: {
+                type: 'string',
                 validation: {
                     rules: {
-                        required: true
+                        required: true,
+                        maxlength: 10
                     }
                 }
             },
             f1: {
-                default: { val: 'str1' }
+                type: 'string',
+                default: 'str1'
             },
             f2: {
-                value: { val: 'str2' }
+                type: 'string',
+                value: 'str2'
             },
             f3: {
-                value: { val: 'str3' },
+                type: 'string',
+                value: 'str3',
                 format: function(value) {
-                    return value && { val: ('' + value.val).charAt(0) };
+                    return ('' + value).charAt(0)
                 }
             },
             f4: {
+                type: 'string',
                 preprocess: function(value) {
-                    return value && { val: value.val + '4' };
+                    return value + '4'
                 }
             },
             f5: {
+                type: 'string',
                 calculate: function(value) {
-                    return value && { val: value.val + '5' }
+                    return value + '5'
                 },
                 dependsFrom: 'f'
             }
         });
 
         it('should have fields', function() {
-            var model = BEM.MODEL.create('no-type-field');
+            var model = BEM.MODEL.create('string-type-field');
 
             expect(model.hasField('f')).toBe(true);
             expect(model.hasField('f1')).toBe(true);
@@ -47,54 +53,54 @@ BEM.TEST.decl('i-model__field', function() {
         });
 
         it('should have default value', function() {
-            expect(BEM.MODEL.create('no-type-field').get('f1')).toEqual({ val: 'str1' });
+            expect(BEM.MODEL.create('string-type-field').get('f1')).toEqual('str1');
         });
 
         it('should have init value from decl', function() {
-            expect(BEM.MODEL.create('no-type-field').get('f2')).toEqual({ val: 'str2' });
+            expect(BEM.MODEL.create('string-type-field').get('f2')).toEqual('str2');
         });
 
         it('should have init value from create', function() {
             expect(
                 BEM.MODEL
-                    .create('no-type-field', { f: { val: 3.14 } })
+                    .create('string-type-field', { f: 3.14 })
                     .get('f'))
-                .toEqual({ val: 3.14 });
+                .toEqual(3.14);
         });
 
         it('should have format value', function() {
             expect(
                 BEM.MODEL
-                    .create('no-type-field', { f3: { val: 'AAA' } })
+                    .create('string-type-field', { f3: 'AAA'})
                     .get('f3', 'format'))
-                .toEqual({ val: 'A' });
+                .toEqual('A');
         });
 
         it('should set value', function() {
             expect(
                 BEM.MODEL
-                    .create('no-type-field')
-                    .set('f', { val: 3.14 })
+                    .create('string-type-field')
+                    .set('f', 3.14)
                     .get('f'))
-                .toEqual({ val: 3.14 });
+                .toEqual(3.14);
         });
 
         it('should clear value', function() {
             expect(
                 BEM.MODEL
-                    .create('no-type-field')
-                    .set('f', { val: 1 })
+                    .create('string-type-field')
+                    .set('f', 1)
                     .clear('f')
                     .get('f'))
-                .toBe(undefined);
+                .toBe('');
         });
 
         it('should be empty', function() {
             var model = BEM.MODEL
-                .create('no-type-field')
+                .create('string-type-field')
                 .update({
-                    f: { val: 1 },
-                    f3: { val: 3 }
+                    f: 1,
+                    f3: 3
                 })
                 .clear('f');
 
@@ -106,14 +112,14 @@ BEM.TEST.decl('i-model__field', function() {
 
         it('should show changes', function() {
             var model = BEM.MODEL
-                .create('no-type-field', {
-                    f: { val: 1 },
-                    f4: { val: 3 }
+                .create('string-type-field', {
+                    f: 1,
+                    f4: 3
                 })
                 .fix()
                 .update({
-                    f: { val: 11 },
-                    f4: { val: 33 }
+                    f: '11',
+                    f4: '33'
                 });
 
             expect(model.isChanged('f')).toBe(true);
@@ -122,71 +128,71 @@ BEM.TEST.decl('i-model__field', function() {
 
         it('should update models', function() {
             var model = BEM.MODEL
-                .create('no-type-field')
+                .create('string-type-field')
                 .update({
-                    f: { val: 'qwe' },
-                    f1: { val: 'qwe1' },
-                    f2: { val: 'qwe2' },
-                    f3: { val: 'qwe3' },
-                    f4: { val: 'qwe' }
+                    f: 'qwe',
+                    f1: 'qwe1',
+                    f2: 'qwe2',
+                    f3: 'qwe3',
+                    f4: 'qwe'
                 });
 
-            expect(model.get('f')).toEqual({ val: 'qwe' });
+            expect(model.get('f')).toEqual('qwe');
 
             expect(model.toJSON()).toEqual({
-                f: { val: 'qwe' },
-                f1: { val: 'qwe1' },
-                f2: { val: 'qwe2' },
-                f3: { val: 'qwe3' },
-                f4: { val: 'qwe4' },
-                f5: { val: 'qwe5' }
+                f: 'qwe',
+                f1: 'qwe1',
+                f2: 'qwe2',
+                f3: 'qwe3',
+                f4: 'qwe4',
+                f5: 'qwe5'
             });
         });
 
         it('should fix and rollback values', function() {
             expect(
                 BEM.MODEL
-                    .create('no-type-field')
-                    .set('f', { val: 0 })
+                    .create('string-type-field')
+                    .set('f', 0)
                     .fix()
-                    .set('f', { val: 1 })
+                    .set('f', 1)
                     .rollback()
                     .get('f'))
-                .toEqual({ val: 0 });
+                .toEqual(0);
         });
 
         it('should return data', function() {
             expect(
                 BEM.MODEL
-                    .create('no-type-field', {
-                        f: { val: 'up' },
-                        f1: { val: 'up1' },
-                        f2: { val: 'up2' },
-                        f3: { val: 'up3' },
-                        f4: { val: 'up' }
+                    .create('string-type-field', {
+                        f: 'up',
+                        f1: 'up1',
+                        f2: 'up2',
+                        f3: 'up3',
+                        f4: 'up'
                     })
                     .toJSON())
                 .toEqual({
-                    f: { val: 'up' },
-                    f1: { val: 'up1' },
-                    f2: { val: 'up2' },
-                    f3: { val: 'up3' },
-                    f4: { val: 'up4' },
-                    f5: { val: 'up5' }
+                    f: 'up',
+                    f1: 'up1',
+                    f2: 'up2',
+                    f3: 'up3',
+                    f4: 'up4',
+                    f5: 'up5'
                 });
         });
 
         it('should check validation', function() {
-            var model = BEM.MODEL.create('no-type-field');
+            var model = BEM.MODEL.create('string-type-field');
 
             expect(model
-                    .set('f', 1.28)
-                    .isValid())
+                .set('f', 'string')
+                .isValid())
                 .toBe(true);
 
             expect(model
-                    .clear()
-                    .isValid())
+                .set('f', 'loooooooooong string')
+                .isValid())
                 .toBe(false);
         });
 
@@ -196,12 +202,12 @@ BEM.TEST.decl('i-model__field', function() {
                 disabledHandler = jasmine.createSpy('disabledHandler');
 
             BEM.MODEL
-                .create('no-type-field')
+                .create('string-type-field')
                 .on('change', onChange)
                 .on('change', disabledHandler)
                 .on('f', 'change', onFieldChange)
                 .un('change', disabledHandler)
-                .set('f', { val: 666 });
+                .set('f', 666);
 
             expect(onChange).toHaveBeenCalled();
             expect(onFieldChange).toHaveBeenCalled();
@@ -210,12 +216,13 @@ BEM.TEST.decl('i-model__field', function() {
 
         it('should destruct', function() {
             BEM.MODEL
-                .create({ name: 'no-type-field', id: 'uniqModelId' })
+                .create({ name: 'string-type-field', id: 'uniqModelId' })
                 .destruct();
 
-            expect(BEM.MODEL.get({ name: 'no-type-field', id: 'uniqModelId' }).length).toEqual(0);
+            expect(BEM.MODEL.get({ name: 'string-type-field', id: 'uniqModelId' }).length).toEqual(0);
         });
 
     });
 
 });
+*/

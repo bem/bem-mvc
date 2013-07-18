@@ -7,7 +7,7 @@ exports.newFileContent = function (vars) {
 
     return Template.process([
         "({",
-        "    block: 'b-page',",
+        "    block: 'page',",
         "    title: '{{bemBlockName}}',",
         "    head: [",
         "        { elem: 'css', url: '_{{bemBlockName}}.css', ie: false },",

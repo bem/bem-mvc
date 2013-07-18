@@ -1,17 +1,19 @@
 ({
-    mustDeps: [
-    ],
     shouldDeps: [
+        {
+            block: 'functions',
+            elems: ['throttle', 'debounce']
+        },
         {
             elem: 'field',
             mods: {
                 type: [
-                    'string',
+                    'string'/*,
                     'number',
                     'boolean',
                     'model',
                     'array',
-                    'models-list'
+                    'models-list'*/
                 ]
             }
         }
