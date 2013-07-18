@@ -13,7 +13,8 @@ MAKE.decl('Arch', {
 
     libraries: [
         'bem-core @ v1',
-        'bem-controls @ v2'
+        'bem-controls @ v2',
+        'bem-pr @ v0.1'
     ]
 
 });
@@ -27,8 +28,8 @@ MAKE.decl('BundleNode', {
             'bemdecl.js',
             'deps.js',
             'bemhtml',
-            'js+bemhtml',
-            'test.js'
+            'test.js',
+            'test.js+browser.js+bemhtml',
             'browser.js+bemhtml',
             'css',
             'ie.css',

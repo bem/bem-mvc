@@ -1,4 +1,4 @@
-BEM.TEST.decl('i-model__field', function() {
+/*BEM.TEST.decl('i-model__field', function() {
 
     // COMMON FIELD
     describe('Field with no type', function() {
@@ -294,3 +294,4 @@ BEM.TEST.decl('i-model__field', function() {
         });
     });
 });
+*/

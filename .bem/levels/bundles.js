@@ -4,7 +4,8 @@ var PATH = require('path'),
 
     PRJ_ROOT = environ.PRJ_ROOT,
     PRJ_TECHS = join(PRJ_ROOT, '.bem/techs'),
-    BEMCORE_TECHS = environ.getLibPath('bem-core', '.bem/techs');
+    BEMCORE_TECHS = environ.getLibPath('bem-core', '.bem/techs'),
+    BEMPR_TECHS = environ.getLibPath('bem-pr', 'bem/techs');
 
 exports.getTechs = function() {
 
@@ -14,6 +15,7 @@ exports.getTechs = function() {
         'deps.js'            : 'v2/deps.js',
         'js'                 : 'v2/js-i',
         'test.js'            : join(PRJ_TECHS, 'test.js.js'),
+        'test.js+browser.js+bemhtml.js' : join(BEMPR_TECHS, 'test.js+browser.js+bemhtml.js'),
         'vanilla.js'         : join(BEMCORE_TECHS, 'vanilla.js.js'),
         'browser.js'         : join(BEMCORE_TECHS, 'browser.js.js'),
         'browser.js+bemhtml' : join(BEMCORE_TECHS, 'browser.js+bemhtml.js'),

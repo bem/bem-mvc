@@ -11,6 +11,7 @@ exports.getConfig = function() {
 
         bundleBuildLevels: [
             'bem-core/common.blocks',
+            'bem-pr/test.blocks',
             'bem-controls/common.blocks',
             'bem-controls/desktop.blocks'
         ]

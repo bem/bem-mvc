@@ -1,4 +1,4 @@
-BEM.TEST.decl('i-model__field_type_string', function() {
+/*BEM.TEST.decl('i-model__field_type_string', function() {
 
     describe('Field with type "string"', function() {
         BEM.MODEL.decl('string-type-field', {
@@ -225,3 +225,4 @@ BEM.TEST.decl('i-model__field_type_string', function() {
     });
 
 });
+*/
