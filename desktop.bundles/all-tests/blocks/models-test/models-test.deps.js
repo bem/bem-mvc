@@ -2,7 +2,7 @@
     mustDeps: [
         {
             block: 'test'
-        },
+        }
     ],
     shouldDeps: [
         {

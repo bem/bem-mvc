@@ -8,12 +8,12 @@
             elem: 'field',
             mods: {
                 type: [
-                    'string'/*,
+                    'string',
                     'number',
                     'boolean',
+                     'array',
                     'model',
-                    'array',
-                    'models-list'*/
+                    //'models-list'
                 ]
             }
         }

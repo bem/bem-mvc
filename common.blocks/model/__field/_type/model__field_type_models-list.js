@@ -1,10 +1,15 @@
-;(function(MODEL, $) {
-    MODEL.FIELD.types['models-list'] = $.inherit(MODEL.FIELD, {
+modules.define(
+    'model',
+    ['inherit', 'objects', 'model'],
+    function(provide, inherit, objects, MODEL, MODEL) {
+
+
+    MODEL.FIELD.types['models-list'] = inherit(MODEL.FIELD, {
 
         /**
          * Инициализация поля
          * @param {Object} data
-         * @returns {BEM.MODEL.FIELD}
+         * @returns {FIELD}
          */
         initData: function(data) {
             this.params['default'] || (this.params['default'] = []);
@@ -67,7 +72,7 @@
                     field._raw.push(model);
 
                     field
-                        .trigger('add', $.extend(opts, { model: model }))
+                        .trigger('add', objects.extend(opts, { model: model }))
                         ._trigger('change', opts);
 
                     return model;
@@ -84,7 +89,7 @@
                     if (index !== undefined) {
                         var model = list.getByIndex(index);
 
-                        field.trigger('remove', $.extend(opts, { model: model }));
+                        field.trigger('remove', objects.extend(opts, { model: model }));
                         model.destruct();
 
                         field._raw.splice(index, 1);
@@ -111,7 +116,7 @@
                 /**
                  * Возвращает модель из списка по id
                  * @param id
-                 * @returns {BEM.MODEL}
+                 * @returns {MODEL}
                  */
                 getById: function(id) {
                     return list.getByIndex(list._getIndex(id));
@@ -139,7 +144,7 @@
                 /**
                  * Возвращает модель из списка по индексу
                  * @param i
-                 * @returns {BEM.MODEL}
+                 * @returns {MODEL}
                  */
                 getByIndex: function(i) {
                     return field._raw[i];
@@ -175,7 +180,7 @@
 
         /**
          * Закешировать состояние
-         * @returns {MODEL.FIELD}
+         * @returns {FIELD}
          */
         fixData: function() {
             this._fixedValue = this._raw.map(function(model) {
@@ -199,7 +204,7 @@
          * Задает значение для поля
          * @param {Array} data
          * @param {Object} opts
-         * @returns {MODEL.FIELD}
+         * @returns {FIELD}
          * @private
          */
         _set: function(data, opts) {
@@ -217,7 +222,7 @@
         /**
          * Очистить поле и удалить все вложенные модели
          * @param {Object} [opts]
-         * @returns {MODEL.FIELD}
+         * @returns {FIELD}
          */
         clear: function(opts) {
             this._value.clear();
@@ -243,4 +248,7 @@
         }
 
     });
-})(BEM.MODEL, jQuery);
+
+    provide(MODEL);
+
+});

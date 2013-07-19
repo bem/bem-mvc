@@ -1,78 +1,89 @@
-;(function(MODEL, $) {
-    MODEL.FIELD.types.array = $.inherit(MODEL.FIELD, {
+modules.define(
+    'model',
+    ['inherit', 'objects'],
+    function(provide, inherit, objects, MODEL) {
 
-        _default: [],
 
-        /**
-         * Возвращает копию исходного массива, чтобы исключить возможность
-         * изменения внутреннего свойства
-         * @returns {Array}
-         */
-        raw: function() {
-            return this._raw.slice();
-        },
+MODEL.FIELD.types.array = inherit(MODEL.FIELD, {
 
-        /**
-         * Доопределяем нативные методы, чтобы иметь возможность контролировать изменение массива
-         * @param {Array} value
-         * @returns {Array}
-         * @private
-         */
-        _preprocess: function(value) {
-            var _this = this;
+    /**
+     * Зачение по умолчанию пустой массив
+     */
+    _default: [],
 
-            value = value.slice();
+    /**
+     * Возвращает копию исходного массива, чтобы исключить возможность
+     * изменения внутреннего свойства
+     * @returns {Array}
+     */
+    raw: function() {
+        return this._raw.slice();
+    },
 
-            // изменяющие методы
-            ['pop', 'push', 'reverse', 'shift', 'sort', 'splice', 'unshift'].forEach(function(name) {
-                var nativeFn = value[name];
+    /**
+     * Доопределяем нативные методы, чтобы иметь возможность контролировать изменение массива
+     * @param {Array} value
+     * @returns {Array}
+     * @private
+     */
+    _preprocess: function(value) {
+        var _this = this;
 
-                value[name] = function() {
-                    var args = Array.prototype.slice.call(arguments),
-                        res = nativeFn.apply(_this._raw, args);
+        value = value.slice();
 
-                    _this._set(_this._raw);
+        // изменяющие методы
+        ['pop', 'push', 'reverse', 'shift', 'sort', 'splice', 'unshift'].forEach(function(name) {
+            var nativeFn = value[name];
 
-                    if (name == 'push' || name == 'unshift') {
-                        _this.trigger('add', { data: args[0] });
-                    }
+            value[name] = function() {
+                var args = Array.prototype.slice.call(arguments),
+                    res = nativeFn.apply(_this._raw, args);
 
-                    if (name == 'pop' || name == 'shift') {
-                        _this.trigger('remove', { data: res });
-                    }
+                _this._set(_this._raw);
 
-                    if (name == 'splice') {
-                        _this
-                            .trigger('add', { data: args.slice(2) })
-                            .trigger('remove', { data: res });
-                    }
-
-                    _this._trigger('change');
-
-                    return res;
+                if (name == 'push' || name == 'unshift') {
+                    _this.trigger('add', { data: args[0] });
                 }
-            });
 
-            // неизменяющие методы
-            ['map', 'forEach', 'filter', 'reduce', 'reduceRight', 'some', 'every', 'indexOf'].forEach(function(name) {
-                var nativeFn = value[name];
+                if (name == 'pop' || name == 'shift') {
+                    _this.trigger('remove', { data: res });
+                }
 
-                value[name] = function() {
-                    return nativeFn.apply(_this._raw, arguments);
-                };
-            });
+                if (name == 'splice') {
+                    _this
+                        .trigger('add', { data: args.slice(2) })
+                        .trigger('remove', { data: res });
+                }
 
-            return value;
-        },
+                _this._trigger('change');
 
-        /**
-         * Проверяет что значение не пустое
-         * @param value
-         * @returns {Boolean}
-         */
-        checkEmpty: function(value) {
-            return $.isEmptyObject(value) || value.length == 0;
-        }
+                return res;
+            }
+        });
 
-    });
-})(BEM.MODEL, jQuery);
+        // неизменяющие методы
+        ['map', 'forEach', 'filter', 'reduce', 'reduceRight', 'some', 'every', 'indexOf'].forEach(function(name) {
+            var nativeFn = value[name];
+
+            value[name] = function() {
+                return nativeFn.apply(_this._raw, arguments);
+            };
+        });
+
+        return value;
+    },
+
+    /**
+     * Проверяет что значение не пустое
+     * @param value
+     * @returns {Boolean}
+     */
+    checkEmpty: function(value) {
+        return objects.isEmpty(value) || value.length == 0;
+    }
+
+});
+
+provide(MODEL);
+
+});

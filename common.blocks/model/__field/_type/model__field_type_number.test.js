@@ -1,4 +1,4 @@
-BEM.TEST.decl('i-model__field_type_number', function() {
+/*BEM.TEST.decl('i-model__field_type_number', function() {
 
     describe('Field with type "number"', function() {
         BEM.MODEL.decl('number-type-field', {
@@ -225,3 +225,4 @@ BEM.TEST.decl('i-model__field_type_number', function() {
     });
 
 });
+*/
