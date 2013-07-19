@@ -1,3 +1,4 @@
+/*
 BEM.TEST.decl('i-glue-field_type_select', function() {
     BEM.MODEL.decl('glue-field-select-model', {
         num: 'number',
@@ -94,3 +95,4 @@ BEM.TEST.decl('i-glue-field_type_select', function() {
     });
 
 });
+*/

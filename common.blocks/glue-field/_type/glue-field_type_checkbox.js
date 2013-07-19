@@ -1,9 +1,14 @@
-BEM.DOM.decl({ block: 'i-glue-field_type_checkbox', baseBlock: 'i-glue-field' }, {
-    onSetMod: {
-        js: function() {
-            this.__base();
+modules.define('i-bem__dom', [], function(provide, DOM) {
 
-            this.checkbox = this.findBlockOn('checkbox');
+DOM.decl({ block: 'glue-field_type_checkbox', baseBlock: 'glue-field' }, {
+
+    onSetMod: {
+        js: {
+            inited: function() {
+                this.__base();
+
+                this.checkbox = this.findBlockOn('checkbox');
+            }
         }
     },
 
@@ -23,5 +28,9 @@ BEM.DOM.decl({ block: 'i-glue-field_type_checkbox', baseBlock: 'i-glue-field' },
     onFieldChange: function(e, data) {
         this.checkbox.getMod('focused') !== 'yes' && this.checkbox.setMod('checked', data.value ? 'yes' : '');
     }
+
+});
+
+provide(DOM);
 
 });

@@ -1,3 +1,4 @@
+/*
 BEM.TEST.decl('i-glue', function() {
     BEM.MODEL.decl('glue-model', {
         num: 'number',
@@ -120,3 +121,4 @@ BEM.TEST.decl('i-glue', function() {
 
 
 });
+*/

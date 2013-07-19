@@ -1,7 +1,7 @@
 ({
     shouldDeps: [
         {
-            block: 'i-glue-field'
+            block: 'glue-field'
         }
     ]
 })

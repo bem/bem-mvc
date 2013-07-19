@@ -1,3 +1,4 @@
+/*
 BEM.TEST.decl('i-glue-field_type_checkbox', function() {
     BEM.MODEL.decl('glue-field-checkbox-model', {
         num: 'number',
@@ -74,3 +75,4 @@ BEM.TEST.decl('i-glue-field_type_checkbox', function() {
     });
 
 });
+*/

@@ -1,3 +1,4 @@
+/*
 BEM.TEST.decl('i-glue-field', function() {
     BEM.MODEL.decl('glue-field-model', {
         num: 'number',
@@ -131,3 +132,4 @@ BEM.TEST.decl('i-glue-field', function() {
 
 
 });
+*/

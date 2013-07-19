@@ -1,13 +1,17 @@
+modules.define('i-bem__dom', ['objects', 'jquery'], function(provide, objects, $, DOM) {
+
 /**
  * Блок для проклеивания моделей и DOM
  */
-BEM.DOM.decl('i-glue', {
+DOM.decl('i-glue', {
 
     onSetMod: {
-        js: function() {
+        js: {
+            inited: function() {
 
-            this.glue();
+                this.glue();
 
+            }
         }
     },
 
@@ -51,7 +55,7 @@ BEM.DOM.decl('i-glue', {
 
         this._fields = {};
 
-        $.each(this.findElem('model-field'), function(i, elem) {
+        objects.each(this.findElem('model-field'), function(elem) {
             _this.initFieldBlock($(elem));
         });
 
@@ -129,5 +133,8 @@ BEM.DOM.decl('i-glue', {
         return this.params.modelName || this.__self.getName();
     }
 
+});
+
+provide(DOM);
 
 });
