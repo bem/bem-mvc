@@ -1,7 +1,7 @@
 modules.define(
     'model',
-    ['inherit', 'events', 'model__field', 'identify', 'objects', 'functions', 'functions__throttle', 'functions__debounce', 'jquery'],
-    function(provide, inherit, events, FIELD, identify, objects, functions, throttle, debounce, $) {
+    ['inherit', 'events', 'identify', 'objects', 'functions', 'functions__throttle', 'functions__debounce'],
+    function(provide, inherit, events, identify, objects, functions, throttle, debounce) {
 
 var changesTimeout = 500,
     CHILD_SEPARATOR = '.',
@@ -85,14 +85,14 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
                 return _this._onFieldChange(data.field, data);
             });
 
-        $.each(this.fieldsDecl, function(name, props) {
-            var field = _this.fields[name] = FIELD.create(name, props, _this);
+        objects.each(this.fieldsDecl, function(props, name) {
+            var field = _this.fields[name] = MODEL.FIELD.create(name, props, _this);
 
             if (props.dependsFrom) {
-                if (!$.isArray(props.dependsFrom))
+                if (!Array.isArray(props.dependsFrom))
                     props.dependsFrom = [props.dependsFrom];
 
-                $.each(props.dependsFrom, function(i, dependName) {
+                objects.each(props.dependsFrom, function(dependName) {
                     var fieldsDecl = _this.fieldsDecl[dependName];
 
                     fieldsDecl.dependsTo || (fieldsDecl.dependsTo = []);
@@ -102,11 +102,11 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
 
         });
 
-        data && $.each(this.fields, function(name, field) {
+        data && objects.each(this.fields, function(field, name) {
             var fieldDecl = _this.fieldsDecl[name];
 
             data && !fieldDecl.calculate &&
-            field.initData(data[name] != undefined ? data[name] : fieldDecl.value);
+                field.initData(data[name] != undefined ? data[name] : fieldDecl.value);
         });
 
         this.trigger('init');
@@ -125,7 +125,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
         var fieldsDecl = this.fieldsDecl[name],
             _this = this;
 
-        fieldsDecl && fieldsDecl.dependsTo && $.each(fieldsDecl.dependsTo, function(i, childName) {
+        fieldsDecl && fieldsDecl.dependsTo && objects.each(fieldsDecl.dependsTo, function(childName) {
             var fieldDecl = _this.fieldsDecl[childName],
                 field = _this.fields[childName];
 
@@ -172,7 +172,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
         var field = this.fields[name],
             fieldsScheme = this.fieldsDecl[name];
 
-        opts = $.extend(opts, { value: value });
+        opts = objects.extend(opts, { value: value });
 
         if (!field || !fieldsScheme) return this;
 
@@ -195,7 +195,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
         } else {
             opts = name;
 
-            $.each(this.fields, function(fieldName, field) {
+            objects.each(this.fields, function(field) {
                 field.clear(opts);
             });
         }
@@ -214,7 +214,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
     update: function(data, opts) {
         var _this = this;
 
-        $.each(data, function(name, val) {
+        objects.each(data, function(val, name) {
             _this.set(name, val);
         });
 
@@ -241,7 +241,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
             return this.fields[name].isEmpty();
         } else {
             var isEmpty = true;
-            $.each(this.fields, function(fieldName, field) {
+            objects.each(this.fields, function(field) {
                 isEmpty &= field.isEmpty();
             });
 
@@ -259,7 +259,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
             return this.fields[name].isChanged();
         } else {
             var isChanged = false;
-            $.each(this.fields, function(fieldName, field) {
+            objects.each(this.fields, function(field) {
                 isChanged |= field.isChanged();
             });
 
@@ -283,7 +283,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      * @returns {MODEL}
      */
     fix: function(opts) {
-        $.each(this.fields, function(fieldName, field) {
+        objects.each(this.fields, function(field) {
             field.fixData(opts);
         });
 
@@ -298,7 +298,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      * @returns {MODEL}
      */
     rollback: function(opts) {
-        $.each(this.fields, function(fieldName, field) {
+        objects.each(this.fields, function(field) {
             field.rollback(opts);
         });
 
@@ -314,7 +314,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
     toJSON: function() {
         var res = {};
 
-        $.each(this.fields, function(fieldName, field) {
+        objects.each(this.fields, function(field, fieldName) {
             res[fieldName] = field.toJSON();
         });
 
@@ -330,7 +330,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      * @returns {MODEL}
      */
     on: function(field, e, fn, ctx) {
-        if ($.isFunction(e)) {
+        if (functions.isFunction(e)) {
             ctx = fn;
             fn = e;
             e = field;
@@ -355,7 +355,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      * @returns {MODEL}
      */
     un: function(field, e, fn, ctx) {
-        if ($.isFunction(e)) {
+        if (functions.isFunction(e)) {
             ctx = fn;
             fn = e;
             e = field;
@@ -442,7 +442,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
         var _this = this,
             res = {};
 
-        $.each(this.fieldsDecl, function(fieldName, fieldDecl) {
+        objects.each(this.fieldsDecl, function(fieldDecl, fieldName) {
             if (!_this.fields[fieldName].isValid()) {
                 (res.errorFields || (res.errorFields = [])).push(fieldName);
             }
@@ -503,7 +503,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
             decl.model = decl.name;
         }
 
-        $.each(fields, function(name, props) {
+        objects.each(fields, function(props, name) {
             if (typeof props == 'string')
                 fields[name] = { type: props };
         });
@@ -512,7 +512,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
             if (!MODEL.models[decl.baseModel])
                 throw('baseModel "' + decl.baseModel + '" for "' + decl.model + '" is undefined');
 
-            fields = $.extend(true, fields, MODEL.decls[decl.baseModel]);
+            fields = objects.extend(true, fields, MODEL.decls[decl.baseModel]);
         }
 
         MODEL.models[decl.model] = {};
@@ -544,7 +544,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
             throw new Error('unknown model: "' + modelParams.name + '"');
 
         // выставляем id из поля типа 'id' или из декларации
-        $.each(decl, function(name, field) {
+        objects.each(decl, function(field, name) {
             if (field.type === 'id') {
                 var id = data[name];
 
@@ -633,7 +633,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      * @returns {MODEL}
      */
     on: function(modelParams, field, e, fn, ctx) {
-        if ($.isFunction(e)) {
+        if (functions.isFunction(e)) {
             ctx = fn;
             fn = e;
             e = field;
@@ -676,7 +676,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      * @returns {MODEL}
      */
     un: function(modelParams, field, e, fn, ctx) {
-        if ($.isFunction(e)) {
+        if (functions.isFunction(e)) {
             ctx = fn;
             fn = e;
             e = field;
@@ -694,7 +694,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
         e.split(' ').forEach(function(event) {
             var pos;
 
-            triggers[event] && $.each(triggers[event], function(i, event) {
+            triggers[event] && objects.each(triggers[event], function(event, i) {
                 if (event.path === eventPath &&
                     event.fn === fn &&
                     event.ctx === ctx &&
@@ -769,7 +769,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
         var _this = this,
             fields = this.fieldsTriggers[model.name];
 
-        fields && $.each(fields, function(fieldName, fieldTriggers) {
+        fields && objects.each(fields, function(fieldTriggers) {
 
             _this._bindToEvents(model, fieldTriggers);
 
@@ -788,7 +788,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
     _bindToEvents: function(model, events) {
         var _this = this;
 
-        events && $.each(events, function(eventName, storage) {
+        events && objects.each(events, function(storage, eventName) {
             storage.forEach(function(event) {
                 var regExp = new RegExp(this._getPathRegexp(event.path), 'g');
 
@@ -837,7 +837,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
 
         MODEL.forEachModel(function() {
 
-            $.each(this.fields, function(name, field) {
+            objects.each(this.fields, function(field) {
                 field.destruct();
             });
 
@@ -868,7 +868,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      * @returns {String}
      */
     buildPath: function(pathParts) {
-        if ($.isArray(pathParts))
+        if (Array.isArray(pathParts))
             return pathParts.map(MODEL.buildPath).join(MODELS_SEPARATOR);
 
         var parts = { parent: '', child: '' };

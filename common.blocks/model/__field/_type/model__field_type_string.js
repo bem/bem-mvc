@@ -1,10 +1,10 @@
 modules.define(
-    'model__field',
-    ['inherit', 'events', 'jquery'],
-    function(provide, inherit, events, $, FIELD) {
+    'model',
+    ['inherit', 'objects'],
+    function(provide, inherit, objects, MODEL) {
 
 
-FIELD.types.string = inherit(FIELD, {
+MODEL.FIELD.types.string = inherit(MODEL.FIELD, {
 
     /**
      * Значение по умолчанию пустая строка
@@ -23,7 +23,7 @@ FIELD.types.string = inherit(FIELD, {
             }
         };
 
-        return $.extend(this._commonRules(), {
+        return objects.extend(this._commonRules(), {
             maxlength: maxLength,
             maxLength: maxLength
         })
@@ -31,6 +31,6 @@ FIELD.types.string = inherit(FIELD, {
 
 });
 
-provide(FIELD);
+provide(MODEL);
 
 });

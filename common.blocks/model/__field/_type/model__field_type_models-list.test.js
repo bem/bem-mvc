@@ -1,4 +1,4 @@
-BEM.TEST.decl('i-model__field_type_model-list', function() {
+/*BEM.TEST.decl('i-model__field_type_model-list', function() {
 
     describe('Field with type "model-list"', function() {
         BEM.MODEL.decl('model-list-type-field', {
@@ -200,3 +200,4 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
     });
 
 });
+*/

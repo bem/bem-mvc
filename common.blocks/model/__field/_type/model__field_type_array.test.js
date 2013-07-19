@@ -1,4 +1,4 @@
-BEM.TEST.decl('i-model__field_type_array', function() {
+/*BEM.TEST.decl('i-model__field_type_array', function() {
 
     describe('Field with type "array"', function() {
         BEM.MODEL.decl('array-type-field', {
@@ -376,3 +376,4 @@ BEM.TEST.decl('i-model__field_type_array', function() {
     });
 
 });
+*/

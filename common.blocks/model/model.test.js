@@ -289,7 +289,7 @@ describe('MODEL', function() {
 
         model1.trigger('custom-event');
     });
-    /*
+/*
     //todo: написать тест на валидацию по максимально развернутой схеме
     describe('validate', function() {
         MODEL.decl('valid-model', {
@@ -758,8 +758,10 @@ describe('MODEL', function() {
         });
 
     });
-    */
+*/
 
 });
-provide()
+
+provide();
+
 });

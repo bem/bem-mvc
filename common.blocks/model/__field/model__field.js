@@ -1,19 +1,19 @@
 modules.define(
-    'model__field',
-    ['inherit', 'events', 'jquery'],
-    function(provide, inherit, events, $) {
+    'model',
+    ['inherit', 'events', 'objects', 'functions'],
+    function(provide, inherit, events, objects, functions,  MODEL) {
 
 /**
  * @namespace
- * @name FIELD
+ * @name MODEL.FIELD
  */
-var FIELD = inherit(events.Emitter, /** lends FIELD */ {
+var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
 
     /**
      * @class Конструктор поля модели
      * @constructs
      * @param {Object} params
-     * @param {BEM.MODEL} model
+     * @param {MODEL} model
      * @private
      */
     __constructor: function(params, model) {
@@ -34,7 +34,7 @@ var FIELD = inherit(events.Emitter, /** lends FIELD */ {
      * @private
      */
     _trigger: function(event, opts) {
-        opts = $.extend(opts, { field: this.name });
+        opts = objects.extend(opts, { field: this.name });
 
         this.model.trigger('field-' + event, opts);
         this.trigger(event, opts);
@@ -300,7 +300,7 @@ var FIELD = inherit(events.Emitter, /** lends FIELD */ {
 
         var _this = this,
             getOrExec = function(obj, ruleValue) {
-                return $.isFunction(obj) ? obj.call(_this.model, _this.get(), ruleValue, _this.name) : obj;
+                return functions.isFunction(obj) ? obj.call(_this.model, _this.get(), ruleValue, _this.name) : obj;
             },
             validation = getOrExec(this.params.validation),
             invalidRules = [];
@@ -319,11 +319,11 @@ var FIELD = inherit(events.Emitter, /** lends FIELD */ {
         }
 
         if (validation.rules) {
-            $.each(validation.rules, function(ruleName, ruleParams) {
+            objects.each(validation.rules, function(ruleParams, ruleName) {
                 ruleParams = getOrExec(ruleParams);
                 ruleParams = typeof ruleParams === 'object' ? ruleParams : { value: ruleParams };
 
-                var rule = $.extend({}, _this._validationRules[ruleName], ruleParams);
+                var rule = objects.extend({}, _this._validationRules[ruleName], ruleParams);
 
                 if (getOrExec(rule.needToValidate) === false) return true;
 
@@ -356,7 +356,7 @@ var FIELD = inherit(events.Emitter, /** lends FIELD */ {
      * Создает поле модели
      * @param {String} name имя поля
      * @param {Object} params параметры
-     * @param {BEM.MODEL} model экземпляр модели в которой создается поле
+     * @param {MODEL} model экземпляр модели в которой создается поле
      * @returns {*}
      */
     create: function(name, params, model) {
@@ -369,6 +369,6 @@ var FIELD = inherit(events.Emitter, /** lends FIELD */ {
 });
 
 
-provide(FIELD);
+provide(MODEL);
 
 });

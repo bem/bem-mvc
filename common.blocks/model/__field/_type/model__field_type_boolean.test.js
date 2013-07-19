@@ -1,4 +1,4 @@
-BEM.TEST.decl('i-model__field_type_boolean', function() {
+/*BEM.TEST.decl('i-model__field_type_boolean', function() {
 
     describe('Field with type "boolean"', function() {
         BEM.MODEL.decl('boolean-type-field', {
@@ -225,3 +225,4 @@ BEM.TEST.decl('i-model__field_type_boolean', function() {
     });
 
 });
+*/

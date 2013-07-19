@@ -1,5 +1,10 @@
-;(function(MODEL, $) {
-    MODEL.FIELD.types['models-list'] = $.inherit(MODEL.FIELD, {
+modules.define(
+    'model',
+    ['inherit', 'objects', 'model'],
+    function(provide, inherit, objects, MODEL) {
+
+
+    MODEL.FIELD.types['models-list'] = inherit(MODEL.FIELD, {
 
         /**
          * Инициализация поля
@@ -21,12 +26,12 @@
          * Создает значение поля типа models-list, которое предоставляет методы для работы со списком
          * @param field контекст текущего поля
          * @returns {{
-         *   _createModel: Function,
-         *   add: Function,
-         *   remove: Function,
-         *   getById: Function,
-         *   _getIndex: Function,
-         *   getByIndex: Function
+         * _createModel: Function,
+         * add: Function,
+         * remove: Function,
+         * getById: Function,
+         * _getIndex: Function,
+         * getByIndex: Function
          * }}
          * @private
          */
@@ -67,7 +72,7 @@
                     field._raw.push(model);
 
                     field
-                        .trigger('add', $.extend({}, opts, { model: model }))
+                        .trigger('add', objects.extend({}, opts, { model: model }))
                         ._trigger('change', opts);
 
                     return model;
@@ -76,9 +81,9 @@
                 /**
                  * Добавляет модель в список по индексу
                  *
-                 * @param  index
-                 * @param  itemData
-                 * @param  opts
+                 * @param index
+                 * @param itemData
+                 * @param opts
                  * @return {*}
                  */
                 addByIndex: function(index, itemData, opts) {
@@ -87,7 +92,7 @@
                     field._raw.splice(index, 0, model);
 
                     field
-                        .trigger('add', $.extend({}, opts, { model: model, index: index }))
+                        .trigger('add', objects.extend({}, opts, { model: model, index: index }))
                         ._trigger('change', opts);
 
                     return model;
@@ -105,7 +110,7 @@
                         var model = list.getByIndex(index);
 
                         field._raw.splice(index, 1);
-                        field.trigger('remove', $.extend({}, opts, { model: model }));
+                        field.trigger('remove', objects.extend({}, opts, { model: model }));
                         model.destruct();
 
                         field._trigger('change', opts);
@@ -170,7 +175,7 @@
                  * @returns {Array} Массив моделей
                  */
                 where: function(attrs) {
-                    if ($.isEmptyObject(attrs) || !attrs) {
+                    if (objects.isEmpty(attrs) || !attrs) {
                         return [];
                     }
                     return list.filter(function(model) {
@@ -278,4 +283,7 @@
         }
 
     });
-})(BEM.MODEL, jQuery);
+
+    provide(MODEL);
+
+});
