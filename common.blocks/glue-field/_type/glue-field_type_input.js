@@ -1,8 +1,13 @@
-BEM.DOM.decl({ block: 'i-glue-field_type_input', baseBlock: 'i-glue-field' }, {
+modules.define('i-bem__dom', [], function(provide, DOM) {
+
+DOM.decl({ block: 'glue-field_type_input', baseBlock: 'glue-field' }, {
+
     onSetMod: {
-        js: function() {
-            this.__base();
-            this.input = this.findBlockOn('input');
+        js: {
+            inited: function() {
+                this.__base();
+                this.input = this.findBlockOn('input');
+            }
         }
     },
 
@@ -26,5 +31,9 @@ BEM.DOM.decl({ block: 'i-glue-field_type_input', baseBlock: 'i-glue-field' }, {
     onFieldChange: function(e, data) {
         this.input.getMod('focused') !== 'yes' && this.input.val(data.value);
     }
+
+});
+
+provide(DOM);
 
 });

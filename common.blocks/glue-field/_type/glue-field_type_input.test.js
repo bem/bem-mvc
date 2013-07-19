@@ -1,3 +1,4 @@
+/*
 BEM.TEST.decl('i-glue-field_type_input', function() {
     if (!BEM.blocks['input']) return;
 
@@ -70,3 +71,4 @@ BEM.TEST.decl('i-glue-field_type_input', function() {
     });
 
 });
+*/

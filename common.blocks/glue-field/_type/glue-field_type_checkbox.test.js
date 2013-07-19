@@ -1,3 +1,4 @@
+/*
 BEM.TEST.decl('i-glue-field_type_checkbox', function() {
     if (!BEM.blocks['checkbox']) return;
 
@@ -76,3 +77,4 @@ BEM.TEST.decl('i-glue-field_type_checkbox', function() {
     });
 
 });
+*/

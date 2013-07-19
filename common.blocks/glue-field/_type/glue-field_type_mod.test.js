@@ -1,3 +1,4 @@
+/*
 BEM.TEST.decl('i-glue-field_type_mod', function() {
     BEM.MODEL.decl('glue-field-mod-model', {
         num: 'number',
@@ -84,3 +85,4 @@ BEM.TEST.decl('i-glue-field_type_mod', function() {
     });
 
 });
+*/

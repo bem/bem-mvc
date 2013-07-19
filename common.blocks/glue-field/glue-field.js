@@ -1,13 +1,17 @@
-BEM.DOM.decl('i-glue-field', {
+modules.define('i-bem__dom', [], function(provide, DOM) {
+
+DOM.decl('glue-field', {
 
     onSetMod: {
-        js: function() {
-            this.name = this.params.name;
+        js: {
+            inited: function() {
+                this.name = this.params.name;
+            }
         }
     },
 
     /**
-     * Инициализирует блок i-glue-field
+     * Инициализирует блок glue-field
      * @protected
      * @param model
      */
@@ -51,5 +55,9 @@ BEM.DOM.decl('i-glue-field', {
 
         this.__base.apply(this, arguments);
     }
+
+});
+
+provide(DOM);
 
 });
