@@ -21,12 +21,12 @@ _initFields()
 
 initFieldBlock(elem)
 --------------------
-Инициализируем блок i-glue-field (или его потомка) на BEM-блоке
+Инициализируем блок glue-field (или его потомка) на BEM-блоке
 
 
 **Parameters**
 
-**elem**:  *jQuery*,  
+**elem**:  *jQuery*,
 
 
 getFieldBlock(name)
