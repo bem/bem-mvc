@@ -3,7 +3,5 @@
         {
             block: 'i-model'
         }
-    ],
-    shouldDeps: [
     ]
 })

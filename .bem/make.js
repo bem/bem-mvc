@@ -1,6 +1,7 @@
 "use strict";
 
 //process.env.YENV = 'production';
+process.env.XJST_ASYNCIFY = 'yes';
 
 require('bem-environ/lib/nodes');
 
@@ -26,16 +27,23 @@ MAKE.decl('BundleNode', {
             'bemdecl.js',
             'deps.js',
             'bemhtml',
+            'js+bemhtml',
             'test.js',
-            'js',
             'css',
             'ie.css',
-            'ie6.css',
             'ie7.css',
             'ie8.css',
             'ie9.css',
             'html'
         ];
+    },
+
+    'create-js+bemhtml-optimizer-node': function(tech, sourceNode, bundleNode) {
+
+        sourceNode.getFiles().forEach(function(f) {
+            this['create-js-optimizer-node'](tech, this.ctx.arch.getNode(f), bundleNode);
+        }, this);
+
     },
 
     'create-test.js-optimizer-node': function(tech, sourceNode, bundleNode) {
