@@ -1,7 +1,7 @@
 modules.define(
     'model',
-    ['inherit', 'objects', 'model'],
-    function(provide, inherit, objects, MODEL, MODEL) {
+    ['inherit', 'objects'],
+    function(provide, inherit, objects, MODEL) {
 
 
     MODEL.FIELD.types['models-list'] = inherit(MODEL.FIELD, {

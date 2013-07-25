@@ -4,7 +4,7 @@
 
 Требования к моделям
 *   Декларативный стиль описания моделей
-*   Доступ к созданным экземплярам моделей по имени и id 
+*   Доступ к созданным экземплярам моделей по имени и id
 *   Автоматическое приведение значений полей к заданному типу
 *   Валидация моделей
 
@@ -18,7 +18,7 @@
 ````javascript
 BEM.MODEL.decl('model', {
     name: 'string',
-    birth: { 
+    birth: {
         type: 'string',
         preprocess: function(value) {
             return value.year + '.' + value.month + '.' + value.day;
@@ -85,17 +85,17 @@ model.on('weight', 'change', function() {
 ````javascript
 BEM.MODEL.decl('model-with-validation', {
     name: 'string',
-    birth: { 
+    birth: {
         type: 'string',
         preprocess: function(value) {
             return value.year + '.' + value.month + '.' + value.day;
         }
     },
-    height: { 
+    height: {
         type: 'number',
         validation: {             // задать функцию валидации
             validate: function(value) {
-                if (value < 170) return false; 
+                if (value < 170) return false;
             }
         }
     },
@@ -123,14 +123,14 @@ model.isValid();
 ````
 
 ## Биндинги
-Для провязывания модели с DOM-представлением используется блок i-glue. Блок которой "проклеивает" модель и DOM.
-Для того, чтобы провязать модель с каким либо контролом, необходимо на родительский блок примешать блок i-glue, а на контрол элемент model-field блока i-glue и указать им параметры модели.
+Для провязывания модели с DOM-представлением используется блок glue. Блок которой "проклеивает" модель и DOM.
+Для того, чтобы провязать модель с каким либо контролом, необходимо на родительский блок примешать блок glue, а на контрол элемент model-field блока glue и указать им параметры модели.
 BEMJSON в таком случае будет выглядеть так:
 ````javascript
 {
     block: 'b-model',
     mix: [{
-        block: 'i-glue',                   // примешиваем блок i-glue
+        block: 'glue',                   // примешиваем блок glue
         js: {
             modelName: 'model',            // указываем имя модели
             modelData: {
@@ -144,9 +144,9 @@ BEMJSON в таком случае будет выглядеть так:
         ...
 
         {
-            block: 'input', 
+            block: 'input',
             mix: [{                        // на поле ввода примешиваем элемент model-field
-                block: 'i-glue', 
+                block: 'glue',
                 elem: 'model-field',
                 js: {
                     name: 'weight',         // указываем ему с каким полем провязыватсья
@@ -154,11 +154,11 @@ BEMJSON в таком случае будет выглядеть так:
                 }
             }],
             name: 'weight',
-            value: '75', 
+            value: '75',
             mods: { size: 's' },
             content: { elem: 'control' }
         }
-        
+
         ...
     ]
 }
@@ -175,5 +175,5 @@ BEMJSON в таком случае будет выглядеть так:
 ## Ссылки
 JS Docs:
 
-*  [Models API](https://github.com/dosyara/yamvc/blob/master/common.blocks/i-model/i-model.md)
-*  [i-glue](https://github.com/dosyara/yamvc/blob/master/common.blocks/i-glue/i-glue.md)
+*  [Models API](https://github.com/bem/bem-mvc/blob/v2/common.blocks/model/model.md)
+*  [glue](https://github.com/bem/bem-mvc/blob/v2/common.blocks/glue/glue.md)

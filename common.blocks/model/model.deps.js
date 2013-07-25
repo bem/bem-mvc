@@ -11,9 +11,9 @@
                     'string',
                     'number',
                     'boolean',
-                     'array',
+                    'array',
                     'model',
-                    //'models-list'
+                    'models-list'
                 ]
             }
         }
