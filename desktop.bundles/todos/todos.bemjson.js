@@ -1,12 +1,10 @@
 ({
     block: 'b-page',
-    title: 'i-bem • TodoMVC',
+    title: 'bem-mvc • TodoMVC',
     head: [
         { elem: 'css', url: '_todos.css', ie: false },
-        { elem: 'css', url: '_index', ie: true },
-        { block: 'i-jquery', elem: 'core' },
-        { elem: 'meta', attrs: { name: 'description', content: 'Demo example' }},
-        { elem: 'meta', attrs: { name: 'keywords', content: 'todo demo' }}
+        { elem: 'css', url: '_todos', ie: true },
+        { elem: 'meta', attrs: { name: 'description', content: 'bem-mvc demo example' }}
     ],
     content:[
         {
@@ -25,7 +23,6 @@
                     elem: 'title',
                     content: 'todos'
                 },
-
                 {
                     elem: 'body',
                     content: [
@@ -55,7 +52,7 @@
                                 },
                                 {
                                     block: 'input',
-                                    mix: [{ block: 'todos', elem: 'new-todo-input' }],
+                                    mix: { block: 'todos', elem: 'new-todo-input' },
                                     name: 'text',
                                     mods: { size: 'm' },
                                     content: [
@@ -65,10 +62,9 @@
                                 }
                             ]
                         },
-
                         {
                             elem: 'todo-items',
-                            mix: [{
+                            mix: {
                                 block: 'todos',
                                 elem: 'model-field',
                                 js: {
@@ -78,19 +74,22 @@
                                     elem: 'todo-items',
                                     modName: 'show'
                                 }
-                            }],
-                            content: []
+                            }
                         }
-
                     ]
                 },
-
                 {
                     elem: 'footer',
                     content: [
                         {
                             elem: 'items-left',
-                            content: '<b>1</b> item left'
+                            content: [
+                                {
+                                    tag: 'b',
+                                    content: '1'
+                                },
+                                ' item left'
+                            ]
                         },
                         {
                             elem: 'filters',
@@ -142,14 +141,14 @@
                                 {
                                     block: 'todos',
                                     elem: 'completed-count',
-                                    mix: [{
+                                    mix: {
                                         block: 'todos',
                                         elem: 'model-field',
                                         js: {
                                             name: 'itemsCompleted',
                                             type: 'inline'
                                         }
-                                    }],
+                                    },
                                     content: 1
                                 },
                                 ')'
@@ -160,8 +159,7 @@
 
             ]
         },
-
-        { elem: 'js', url: '_todos.js' },
-        { elem: 'js', url: '_todos.bemhtml.js' },
+        { block: 'i-jquery', mods: { version: '1.8.3' } },
+        { elem: 'js', url: '_todos.js' }
     ]
 })
