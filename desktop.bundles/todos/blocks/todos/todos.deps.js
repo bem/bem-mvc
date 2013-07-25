@@ -24,17 +24,28 @@
     {
         mustDeps: [
             {
+<<<<<<< HEAD
                 block: 'i-bem',
                 elem: 'html'
+=======
+                block: 'i-bem'
+>>>>>>> Port todos bundle from v1, some cleanup
             },
             {
                 block: 'm-todos'
             },
             {
+<<<<<<< HEAD
                 block: 'i-glue'
             },
             {
                 block: 'b-link',
+=======
+                block: 'glue'
+            },
+            {
+                block: 'link',
+>>>>>>> Port todos bundle from v1, some cleanup
                 mods: { pseudo: 'yes' }
             }
         ],

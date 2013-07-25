@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 BEM.MODEL.decl('todos', {
+=======
+modules.define('model', function(provide, MODEL) {
+
+MODEL.decl('todos', {
+>>>>>>> Port todos bundle from v1, some cleanup
 
     list: {
         type: 'models-list',
@@ -45,7 +51,18 @@ BEM.MODEL.decl('todos', {
 
 });
 
+<<<<<<< HEAD
 BEM.MODEL.decl('todo-item', {
     text: 'string',
     done: 'boolean'
 });
+=======
+MODEL.decl('todo-item', {
+    text: 'string',
+    done: 'boolean'
+});
+
+provide(MODEL);
+
+});
+>>>>>>> Port todos bundle from v1, some cleanup

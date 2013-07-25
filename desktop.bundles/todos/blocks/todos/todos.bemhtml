@@ -14,7 +14,11 @@ block todos {
 
         mix: [
             {
+<<<<<<< HEAD
                 block: 'i-glue',
+=======
+                block: 'glue',
+>>>>>>> Port todos bundle from v1, some cleanup
                 js: {
                     modelName: 'todo-item',
                     modelId: this.ctx.id,
@@ -22,7 +26,11 @@ block todos {
                 }
             },
             {
+<<<<<<< HEAD
                 block: 'i-glue',
+=======
+                block: 'glue',
+>>>>>>> Port todos bundle from v1, some cleanup
                 elem: 'model-field',
                 js: {
                     type: 'mod',
@@ -45,7 +53,11 @@ block todos {
                         elem: 'done-checkbox'
                     },
                     {
+<<<<<<< HEAD
                         block: 'i-glue',
+=======
+                        block: 'glue',
+>>>>>>> Port todos bundle from v1, some cleanup
                         elem: 'model-field',
                         js: {
                             name: 'done',
@@ -58,7 +70,11 @@ block todos {
             {
                 elem: 'text',
                 mix: [{
+<<<<<<< HEAD
                     block: 'i-glue',
+=======
+                    block: 'glue',
+>>>>>>> Port todos bundle from v1, some cleanup
                     elem: 'model-field',
                     js: {
                         name: 'text',

@@ -1,9 +1,9 @@
-modules.define('i-bem__dom', ['objects', 'jquery'], function(provide, objects, $, DOM) {
+modules.define('i-bem__dom', ['objects', 'jquery', 'model'], function(provide, objects, $, MODEL, DOM) {
 
 /**
  * Блок для проклеивания моделей и DOM
  */
-DOM.decl('i-glue', {
+DOM.decl('glue', {
 
     onSetMod: {
         js: {
@@ -65,7 +65,7 @@ DOM.decl('i-glue', {
     },
 
     /**
-     * Инициализируем блок i-glue-field (или его потомка) на BEM-блоке
+     * Инициализируем блок glue-field (или его потомка) на BEM-блоке
      * @param {jQuery} elem
      * @returns {BEM}
      */

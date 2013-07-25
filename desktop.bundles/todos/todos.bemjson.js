@@ -1,5 +1,9 @@
 ({
+<<<<<<< HEAD
     block: 'b-page',
+=======
+    block: 'page',
+>>>>>>> Port todos bundle from v1, some cleanup
     title: 'bem-mvc • TodoMVC',
     head: [
         { elem: 'css', url: '_todos.css', ie: false },
@@ -86,7 +90,11 @@
                             content: [
                                 {
                                     tag: 'b',
+<<<<<<< HEAD
                                     content: '1'
+=======
+                                    content: 1
+>>>>>>> Port todos bundle from v1, some cleanup
                                 },
                                 ' item left'
                             ]
@@ -159,7 +167,10 @@
 
             ]
         },
+<<<<<<< HEAD
         { block: 'i-jquery', mods: { version: '1.8.3' } },
+=======
+>>>>>>> Port todos bundle from v1, some cleanup
         { elem: 'js', url: '_todos.js' }
     ]
 })
