@@ -55,7 +55,7 @@ DOM.decl('i-glue', {
 
         this._fields = {};
 
-        objects.each(this.findElem('model-field'), function(elem) {
+        $.each(this.findElem('model-field'), function(i, elem) {
             _this.initFieldBlock($(elem));
         });
 
