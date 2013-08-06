@@ -442,12 +442,15 @@
          */
         validate: function(name) {
             var _this = this,
+                fieldRes = {},
                 res = {};
+
             if (name) {
-                _this._validateField(name, res);
+                res = _this._validateField(name);
             } else {
                 $.each(this.fieldsDecl, function(fieldName) {
-                    _this._validateField(fieldName, res);
+                    fieldRes = _this._validateField(fieldName);
+                    fieldRes.errorFields && (res.errorFields || (res.errorFields = [])).concat(fieldRes.errorFields);
                 });
             }
 
@@ -462,16 +465,17 @@
         /**
          * Валидирует отдельное поле модели
          * @param {String} name - имя поля
-         * @param {Object} res - хэш в который нужно сложить результат валидации
          * @private
-         * return {BEM}
+         * return {Object}
          */
-        _validateField: function(name, res) {
+        _validateField: function(name) {
+            var fieldRes = {};
+
             if (!this.fields[name].isValid()) {
-                (res.errorFields || (res.errorFields = [])).push(name);
+                (fieldRes.errorFields || (fieldRes.errorFields = [])).push(name);
             }
 
-            return this;
+            return fieldRes;
         }
 
 
