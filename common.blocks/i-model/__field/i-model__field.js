@@ -232,6 +232,7 @@
 
         /**
          * Возвращает значение пригодное для сериализации
+         * @returns {Object}
          */
         toJSON: function() {
             return this.get();
