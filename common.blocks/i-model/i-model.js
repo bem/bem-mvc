@@ -442,15 +442,15 @@
          */
         validate: function(name) {
             var _this = this,
-                fieldRes = {},
                 res = {};
 
             if (name) {
-                res = _this._validateField(name);
+                if (!this.fields[name].isValid()) res.errorFields = [name];
             } else {
-                $.each(this.fieldsDecl, function(fieldName) {
-                    fieldRes = _this._validateField(fieldName);
-                    fieldRes.errorFields && (res.errorFields || (res.errorFields = [])).concat(fieldRes.errorFields);
+                $.each(this.fieldsDecl, function(name) {
+                    if (!_this.fields[name].isValid()) {
+                        (res.errorFields || (res.errorFields = [])).push(name);
+                    }
                 });
             }
 
@@ -460,24 +460,7 @@
                 this.trigger('error', res);
 
             return res;
-        },
-
-        /**
-         * Валидирует отдельное поле модели
-         * @param {String} name - имя поля
-         * @private
-         * return {Object}
-         */
-        _validateField: function(name) {
-            var fieldRes = {};
-
-            if (!this.fields[name].isValid()) {
-                (fieldRes.errorFields || (fieldRes.errorFields = [])).push(name);
-            }
-
-            return fieldRes;
         }
-
 
     }, /** @lends BEM.MODEL */ {
 
