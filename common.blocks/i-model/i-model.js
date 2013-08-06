@@ -437,17 +437,19 @@
 
         /**
          * Проверяет модель на валидность, генерирует событие error с описанием ошибки(ок)
+         * @param {String} [name] - имя поля
          * @returns {Object}
          */
-        validate: function() {
+        validate: function(name) {
             var _this = this,
                 res = {};
-
-            $.each(this.fieldsDecl, function(fieldName, fieldDecl) {
-                if (!_this.fields[fieldName].isValid()) {
-                    (res.errorFields || (res.errorFields = [])).push(fieldName);
-                }
-            });
+            if (name) {
+                _this._validateField(name, res);
+            } else {
+                $.each(this.fieldsDecl, function(fieldName) {
+                    _this._validateField(fieldName, res);
+                });
+            }
 
             if (!res.errorFields)
                 res.valid = true;
@@ -455,6 +457,21 @@
                 this.trigger('error', res);
 
             return res;
+        },
+
+        /**
+         * Валидирует отдельное поле модели
+         * @param {String} name - имя поля
+         * @param {Object} res - хэш в который нужно сложить результат валидации
+         * @private
+         * return {BEM}
+         */
+        _validateField: function(name, res) {
+            if (!this.fields[name].isValid()) {
+                (res.errorFields || (res.errorFields = [])).push(name);
+            }
+
+            return this;
         }
 
 
