@@ -437,17 +437,22 @@
 
         /**
          * Проверяет модель на валидность, генерирует событие error с описанием ошибки(ок)
+         * @param {String} [name] - имя поля
          * @returns {Object}
          */
-        validate: function() {
+        validate: function(name) {
             var _this = this,
                 res = {};
 
-            $.each(this.fieldsDecl, function(fieldName, fieldDecl) {
-                if (!_this.fields[fieldName].isValid()) {
-                    (res.errorFields || (res.errorFields = [])).push(fieldName);
-                }
-            });
+            if (name) {
+                if (!this.fields[name].isValid()) res.errorFields = [name];
+            } else {
+                $.each(this.fieldsDecl, function(name) {
+                    if (!_this.fields[name].isValid()) {
+                        (res.errorFields || (res.errorFields = [])).push(name);
+                    }
+                });
+            }
 
             if (!res.errorFields)
                 res.valid = true;
@@ -456,7 +461,6 @@
 
             return res;
         }
-
 
     }, /** @lends BEM.MODEL */ {
 
@@ -598,7 +602,7 @@
             if (!MODEL.decls[name])
                 throw('model "' + name + '" is not declared');
 
-            if (!dropCache && modelsCacheByName && modelsCacheByName[path]) return modelsCacheByName[path];
+            if (!dropCache && modelsCacheByName && modelsCacheByName[path]) return modelsCacheByName[path].concat([]);
 
             for (var ip = 0, np = paths.length; ip < np; ip++) {
                 var pathRegexp = MODEL._getPathRegexp(paths[ip]);
