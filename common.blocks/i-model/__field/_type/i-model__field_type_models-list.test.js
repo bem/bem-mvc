@@ -9,7 +9,8 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
         });
         BEM.MODEL.decl('list-inner-model', {
             id: 'id',
-            f: 'string'
+            f: 'string',
+            n: 'number'
         });
 
         // для корректной работы тестов необходимо вызывать destruct у модели после каждого теста
@@ -126,6 +127,31 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
 
             expect(onForEach).toHaveBeenCalled();
             expect(onMap).toHaveBeenCalled();
+
+            model.destruct();
+            expect(BEM.MODEL.get('list-inner-model').length).toEqual(0);
+        });
+
+        it('should search for elements by attributes', function() {
+            var model = BEM.MODEL.create('model-list-type-field', {
+                list: [
+                    { id: 1, f: 'f1', n: 42 },
+                    { id: 2, f: 'f2', n: 16 },
+                    { id: 3, f: 'f4', n: 42 },
+                    { id: 4, f: 'f2', n: 42 },
+                    { id: 5, f: 'f4'        },
+                    { id: 6, f: 'f4', n: 42 }
+                ]
+            });
+
+            expect(model.get('list').where({n: 42}).length).toEqual(4);
+            expect(model.get('list').where({f: 'f4'}).length).toEqual(3);
+            expect(model.get('list').where({f: 'f2', n: '16'}).length).toEqual(1);
+            expect(model.get('list').where({f: 'f4', n: 42}).length).toEqual(2);
+            expect(model.get('list').where({f: 'f1'}).length).toEqual(1);
+            expect(model.get('list').where({f: '42'}).length).toEqual(0);
+            expect(model.get('list').where({}).length).toEqual(0);
+            expect(model.get('list').where().length).toEqual(0);
 
             model.destruct();
             expect(BEM.MODEL.get('list-inner-model').length).toEqual(0);
