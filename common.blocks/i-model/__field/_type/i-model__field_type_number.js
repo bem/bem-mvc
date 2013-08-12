@@ -77,7 +77,8 @@
                     validate: function(curValue, ruleValue, name) {
                         var field = this.fields[name];
 
-                        return field.checkEmpty(curValue) !== ruleValue && field.checkEmpty(field.raw()) !== ruleValue;
+                        //проверяем на пустоту значение raw потому что могла быть попытка установить не число (тогда value пустое, но raw не пусто)
+                        return field.checkEmpty(field.raw()) !== ruleValue;
                     }
                 }
 
