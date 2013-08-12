@@ -13,7 +13,17 @@
             // перед преобразованием, необходимо часто вводимые символы на точку
             value = (new Number(value.toString().replace(/[//,.юЮбБ<>]/gi, '.'))).valueOf();
 
-            return isNaN(value) ? this._default : value;
+            this._isNumber = !isNaN(value);
+
+            return this._isNumber ? value : this._default;
+        },
+
+        /**
+         * Является ли текущее значение поля числом
+         * @returns {Boolean}
+         */
+        isNumber: function() {
+            return this._isNumber;
         },
 
         /**
@@ -55,6 +65,9 @@
                     validate: function(curValue, ruleValue, name) {
                         return curValue >= ruleValue;
                     }
+                },
+                isNumber: function() {
+                    return this.isNumber();
                 }
             })
         }
