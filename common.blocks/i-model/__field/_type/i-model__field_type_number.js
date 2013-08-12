@@ -75,6 +75,8 @@
                 required: {
                     value: true,
                     validate: function(curValue, ruleValue, name) {
+                        var field = this.fields[name];
+
                         return field.checkEmpty(curValue) !== ruleValue || field.checkEmpty(field.raw()) !== ruleValue;
                     }
                 }
