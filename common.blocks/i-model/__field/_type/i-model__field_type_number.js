@@ -37,6 +37,16 @@
         },
 
         /**
+         * Поверяет равно ли текущее значение поля значению переменной value
+         * @param {*} value значение для сравнения с текущим значением
+         * @returns {boolean}
+         */
+        isEqual: function(value) {
+            return value === this.raw() || this.isEmpty() && this.checkEmpty(value);
+        },
+
+
+        /**
          * Правила валидации для поля типа number
          * @private
          */
