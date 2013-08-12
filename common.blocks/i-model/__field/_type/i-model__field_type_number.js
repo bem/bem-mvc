@@ -69,7 +69,7 @@
                 isNumber: {
                     value: true,
                     validate: function(curValue, ruleValue, name) {
-                        return this.isNumber() !== ruleValue;
+                        return this.fields[name].isNumber() !== ruleValue;
                     }
                 },
                 required: {
@@ -77,7 +77,7 @@
                     validate: function(curValue, ruleValue, name) {
                         var field = this.fields[name];
 
-                        return field.checkEmpty(curValue) !== ruleValue || field.checkEmpty(field.raw()) !== ruleValue;
+                        return field.checkEmpty(curValue) !== ruleValue && field.checkEmpty(field.raw()) !== ruleValue;
                     }
                 }
 
