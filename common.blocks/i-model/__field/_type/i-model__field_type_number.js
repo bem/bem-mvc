@@ -79,7 +79,7 @@
                 isNumber: {
                     value: true,
                     validate: function(curValue, ruleValue, name) {
-                        return this.fields[name].isNumber() !== ruleValue;
+                        return this.fields[name].isNumber() == ruleValue;
                     }
                 },
                 required: {
