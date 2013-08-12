@@ -510,7 +510,7 @@
                 if (!MODEL.models[decl.baseModel])
                     throw('baseModel "' + decl.baseModel + '" for "' + decl.model + '" is undefined');
 
-                fields = $.extend(true, fields, MODEL.decls[decl.baseModel]);
+                fields = $.extend(true, {}, MODEL.decls[decl.baseModel], fields);
             }
 
             MODEL.models[decl.model] = {};
