@@ -598,7 +598,7 @@
             if (!MODEL.decls[name])
                 throw('model "' + name + '" is not declared');
 
-            if (!dropCache && modelsCacheByName && modelsCacheByName[path]) return modelsCacheByName[path];
+            if (!dropCache && modelsCacheByName && modelsCacheByName[path]) return modelsCacheByName[path].slice();
 
             for (var ip = 0, np = paths.length; ip < np; ip++) {
                 var pathRegexp = MODEL._getPathRegexp(paths[ip]);
