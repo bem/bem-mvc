@@ -13,9 +13,7 @@
             // перед преобразованием, необходимо часто вводимые символы на точку
             value = (new Number(value.toString().replace(/[//,.юЮбБ<>]/gi, '.'))).valueOf();
 
-            this._isNumber = !isNaN(value);
-
-            return this._isNumber ? value : this._default;
+            return isNaN(value) ? NaN : value;
         },
 
         /**
@@ -79,16 +77,7 @@
                 isNumber: {
                     value: true,
                     validate: function(curValue, ruleValue, name) {
-                        return this.fields[name].isNumber() == ruleValue;
-                    }
-                },
-                required: {
-                    value: true,
-                    validate: function(curValue, ruleValue, name) {
-                        var field = this.fields[name];
-
-                        //проверяем на пустоту значение raw потому что могла быть попытка установить не число (тогда value пустое, но raw не пусто)
-                        return field.checkEmpty(field.raw()) !== ruleValue;
+                        return isNaN(curValue) !== ruleValue;
                     }
                 }
 
