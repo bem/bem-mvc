@@ -66,9 +66,19 @@
                         return curValue >= ruleValue;
                     }
                 },
-                isNumber: function() {
-                    return this.isNumber();
+                isNumber: {
+                    value: true,
+                    validate: function(curValue, ruleValue, name) {
+                        return this.isNumber() !== ruleValue;
+                    }
+                },
+                required: {
+                    value: true,
+                    validate: function(curValue, ruleValue, name) {
+                        return field.checkEmpty(curValue) !== ruleValue || field.checkEmpty(field.raw()) !== ruleValue;
+                    }
                 }
+
             })
         }
 
