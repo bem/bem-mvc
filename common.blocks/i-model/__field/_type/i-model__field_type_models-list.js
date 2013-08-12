@@ -146,6 +146,22 @@
                 },
 
                 /**
+                 * Возвращает массив моделей, соответствующих заданным парамтрам.
+                 * @param {Object} attrs Объект, задающий условия поиска
+                 * @returns {Array} Массив моделей
+                 */
+                where: function(attrs) {
+                    if ($.isEmptyObject(attrs) || !attrs) {
+                        return [];
+                    }
+                    return list.filter(function(model) {
+                        return Object.keys(attrs).every(function(key) {
+                            return attrs[key] === model.get(key);
+                        });
+                    });
+                },
+
+                /**
                  * Возвращает количество элементов
                  * @returns {Number}
                  */
