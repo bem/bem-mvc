@@ -17,14 +17,6 @@
         },
 
         /**
-         * Является ли текущее значение поля числом
-         * @returns {Boolean}
-         */
-        isNumber: function() {
-            return this._isNumber;
-        },
-
-        /**
          * Форматированное значение содержит два десятичных знака
          * @param {Number} value
          * @returns {string}
