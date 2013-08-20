@@ -436,17 +436,22 @@
 
         /**
          * Проверяет модель на валидность, генерирует событие error с описанием ошибки(ок)
+         * @param {String} [name] - имя поля
          * @returns {Object}
          */
-        validate: function() {
+        validate: function(name) {
             var _this = this,
                 res = {};
 
-            $.each(this.fieldsDecl, function(fieldName, fieldDecl) {
-                if (!_this.fields[fieldName].isValid()) {
-                    (res.errorFields || (res.errorFields = [])).push(fieldName);
-                }
-            });
+            if (name) {
+                if (!this.fields[name].isValid()) res.errorFields = [name];
+            } else {
+                $.each(this.fieldsDecl, function(name) {
+                    if (!_this.fields[name].isValid()) {
+                        (res.errorFields || (res.errorFields = [])).push(name);
+                    }
+                });
+            }
 
             if (!res.errorFields)
                 res.valid = true;
@@ -455,7 +460,6 @@
 
             return res;
         }
-
 
     }, /** @lends BEM.MODEL */ {
 
