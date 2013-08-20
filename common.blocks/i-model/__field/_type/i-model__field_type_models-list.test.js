@@ -144,12 +144,12 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
                 ]
             });
 
-            expect(model.get('list').where({n: 42}).length).toEqual(4);
-            expect(model.get('list').where({f: 'f4'}).length).toEqual(3);
-            expect(model.get('list').where({f: 'f2', n: '16'}).length).toEqual(1);
-            expect(model.get('list').where({f: 'f4', n: 42}).length).toEqual(2);
-            expect(model.get('list').where({f: 'f1'}).length).toEqual(1);
-            expect(model.get('list').where({f: '42'}).length).toEqual(0);
+            expect(model.get('list').where({ n: 42 }).length).toEqual(4);
+            expect(model.get('list').where({ f: 'f4' }).length).toEqual(3);
+            expect(model.get('list').where({ f: 'f2', n: 16 }).length).toEqual(1);
+            expect(model.get('list').where({ f: 'f4', n: 42 }).length).toEqual(2);
+            expect(model.get('list').where({ f: 'f1' }).length).toEqual(1);
+            expect(model.get('list').where({ f: '42' }).length).toEqual(0);
             expect(model.get('list').where({}).length).toEqual(0);
             expect(model.get('list').where().length).toEqual(0);
 
