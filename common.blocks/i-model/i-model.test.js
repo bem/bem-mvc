@@ -28,6 +28,44 @@ BEM.TEST.decl('i-model', function() {
         });
     });
 
+    describe('internal fields', function() {
+        BEM.MODEL.decl('model-with-internal-fields', {
+            publicField: {
+                type: 'string'
+            },
+            internalField: {
+                type: 'string',
+                internal: true
+            },
+            notInternalField: {
+                type: 'string',
+                internal: false
+            }
+        });
+
+        var model = BEM.MODEL.create('model-with-internal-fields',{
+            publicField: 'public',
+            internalField: 'i\'m internal',
+            notInternalField: 'i\'m not internal'
+        });
+
+        it('should show internal fields in toJSON', function() {
+            expect(
+                BEM.MODEL
+                    .create('model-with-internal-fields', {
+                        publicField: 'public',
+                        internalField: 'i\'m internal',
+                        notInternalField: 'i\'m not internal'
+                    })
+                    .toJSON())
+                .toEqual({
+                    publicField: 'public',
+                    notInternalField: 'i\'m not internal'
+                });
+        });
+
+    });
+
     describe('get', function() {
         BEM.MODEL.decl('model-for-get', {
             f1: { type: 'string' }

@@ -310,10 +310,12 @@
          * @returns {Object}
          */
         toJSON: function() {
-            var res = {};
+            var res = {}
+                _this = this;
 
             $.each(this.fields, function(fieldName, field) {
-                res[fieldName] = field.toJSON();
+                if (!_this.fieldsDecl[fieldName].internal)
+                    res[fieldName] = field.toJSON();
             });
 
             return res;
@@ -484,6 +486,7 @@
          *     XXX: {String|Number},
          *     XXX: {
          *         {String} [type] тип поля
+         *         {Boolean} [internal] внутреннее поле
          *         {*|Function} [default] дефолтное значение
          *         {*|Function} [value] начанольное значение
          *         {Object|Function} [validation] ф-ия конструктор объекта валидации или он сам
