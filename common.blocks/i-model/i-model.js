@@ -310,7 +310,7 @@
          * @returns {Object}
          */
         toJSON: function() {
-            var res = {}
+            var res = {},
                 _this = this;
 
             $.each(this.fields, function(fieldName, field) {
