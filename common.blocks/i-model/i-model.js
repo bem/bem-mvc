@@ -92,10 +92,16 @@
             });
 
             data && $.each(this.fields, function(name, field) {
-                var fieldDecl = _this.fieldsDecl[name];
+                var fieldDecl = _this.fieldsDecl[name],
+                    value;
+
+                if (Array.isArray(fieldDecl.value))
+                    value = fieldDecl.value.slice(0);
+                else if ($.isPlainObject(fieldDecl.value))
+                    value = $.extend(true, {}, fieldDecl.value);
 
                 data && !fieldDecl.calculate &&
-                    field.initData(data[name] != undefined ? data[name] : fieldDecl.value);
+                    field.initData(data[name] != undefined ? data[name] : value);
             });
 
             this.trigger('init');
