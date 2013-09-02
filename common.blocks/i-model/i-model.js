@@ -448,7 +448,7 @@
             } else {
                 $.each(this.fieldsDecl, function(name) {
                     if (!_this.fields[name].isValid()) {
-                        (res.errors || (res.errors = [])).concat(_this.fields[name].getInvalidRules());
+                        res.errors = (res.errors || []).concat(_this.fields[name].getInvalidRules());
                     }
                 });
             }

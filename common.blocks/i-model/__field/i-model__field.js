@@ -261,9 +261,7 @@
          * @returns {array}
          */
         getInvalidRules: function() {
-            var res = this.validate();
-
-            return res.invalidRules;
+            return this.validate().invalidRules;
         },
 
         /**
