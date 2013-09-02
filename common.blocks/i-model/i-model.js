@@ -444,11 +444,11 @@
                 res = {};
 
             if (name) {
-                if (!this.fields[name].isValid()) res.errors = this.fields[name].validate();
+                if (!this.fields[name].isValid()) res.errors = this.fields[name].getInvalidRules();
             } else {
                 $.each(this.fieldsDecl, function(name) {
                     if (!_this.fields[name].isValid()) {
-                        (res.errors || (res.errors = [])).concat(_this.fields[name].validate());
+                        (res.errors || (res.errors = [])).concat(_this.fields[name].getInvalidRules());
                     }
                 });
             }

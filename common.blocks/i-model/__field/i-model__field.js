@@ -257,6 +257,16 @@
         },
 
         /**
+         * Возращает массив со сведениями о непрошедшей валидации
+         * @returns {array}
+         */
+        getInvalidRules: function() {
+            var res = this.validate();
+
+            return res.invalidRules;
+        },
+
+        /**
          * Общие правила валидации
          * @private
          */
