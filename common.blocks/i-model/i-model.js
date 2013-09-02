@@ -80,27 +80,15 @@
 
             this
                 .on('field-init', function(e, data) {
-                    return _this._calcDependsTo(data.field, data);
+                    if (!this.fieldsDecl[data.field].calculate)
+                        return _this._calcDependsTo(data.field, data);
                 })
                 .on('field-change', function(e, data) {
                     return _this._onFieldChange(data.field, data);
                 });
 
             $.each(this.fieldsDecl, function(name, props) {
-                var field = _this.fields[name] = MODEL.FIELD.create(name, props, _this);
-
-                if (props.dependsFrom) {
-                    if (!$.isArray(props.dependsFrom))
-                        props.dependsFrom = [props.dependsFrom];
-
-                    $.each(props.dependsFrom, function(i, dependName) {
-                        var fieldsDecl = _this.fieldsDecl[dependName];
-
-                        fieldsDecl.dependsTo || (fieldsDecl.dependsTo = []);
-                        fieldsDecl.dependsTo.push(name);
-                    });
-                }
-
+                _this.fields[name] = MODEL.FIELD.create(name, props, _this);
             });
 
             data && $.each(this.fields, function(name, field) {
@@ -128,10 +116,19 @@
 
             fieldsDecl && fieldsDecl.dependsTo && $.each(fieldsDecl.dependsTo, function(i, childName) {
                 var fieldDecl = _this.fieldsDecl[childName],
-                    field = _this.fields[childName];
+                    field = _this.fields[childName],
+                    val;
 
-                field && fieldDecl.calculate &&
-                    _this.set(childName, fieldDecl.calculate.call(_this, _this.fields[name].get()), opts);
+                if (field && fieldDecl.calculate && fieldDecl.dependsFrom) {
+                    val = fieldDecl.dependsFrom.length > 1 ? fieldDecl.dependsFrom.reduce(function(res, name) {
+                        res[name] = _this.fields[name].get();
+
+                        return res;
+                    }, {}) : _this.fields[fieldDecl.dependsFrom[0] || fieldDecl.dependsFrom].get();
+
+                    _this.set(childName, fieldDecl.calculate.call(_this, val), opts);
+                }
+
             });
 
             return this;
@@ -148,15 +145,15 @@
 
             var fieldDecl = this.fieldsDecl[name],
                 method = {
-                raw: 'raw',
-                format: 'format',
-                formatted: 'format',
-                get: 'get'
-            }[type];
+                    raw: 'raw',
+                    format: 'format',
+                    formatted: 'format',
+                    get: 'get'
+                }[type];
 
             if (this.hasField(name) && method) {
-                if (fieldDecl.calculate) // fixme: вызывать calculate только по изменению связанных полей
-                    this.set(name, fieldDecl.calculate.call(this));
+                if (fieldDecl.calculate && !fieldDecl.dependsFrom)
+                    return fieldDecl.calculate.call(this);
 
                 return this.fields[name][method]();
             }
@@ -313,10 +310,12 @@
          * @returns {Object}
          */
         toJSON: function() {
-            var res = {};
+            var res = {},
+                _this = this;
 
             $.each(this.fields, function(fieldName, field) {
-                res[fieldName] = field.toJSON();
+                if (!_this.fieldsDecl[fieldName].internal)
+                    res[fieldName] = field.toJSON();
             });
 
             return res;
@@ -404,7 +403,7 @@
          */
         _onFieldChange: function(name, opts) {
             if (this.changed.indexOf(name) == -1) this.changed.push(name);
-            this._calcDependsTo(name, opts);
+            this.fieldsDecl[name].calculate || this._calcDependsTo(name, opts);
             this.fireChange(opts);
 
             return this;
@@ -488,9 +487,10 @@
          * @param {String} decl.model|decl.name
          * @param {String} [decl.baseModel]
          * @param {{
-         *     XXX: {String|Number}
+         *     XXX: {String|Number},
          *     XXX: {
          *         {String} [type] тип поля
+         *         {Boolean} [internal] внутреннее поле
          *         {*|Function} [default] дефолтное значение
          *         {*|Function} [value] начанольное значение
          *         {Object|Function} [validation] ф-ия конструктор объекта валидации или он сам
@@ -517,14 +517,64 @@
                 if (!MODEL.models[decl.baseModel])
                     throw('baseModel "' + decl.baseModel + '" for "' + decl.model + '" is undefined');
 
-                fields = $.extend(true, fields, MODEL.decls[decl.baseModel]);
+                fields = $.extend(true, {}, MODEL.decls[decl.baseModel], fields);
             }
 
             MODEL.models[decl.model] = {};
             MODEL.decls[decl.model] = fields;
+
+            MODEL._buildDeps(fields, decl.model);
+
             // todo: реализовать возможность задавать статические свойства модели
 
             return this;
+        },
+
+        /**
+         * Устанавливает связи между зависимыми полями
+         * @param {Object} fieldDecl декларация полей
+         * @param {String} modelName имя модели
+         * @private
+         */
+        _buildDeps: function(fieldDecl, modelName) {
+            var fieldNames = Object.keys(fieldDecl),
+                deps = {};
+
+            function pushDeps(fields, toPushDeps) {
+                fields.forEach(function(field) {
+                    if (!fieldDecl[field])
+                        throw Error('in model "' + modelName + '" depended field "' + field +'" is not declared');
+                    if (toPushDeps.indexOf(field) !== -1)
+                        throw Error('in model "' + modelName + '" circle fields dependence: ' +
+                            toPushDeps.concat(field).join(' -> '));
+
+                    var fieldDeps = (deps[field] || (deps[field] = []));
+
+                    fieldDeps.push.apply(fieldDeps, toPushDeps.filter(function(name) {
+                        return fieldDeps.indexOf(name) === -1
+                    }));
+
+                    fieldDecl[field].dependsFrom &&
+                        pushDeps(fieldDecl[field].dependsFrom, toPushDeps.concat(field));
+                });
+            }
+
+            fieldNames.forEach(function(fieldName) {
+                var field = fieldDecl[fieldName];
+
+                if (field.dependsFrom && !$.isArray(field.dependsFrom))
+                    field.dependsFrom = [field.dependsFrom];
+
+                deps[fieldName] || field.dependsFrom && pushDeps(field.dependsFrom, [fieldName]);
+            });
+
+            fieldNames.forEach(function(fieldName) {
+                if (deps[fieldName])
+                    fieldDecl[fieldName].dependsTo = deps[fieldName].sort(function(a, b) {
+                        return deps[b] && (deps[b].indexOf(a) != -1 ? 1 : -1);
+                    });
+            });
+
         },
 
         /**
@@ -602,7 +652,7 @@
             if (!MODEL.decls[name])
                 throw('model "' + name + '" is not declared');
 
-            if (!dropCache && modelsCacheByName && modelsCacheByName[path]) return modelsCacheByName[path];
+            if (!dropCache && modelsCacheByName && modelsCacheByName[path]) return modelsCacheByName[path].slice();
 
             for (var ip = 0, np = paths.length; ip < np; ip++) {
                 var pathRegexp = MODEL._getPathRegexp(paths[ip]);

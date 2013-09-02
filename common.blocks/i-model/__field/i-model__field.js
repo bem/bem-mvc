@@ -103,7 +103,7 @@
          * @returns {BEM.MODEL.FIELD}
          */
         set: function(value, opts) {
-            if (this.isEqual(value) && !(opts && opts.isInit)) return this;
+            if (!(opts && opts.isInit) && this.isEqual(value)) return this;
 
             return this._set(value, opts);
         },
