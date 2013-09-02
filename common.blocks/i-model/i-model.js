@@ -441,14 +441,19 @@
          */
         validate: function(name) {
             var _this = this,
-                res = {};
+                res = {},
+                fieldRes;
 
             if (name) {
-                if (!this.fields[name].isValid()) res.errorFields = [name];
+                var fieldRes = this.fields[name].isValid();
+
+                if (!fieldRes) res = fieldRes;
             } else {
                 $.each(this.fieldsDecl, function(name) {
-                    if (!_this.fields[name].isValid()) {
-                        (res.errorFields || (res.errorFields = [])).push(name);
+                    var fieldRes = _this.fields[name].isValid();
+
+                    if (!fieldRes) {
+                        res = (res || []).concat(fieldRes);
                     }
                 });
             }

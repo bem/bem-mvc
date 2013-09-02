@@ -309,10 +309,12 @@
                 if (getOrExec(validation.validate)) {
                     return true;
                 } else {
-                    this._trigger('error', {
+                    var invalidRule = {
                         text: getOrExec(validation.text)
-                    });
-                    return { valid: false };
+                    };
+
+                    this._trigger('error', invalidRule);
+                    return { valid: false, invalidRules: [invalidRule]};
                 }
             }
 
@@ -321,17 +323,19 @@
                     ruleParams = getOrExec(ruleParams);
                     ruleParams = typeof ruleParams === 'object' ? ruleParams : { value: ruleParams };
 
-                    var rule = $.extend({}, _this._validationRules[ruleName], ruleParams);
+                    var rule = $.extend({}, _this._validationRules[ruleName], ruleParams),
+                        invalideRule;
 
                     if (getOrExec(rule.needToValidate) === false) return true;
 
                     if (!getOrExec(rule.validate, getOrExec(rule.value))) {
-                        invalidRules.push(ruleName);
-
-                        _this.trigger('error', {
+                        invalideRule = {
                             rule: ruleName,
                             text: getOrExec(rule.text)
-                        });
+                        };
+                        invalidRules.push(invalideRule);
+
+                        _this.trigger('error', invalideRule);
                     }
                 });
             }
