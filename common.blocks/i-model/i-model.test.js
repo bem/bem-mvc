@@ -1,5 +1,34 @@
 BEM.TEST.decl('i-model', function() {
 
+    describe('create model', function() {
+        BEM.MODEL.decl('model-to-create', {
+            f1: 'string',
+            f2: 'string'
+        });
+
+        it('should create model without params', function() {
+            expect(BEM.MODEL
+                .create('model-to-create')
+                .toJSON()).toEqual({
+                    f1: '',
+                    f2: ''
+                });
+        });
+
+        it('should create model with params', function() {
+            expect(BEM.MODEL
+                .create('model-to-create', {
+                    f1: 'F1',
+                    f2: 'F2'
+                })
+                .toJSON()).toEqual({
+                    f1: 'F1',
+                    f2: 'F2'
+                });
+        });
+
+    });
+
     // BASE MODEL
     describe('base model', function() {
         BEM.MODEL.decl('base-model', {

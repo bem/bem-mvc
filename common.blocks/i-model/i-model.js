@@ -600,15 +600,8 @@
 
             // выставляем id из поля типа 'id' или из декларации
             $.each(decl, function(name, field) {
-                if (field.type === 'id') {
-                    var id = data[name];
-
-                    if (id === undefined)
-                        modelParams.id = data[name] = $.identify();
-                    else
-                        modelParams.id = id;
-                }
-
+                if (field.type === 'id')
+                    modelParams.id = (data && data[name]) || $.identify();
             });
 
             if (modelParams.id === undefined)

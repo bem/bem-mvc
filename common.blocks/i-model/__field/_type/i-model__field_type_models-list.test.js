@@ -15,6 +15,21 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
 
         // для корректной работы тестов необходимо вызывать destruct у модели после каждого теста
 
+        it('should create model and set data', function() {
+            var model = BEM.MODEL.create('model-list-type-field');
+
+            expect(model.toJSON()).toEqual({ list: [] });
+
+            model.get('list').add({ id: 1, f: 'f', n: 3 });
+            expect(model.toJSON()).toEqual({ list: [{ id: 1, f: 'f', n: 3 }] });
+
+            model.set('list', [{ id: 111, f: 'fff', n: 333 }]);
+            expect(model.toJSON()).toEqual({ list: [{ id: 111, f: 'fff', n: 333 }] });
+
+            model.destruct();
+            expect(BEM.MODEL.get('list-inner-model').length).toEqual(0);
+        });
+
         it('should create inner models', function() {
             var model = BEM.MODEL.create('model-list-type-field', {
                     list: [{ id: 1, f: 'f1' }, { id: 2, f: 'f2' }]
@@ -32,7 +47,7 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             expect(onFieldChange).toHaveBeenCalled();
             setTimeout(function() { // событие на модели триггериться позже
                 expect(onModelChange).toHaveBeenCalled();
-            }, 100);
+            }, 1000);
 
             model.destruct();
             expect(BEM.MODEL.get('list-inner-model').length).toEqual(0);

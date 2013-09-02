@@ -12,7 +12,7 @@
 
             this._value = this._createValueObject(this);
 
-            this.__base(data);
+            this.__base(data || this.params['default']);
 
             return this;
         },
