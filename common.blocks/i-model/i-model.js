@@ -453,7 +453,7 @@
                 });
             }
 
-            if (!res.errorFields)
+            if (!res.errors)
                 res.valid = true;
             else
                 this.trigger('error', res);
