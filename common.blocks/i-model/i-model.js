@@ -444,11 +444,15 @@
                 res = {};
 
             if (name) {
-                if (!this.fields[name].isValid()) res.errors = this.fields[name].getInvalidRules();
+                if (!this.fields[name].isValid()) {
+                    res.errorFields = [name];
+                    res.errors = this.fields[name].validate().invalidRules;
+                }
             } else {
                 $.each(this.fieldsDecl, function(name) {
                     if (!_this.fields[name].isValid()) {
-                        res.errors = (res.errors || []).concat(_this.fields[name].getInvalidRules());
+                        (res.errorFields || (res.errorFields = [])).push(name);
+                        res.errors = (res.errors || []).concat(_this.fields[name].validate().invalidRules);
                     }
                 });
             }

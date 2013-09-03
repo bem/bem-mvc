@@ -257,14 +257,6 @@
         },
 
         /**
-         * Возращает массив со сведениями о непрошедшей валидации
-         * @returns {array}
-         */
-        getInvalidRules: function() {
-            return this.validate().invalidRules;
-        },
-
-        /**
          * Общие правила валидации
          * @private
          */
@@ -332,18 +324,18 @@
                     ruleParams = typeof ruleParams === 'object' ? ruleParams : { value: ruleParams };
 
                     var rule = $.extend({}, _this._validationRules[ruleName], ruleParams),
-                        invalideRule;
+                        invalidRule;
 
                     if (getOrExec(rule.needToValidate) === false) return true;
 
                     if (!getOrExec(rule.validate, getOrExec(rule.value))) {
-                        invalideRule = {
+                        invalidRule = {
                             rule: ruleName,
                             text: getOrExec(rule.text)
                         };
-                        invalidRules.push(invalideRule);
+                        invalidRules.push(invalidRule);
 
-                        _this.trigger('error', invalideRule);
+                        _this.trigger('error', invalidRule);
                     }
                 });
             }
