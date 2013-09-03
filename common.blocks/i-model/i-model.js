@@ -452,7 +452,7 @@
                 }
             } else {
                 $.each(this.fieldsDecl, function(name) {
-                    validateRes = this.fields[name].validate();
+                    validateRes = _this.fields[name].validate();
                     if (validateRes !== true) {
                         (res.errorFields || (res.errorFields = [])).push(name);
                         res.errors = (res.errors || []).concat(validateRes.invalidRules);
