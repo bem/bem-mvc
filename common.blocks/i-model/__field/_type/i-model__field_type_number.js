@@ -13,7 +13,16 @@
             // перед преобразованием, необходимо часто вводимые символы на точку
             value = (new Number(value.toString().replace(/[//,.юЮбБ<>]/gi, '.'))).valueOf();
 
-            return isNaN(value) ? this._default : value;
+            return isNaN(value) ? NaN : value;
+        },
+
+        /**
+         * Поверяет равно ли текущее значение поля значению переменной value
+         * @param {*} value
+         * @returns {Boolean}
+         */
+        isEqual: function(value) {
+            return value === this.raw() || this.isEmpty() && this.checkEmpty(value);
         },
 
         /**
