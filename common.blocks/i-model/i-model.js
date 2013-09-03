@@ -441,18 +441,21 @@
          */
         validate: function(name) {
             var _this = this,
-                res = {};
+                res = {},
+                validateRes;
 
             if (name) {
-                if (!this.fields[name].isValid()) {
+                validateRes = this.fields[name].validate();
+                if (validateRes !== true) {
                     res.errorFields = [name];
-                    res.errors = this.fields[name].validate().invalidRules;
+                    res.errors = validateRes.invalidRules;
                 }
             } else {
                 $.each(this.fieldsDecl, function(name) {
-                    if (!_this.fields[name].isValid()) {
+                    validateRes = this.fields[name].validate();
+                    if (validateRes !== true) {
                         (res.errorFields || (res.errorFields = [])).push(name);
-                        res.errors = (res.errors || []).concat(_this.fields[name].validate().invalidRules);
+                        res.errors = (res.errors || []).concat(validateRes.invalidRules);
                     }
                 });
             }
