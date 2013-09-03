@@ -120,7 +120,8 @@
             this._value = (this.params.preprocess || this._preprocess).call(this, this._raw);
             this._formatted = (this.params.format || this._format).call(this, this._value, this.params.formatOptions || {});
 
-            this._trigger(opts && opts.isInit ? 'init' : 'change', $.extend({ value: this._value }, opts));
+            opts && (opts.value = this._value);
+            this._trigger(opts && opts.isInit ? 'init' : 'change', opts);
             
             return this;
         },
