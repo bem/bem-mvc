@@ -441,19 +441,26 @@
          */
         validate: function(name) {
             var _this = this,
-                res = {};
+                res = {},
+                validateRes;
 
             if (name) {
-                if (!this.fields[name].isValid()) res.errorFields = [name];
+                validateRes = this.fields[name].validate();
+                if (validateRes !== true) {
+                    res.errorFields = [name];
+                    res.errors = validateRes.invalidRules;
+                }
             } else {
                 $.each(this.fieldsDecl, function(name) {
-                    if (!_this.fields[name].isValid()) {
+                    validateRes = this.fields[name].validate();
+                    if (validateRes !== true) {
                         (res.errorFields || (res.errorFields = [])).push(name);
+                        res.errors = (res.errors || []).concat(validateRes.invalidRules);
                     }
                 });
             }
 
-            if (!res.errorFields)
+            if (!res.errors)
                 res.valid = true;
             else
                 this.trigger('error', res);
