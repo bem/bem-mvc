@@ -13,7 +13,7 @@
             // перед преобразованием, необходимо часто вводимые символы на точку
             value = (new Number(value.toString().replace(/[//,.юЮбБ<>]/gi, '.'))).valueOf();
 
-            return isNaN(value) ? this._default : value;
+            return isNaN(value) ? NaN : value;
         },
 
         /**
@@ -25,6 +25,16 @@
         _format: function(value) {
             return (value || 0).toFixed(2);
         },
+
+        /**
+         * Поверяет равно ли текущее значение поля значению переменной value
+         * @param {*} value значение для сравнения с текущим значением
+         * @returns {boolean}
+         */
+        isEqual: function(value) {
+            return value === this.raw() || this.isEmpty() && this.checkEmpty(value);
+        },
+
 
         /**
          * Правила валидации для поля типа number
@@ -55,7 +65,14 @@
                     validate: function(curValue, ruleValue, name) {
                         return curValue >= ruleValue;
                     }
+                },
+                isNumber: {
+                    value: true,
+                    validate: function(curValue, ruleValue, name) {
+                        return isNaN(curValue) !== ruleValue;
+                    }
                 }
+
             })
         }
 
