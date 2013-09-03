@@ -55,7 +55,14 @@
                     validate: function(curValue, ruleValue, name) {
                         return curValue >= ruleValue;
                     }
+                },
+                type: {
+                    value: true,
+                    validate: function(curValue) {
+                        return !isNaN(curValue);
+                    }
                 }
+
             })
         }
 
