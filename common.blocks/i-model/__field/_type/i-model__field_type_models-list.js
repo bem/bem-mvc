@@ -84,10 +84,9 @@
                     if (index !== undefined) {
                         var model = list.getByIndex(index);
 
+                        field._raw.splice(index, 1);
                         field.trigger('remove', $.extend(opts, { model: model }));
                         model.destruct();
-
-                        field._raw.splice(index, 1);
 
                         field._trigger('change', opts);
                     }

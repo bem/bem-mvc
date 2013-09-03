@@ -91,12 +91,20 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
 
         it('should remove by id models', function() {
             var model = BEM.MODEL.create('model-list-type-field', {
-                    list: [{ id: 1, f: 'f1' }, { id: 2, f: 'f2' }]
+                    list: [{ id: 1, f: 'f1' }, { id: 2, f: 'f2' }, { id: 3, f: 'f3' }]
                 });
 
             model.get('list').remove(2);
+            expect(BEM.MODEL.get('list-inner-model').length).toEqual(2);
+            expect(model.get('list').length()).toEqual(2);
+
+            model.get('list').remove(1);
             expect(BEM.MODEL.get('list-inner-model').length).toEqual(1);
             expect(model.get('list').length()).toEqual(1);
+
+            model.get('list').remove(3);
+            expect(BEM.MODEL.get('list-inner-model').length).toEqual(0);
+            expect(model.get('list').length()).toEqual(0);
 
             model.destruct();
             expect(BEM.MODEL.get('list-inner-model').length).toEqual(0);
