@@ -12,18 +12,10 @@
 
             // перед преобразованием, необходимо часто вводимые символы на точку
             value = (new Number(value.toString().replace(/[//,.юЮбБ<>]/gi, '.'))).valueOf();
-
-            return isNaN(value) ? NaN : value;
+            //Если было введено не число, то preprocess вернет NaN
+            return value;
         },
 
-        /**
-         * Поверяет равно ли текущее значение поля значению переменной value
-         * @param {*} value
-         * @returns {Boolean}
-         */
-        isEqual: function(value) {
-            return value === this.raw() || this.isEmpty() && this.checkEmpty(value);
-        },
 
         /**
          * Форматированное значение содержит два десятичных знака
