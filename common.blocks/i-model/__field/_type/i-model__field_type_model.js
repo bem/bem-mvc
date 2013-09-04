@@ -48,13 +48,20 @@
 
         /**
          * Проапдейтить модель данными
-         * @param {Object} data
+         * @param {Object|BEM.MODEL} data
          * @param {Object} opts
          * @returns {BEM.MODEL.FIELD}
          * @private
          */
         _set: function(data, opts) {
-            this._value.update(data);
+            if (data instanceof MODEL) {
+                if (data.name === this.params.modelName)
+                    this._value = data;
+                else
+                    throw new Error('incorrect model "' + data.name +  '", expected model "' + this.params.modelName +  '"');
+            } else {
+                this._value.update(data);
+            }
 
             this._trigger(opts && opts.isInit ? 'init': 'change', opts);
 
