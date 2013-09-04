@@ -31,6 +31,27 @@ BEM.TEST.decl('i-model__field_type_model', function() {
             expect(onModelChange).toHaveBeenCalled();
         });
 
+        it('should set model as value', function() {
+            var model = BEM.MODEL.create('model-type-field', {
+                    f: {
+                        innerF: 'str'
+                    }
+                }),
+                modelToSet = BEM.MODEL.create({ name: 'inner-model', parentModel: model }, { innerF: 'inner2' }),
+
+                onFieldChange = jasmine.createSpy('onFieldChange'),
+                onModelChange = jasmine.createSpy('onModelChange');
+
+            model.on('f', 'change', onFieldChange);
+            model.on('change', onModelChange);
+
+            model.set('f', modelToSet);
+
+            expect(model.get('f').get('innerF')).toEqual('inner2');
+            expect(onFieldChange).toHaveBeenCalled();
+            expect(onModelChange).toHaveBeenCalled();
+        });
+
         it('should change inner value', function() {
             var model = BEM.MODEL.create('model-type-field', {
                     f: {
