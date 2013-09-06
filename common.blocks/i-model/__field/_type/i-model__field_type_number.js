@@ -12,9 +12,10 @@
 
             // перед преобразованием, необходимо часто вводимые символы на точку
             value = (new Number(value.toString().replace(/[//,.юЮбБ<>]/gi, '.'))).valueOf();
-
-            return isNaN(value) ? this._default : value;
+            //Если было введено не число, то preprocess вернет NaN
+            return value;
         },
+
 
         /**
          * Форматированное значение содержит два десятичных знака
@@ -55,7 +56,14 @@
                     validate: function(curValue, ruleValue, name) {
                         return curValue >= ruleValue;
                     }
+                },
+                type: {
+                    value: true,
+                    validate: function(curValue) {
+                        return !isNaN(curValue);
+                    }
                 }
+
             })
         }
 
