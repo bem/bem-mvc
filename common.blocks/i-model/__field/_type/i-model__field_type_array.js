@@ -4,6 +4,15 @@
         _default: [],
 
         /**
+         * Поверяет равно ли текущее значение поля значению переменной value
+         * @param {*} value значение для сравнения с текущим значением
+         * @returns {boolean}
+         */
+        isEqual: function(value) {
+            return value === this.get() || this.isEmpty() && this.checkEmpty(value);
+        },
+
+        /**
          * Возвращает копию исходного массива, чтобы исключить возможность
          * изменения внутреннего свойства
          * @returns {Array}
