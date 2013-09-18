@@ -16,17 +16,17 @@ DOM.decl({ block: 'glue-field_type_checkbox', baseBlock: 'glue-field' }, {
         this.__base.apply(this, arguments);
 
         this.checkbox.on('change', function() {
-            this.model.set(this.name, this.checkbox.isChecked());
+            this.model.set(this.name, this.checkbox.getMod('checked'));
         }, this);
     },
 
     set: function(value) {
         this.__base();
-        this.checkbox.setMod('checked', value ? 'yes' : '');
+        this.checkbox.setMod('checked', value);
     },
 
     onFieldChange: function(e, data) {
-        this.checkbox.getMod('focused') !== 'yes' && this.checkbox.setMod('checked', data.value ? 'yes' : '');
+        this.checkbox.getMod('focused') !== 'true' && this.checkbox.setMod(data.value);
     }
 
 });

@@ -16,20 +16,20 @@ DOM.decl({ block: 'glue-field_type_input', baseBlock: 'glue-field' }, {
 
         this.input
             .on('change', function() {
-                this.model.set(this.name, this.input.val());
+                this.model.set(this.name, this.input.getVal());
             }, this)
             .on('blur', function() {
-                this.input.val(this.model.get(this.name, 'format'));
+                this.input.setVal(this.model.get(this.name, 'format'));
             }, this);
     },
 
     set: function(value) {
         this.__base();
-        this.input.val(value);
+        this.input.setVal(value);
     },
 
     onFieldChange: function(e, data) {
-        this.input.getMod('focused') !== 'yes' && this.input.val(data.value);
+        this.input.getMod('focused') !== 'yes' && this.input.setVal(data.value);
     }
 
 });
