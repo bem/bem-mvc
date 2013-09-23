@@ -72,6 +72,18 @@
          */
         checkEmpty: function(value) {
             return $.isEmptyObject(value) || value.length == 0;
+        },
+
+        /**
+         * Проверяет, что занчение поля равно переданному значению по содержимому
+         * @param value
+         */
+        isEqual: function(value) {
+            var val = this._raw;
+
+            return Array.isArray(value) && value.length === val.length && value.every(function(item, i) {
+                return val[i] === item;
+            });
         }
 
     });

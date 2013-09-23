@@ -7,6 +7,15 @@ BEM.TEST.decl('i-model__field_type_array', function() {
             }
         });
 
+        it('should check isChanged', function() {
+            var model = BEM.MODEL.create('array-type-field', { f: [1, 2, 3] });
+
+            expect(model.isChanged('f')).toEqual(false);
+
+            model.set('f', [1, 2, 3, 4]);
+            expect(model.isChanged('f')).toEqual(true);
+        });
+
         it('should unshift values', function() {
             var model = BEM.MODEL.create('array-type-field', { f: [1, 2, 3] }),
 
