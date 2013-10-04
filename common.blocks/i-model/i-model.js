@@ -73,7 +73,7 @@
         _initFields: function(data) {
             var name = this.name,
                 decl = MODEL.decls[name],
-                _this = this;v
+                _this = this;
 
             this.fieldsDecl = decl;
             this.fields = {};
