@@ -73,7 +73,7 @@
         _initFields: function(data) {
             var name = this.name,
                 decl = MODEL.decls[name],
-                _this = this;
+                _this = this;v
 
             this.fieldsDecl = decl;
             this.fields = {};
@@ -456,6 +456,7 @@
                     if (validateRes !== true) {
                         (res.errorFields || (res.errorFields = [])).push(name);
                         res.errors = (res.errors || []).concat(validateRes.invalidRules);
+                        (res.errorsData || (res.errorsData = {}))[name] = validateRes.invalidRules;
                     }
                 });
             }
