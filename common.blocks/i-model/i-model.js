@@ -456,6 +456,7 @@
                     if (validateRes !== true) {
                         (res.errorFields || (res.errorFields = [])).push(name);
                         res.errors = (res.errors || []).concat(validateRes.invalidRules);
+                        (res.errorsData || (res.errorsData = {}))[name] = validateRes.invalidRules;
                     }
                 });
             }
