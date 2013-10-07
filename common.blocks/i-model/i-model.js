@@ -641,7 +641,7 @@
             if (typeof modelParams == 'string') modelParams = { name: modelParams };
 
             if (!modelParams.id) modelParams.id = ANY_ID;
-            
+
             var name = modelParams.name,
                 modelsByName = MODEL.models[name],
                 models = [],
@@ -698,7 +698,7 @@
             }
 
             if (typeof modelParams == 'string') modelParams = { name: modelParams };
-            
+
             var modelName = modelParams.name,
                 eventPath = MODEL.buildPath(modelParams),
                 triggers = !field ?
@@ -715,7 +715,7 @@
                     ctx: ctx
                 });
             });
-            
+
             MODEL.forEachModel(function() {
                 this.on(field, e, fn, ctx);
             }, modelParams, true);
@@ -967,7 +967,7 @@
          */
         forEachModel: function(callback, modelParams, dropCache) {
             var modelsByPath = MODEL.get(modelParams, dropCache);
-            
+
             if (Array.isArray(modelsByPath))
                 for (var i = 0, n = modelsByPath.length; i < n; i++)
                     if (callback.call(modelsByPath[i]) === false) break;
