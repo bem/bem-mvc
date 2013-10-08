@@ -1,4 +1,6 @@
 BEM.TEST.decl('i-glue-field_type_checkbox', function() {
+    if (!BEM.blocks['checkbox']) return;
+
     BEM.MODEL.decl('glue-field-checkbox-model', {
         num: 'number',
         str: 'string',

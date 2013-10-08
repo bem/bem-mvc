@@ -1,4 +1,6 @@
 BEM.TEST.decl('i-glue-field_type_select', function() {
+    if (!BEM.blocks['select']) return;
+
     BEM.MODEL.decl('glue-field-select-model', {
         num: 'number',
         str: 'string'
