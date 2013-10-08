@@ -55,10 +55,13 @@
          */
         _set: function(data, opts) {
             if (data instanceof MODEL) {
-                if (data.name === this.params.modelName)
+                if (data.name === this.params.modelName) {
+                    this._value.destruct();
                     this._value = data;
-                else
-                    throw new Error('incorrect model "' + data.name +  '", expected model "' + this.params.modelName +  '"');
+                } else {
+                    throw new Error('incorrect model "' + data.name +  '", expected model "' +
+                        this.params.modelName +  '"');
+                }
             } else {
                 this._value.update(data);
             }
@@ -114,6 +117,13 @@
                     }
                 }
             });
+        },
+
+        /**
+         * Уничтожает поле и модель этого поля
+         */
+        destruct: function() {
+            this._value.destruct();
         }
 
     });

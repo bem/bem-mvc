@@ -46,6 +46,7 @@ BEM.TEST.decl('i-model__field_type_model', function() {
 
             model.destruct();
             expect(BEM.MODEL.get('model-type-field').length).toEqual(0);
+            expect(BEM.MODEL.get('inner-model').length).toEqual(0);
         });
 
         it('should set model as value', function() {
@@ -70,6 +71,7 @@ BEM.TEST.decl('i-model__field_type_model', function() {
 
             model.destruct();
             expect(BEM.MODEL.get('model-type-field').length).toEqual(0);
+            expect(BEM.MODEL.get('inner-model').length).toEqual(0);
         });
 
         it('should change inner value', function() {
@@ -93,6 +95,7 @@ BEM.TEST.decl('i-model__field_type_model', function() {
 
             model.destruct();
             expect(BEM.MODEL.get('model-type-field').length).toEqual(0);
+            expect(BEM.MODEL.get('inner-model').length).toEqual(0);
         });
 
         it('should serialize data', function() {
@@ -110,6 +113,7 @@ BEM.TEST.decl('i-model__field_type_model', function() {
 
             model.destruct();
             expect(BEM.MODEL.get('model-type-field').length).toEqual(0);
+            expect(BEM.MODEL.get('inner-model').length).toEqual(0);
         });
 
         it('should clear data', function() {
@@ -125,6 +129,7 @@ BEM.TEST.decl('i-model__field_type_model', function() {
 
             model.destruct();
             expect(BEM.MODEL.get('model-type-field').length).toEqual(0);
+            expect(BEM.MODEL.get('inner-model').length).toEqual(0);
         });
 
         it('should fix and rollback data', function() {
@@ -145,6 +150,7 @@ BEM.TEST.decl('i-model__field_type_model', function() {
 
             model.destruct();
             expect(BEM.MODEL.get('model-type-field').length).toEqual(0);
+            expect(BEM.MODEL.get('inner-model').length).toEqual(0);
         });
 
         it('should check validation', function() {
@@ -167,6 +173,7 @@ BEM.TEST.decl('i-model__field_type_model', function() {
 
             model.destruct();
             expect(BEM.MODEL.get('model-type-field').length).toEqual(0);
+            expect(BEM.MODEL.get('inner-model').length).toEqual(0);
         });
 
     });
