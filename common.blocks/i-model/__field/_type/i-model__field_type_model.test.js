@@ -58,6 +58,7 @@ BEM.TEST.decl('i-model__field_type_model', function() {
                 modelToSet = BEM.MODEL.create({ name: 'inner-model', parentModel: model }, { innerF: 'inner2' }),
 
                 onFieldChange = jasmine.createSpy('onFieldChange'),
+                onInnerFieldChange = jasmine.createSpy('onInnerFieldChange'),
                 onModelChange = jasmine.createSpy('onModelChange');
 
             model.on('f', 'change', onFieldChange);
@@ -68,6 +69,10 @@ BEM.TEST.decl('i-model__field_type_model', function() {
             expect(model.get('f').get('innerF')).toEqual('inner2');
             expect(onFieldChange).toHaveBeenCalled();
             expect(onModelChange).toHaveBeenCalled();
+
+            model.on('f', 'change', onInnerFieldChange);
+            modelToSet.set('innerF', 'bla');
+            expect(onInnerFieldChange).toHaveBeenCalled();
 
             model.destruct();
             expect(BEM.MODEL.get('model-type-field').length).toEqual(0);

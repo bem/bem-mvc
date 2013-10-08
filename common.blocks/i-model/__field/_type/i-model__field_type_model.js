@@ -9,11 +9,33 @@
         initData: function(data) {
             this._value = MODEL.create({ name: this.params.modelName, patentMode: this.model }, data);
 
-            this._value.on('change', function() {
-                this._trigger('change', { fields: this._value.changed });
-            }, this);
+            this._initEvents();
 
             return this;
+        },
+
+        /**
+         * Инициализирует события на модели
+         * @private
+         */
+        _initEvents: function() {
+            this._value.on('change', this._onInnerModelChange, this);
+        },
+
+        /**
+         * Отписывается от событий на модели
+         * @private
+         */
+        _unBindEvents: function() {
+            this._value.un('change', this._onInnerModelChange, this);
+        },
+
+        /**
+         * Обрабатывает изменения модели, генерирует событие на родительской модели
+         * @private
+         */
+        _onInnerModelChange: function() {
+            this._trigger('change', { fields: this._value.changed });
         },
 
         /**
@@ -56,8 +78,11 @@
         _set: function(data, opts) {
             if (data instanceof MODEL) {
                 if (data.name === this.params.modelName) {
+                    this._unBindEvents();
                     this._value.destruct();
+
                     this._value = data;
+                    this._initEvents();
                 } else {
                     throw new Error('incorrect model "' + data.name +  '", expected model "' +
                         this.params.modelName +  '"');
@@ -123,6 +148,8 @@
          * Уничтожает поле и модель этого поля
          */
         destruct: function() {
+            this._unBindEvents();
+
             this._value.destruct();
         }
 
