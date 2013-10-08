@@ -4,11 +4,25 @@ BEM.TEST.decl('i-model__field_type_model', function() {
         BEM.MODEL.decl('model-type-field', {
             f: {
                 type: 'model',
-                modelName: 'inner-model'
+                modelName: 'inner-model',
+                validation: {
+                    rules: {
+                        deep: true,
+                        required: true
+                    }
+                }
             }
         });
         BEM.MODEL.decl('inner-model', {
-            innerF: 'string'
+            innerF: {
+                type: 'string',
+                validation: {
+                    rules: {
+                        required: true,
+                        maxlength: 10
+                    }
+                }
+            }
         });
 
         it('should change values', function() {
@@ -29,6 +43,9 @@ BEM.TEST.decl('i-model__field_type_model', function() {
             expect(model.get('f').get('innerF')).toEqual('new str');
             expect(onFieldChange).toHaveBeenCalled();
             expect(onModelChange).toHaveBeenCalled();
+
+            model.destruct();
+            expect(BEM.MODEL.get('model-type-field').length).toEqual(0);
         });
 
         it('should set model as value', function() {
@@ -50,6 +67,9 @@ BEM.TEST.decl('i-model__field_type_model', function() {
             expect(model.get('f').get('innerF')).toEqual('inner2');
             expect(onFieldChange).toHaveBeenCalled();
             expect(onModelChange).toHaveBeenCalled();
+
+            model.destruct();
+            expect(BEM.MODEL.get('model-type-field').length).toEqual(0);
         });
 
         it('should change inner value', function() {
@@ -70,6 +90,9 @@ BEM.TEST.decl('i-model__field_type_model', function() {
             expect(model.get('f').get('innerF')).toEqual('new str');
             expect(onFieldChange).toHaveBeenCalled();
             expect(onModelChange).toHaveBeenCalled();
+
+            model.destruct();
+            expect(BEM.MODEL.get('model-type-field').length).toEqual(0);
         });
 
         it('should serialize data', function() {
@@ -84,6 +107,9 @@ BEM.TEST.decl('i-model__field_type_model', function() {
                     innerF: 'str'
                 }
             });
+
+            model.destruct();
+            expect(BEM.MODEL.get('model-type-field').length).toEqual(0);
         });
 
         it('should clear data', function() {
@@ -96,6 +122,9 @@ BEM.TEST.decl('i-model__field_type_model', function() {
             model.clear();
 
             expect(model.isEmpty()).toEqual(true);
+
+            model.destruct();
+            expect(BEM.MODEL.get('model-type-field').length).toEqual(0);
         });
 
         it('should fix and rollback data', function() {
@@ -113,6 +142,31 @@ BEM.TEST.decl('i-model__field_type_model', function() {
 
             model.rollback();
             expect(model.get('f').get('innerF')).toEqual('correct str');
+
+            model.destruct();
+            expect(BEM.MODEL.get('model-type-field').length).toEqual(0);
+        });
+
+        it('should check validation', function() {
+            var model = BEM.MODEL.create('model-type-field');
+
+            expect(model
+                .set('f', { innerF: 'string' })
+                .isValid())
+                .toBe(true);
+
+            expect(model
+                .set('f', { innerF: 'loooooooooong string' })
+                .isValid())
+                .toBe(false);
+
+            expect(model
+                .clear('f')
+                .isValid())
+                .toBe(false);
+
+            model.destruct();
+            expect(BEM.MODEL.get('model-type-field').length).toEqual(0);
         });
 
     });

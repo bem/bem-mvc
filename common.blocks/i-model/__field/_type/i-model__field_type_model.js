@@ -93,6 +93,27 @@
          */
         toJSON: function() {
             return this._value.toJSON();
+        },
+
+        /**
+         * Правила валидиции для поля типа model
+         * @returns {Object}
+         * @private
+         */
+        _getValidationRules: function() {
+            var field = this;
+
+            return $.extend(this._commonRules(), {
+                /**
+                 * валидация вложенной модели
+                 */
+                deep: {
+                    value: true,
+                    validate: function(curValue, ruleValue, name) {
+                        return field._value.isValid() == ruleValue
+                    }
+                }
+            });
         }
 
     });

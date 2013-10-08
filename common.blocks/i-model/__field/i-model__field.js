@@ -315,7 +315,7 @@
                     };
 
                     this._trigger('error', invalidRule);
-                    return { valid: false, invalidRules: [invalidRule]};
+                    return { valid: false, invalidRules: [invalidRule] };
                 }
             }
 
@@ -336,7 +336,7 @@
                         };
                         invalidRules.push(invalidRule);
 
-                        _this.trigger('error', invalidRule);
+                        _this._trigger('error', invalidRule);
                     }
                 });
             }
