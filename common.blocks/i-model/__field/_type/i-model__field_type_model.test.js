@@ -5,6 +5,7 @@ BEM.TEST.decl('i-model__field_type_model', function() {
             f: {
                 type: 'model',
                 modelName: 'inner-model',
+                destruct: true,
                 validation: {
                     rules: {
                         deep: true,
@@ -154,6 +155,24 @@ BEM.TEST.decl('i-model__field_type_model', function() {
             expect(model.get('f').get('innerF')).toEqual('correct str');
 
             model.destruct();
+            expect(BEM.MODEL.get('model-type-field').length).toEqual(0);
+            expect(BEM.MODEL.get('inner-model').length).toEqual(0);
+        });
+
+        it('should not destruct inner model', function() {
+            var model = BEM.MODEL.create('model-type-field', {
+                f: {
+                    innerF: 'str'
+                }
+            }),
+            innerModel = model.get('f'),
+            modelToSet = BEM.MODEL.create({ name: 'inner-model', parentModel: model }, { innerF: 'inner2' });
+
+            model.set('f', modelToSet, { destruct: false });
+            expect(BEM.MODEL.getOne({ name: 'inner-model', id: innerModel.id })).toBeDefined();
+
+            model.destruct();
+            innerModel.destruct();
             expect(BEM.MODEL.get('model-type-field').length).toEqual(0);
             expect(BEM.MODEL.get('inner-model').length).toEqual(0);
         });

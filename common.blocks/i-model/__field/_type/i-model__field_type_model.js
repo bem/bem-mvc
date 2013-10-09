@@ -79,7 +79,7 @@
             if (data instanceof MODEL) {
                 if (data.name === this.params.modelName) {
                     this._unBindEvents();
-                    this._value.destruct();
+                    this.params.destruct && opts.destruct !== false && this._value.destruct();
 
                     this._value = data;
                     this._initEvents();
@@ -150,7 +150,7 @@
         destruct: function() {
             this._unBindEvents();
 
-            this._value.destruct();
+            this.params.destruct && this._value.destruct();
         }
 
     });
