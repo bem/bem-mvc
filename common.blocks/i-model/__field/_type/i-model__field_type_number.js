@@ -15,6 +15,21 @@
 
             return isNaN(value) ? this._default : value;
         },
+        
+        /**
+         * Определяем дефолтные значения для поля
+         * @returns {Object}
+         * @private
+         */
+        _initDefaults: function() {
+            this._default = this.params['default'] || this._default;
+            
+            this._precision = this.params.precision || 2;
+
+            this._validationRules = this._getValidationRules();
+
+            return this;
+        },
 
         /**
          * Форматированное значение содержит два десятичных знака
@@ -23,7 +38,7 @@
          * @private
          */
         _format: function(value) {
-            return (value || 0).toFixed((this.params.precision || 2));
+            return (value || 0).toFixed((this._precision));
         },
 
         /**
