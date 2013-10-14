@@ -38,7 +38,7 @@
          * @private
          */
         _format: function(value) {
-            return (value || 0).toFixed((this._precision));
+            return (value || 0).toFixed(this._precision);
         },
 
         /**
