@@ -23,7 +23,7 @@
          * @private
          */
         _format: function(value) {
-            return (value || 0).toFixed(2);
+            return (value || 0).toFixed((this.params.precision || 2));
         },
 
         /**
