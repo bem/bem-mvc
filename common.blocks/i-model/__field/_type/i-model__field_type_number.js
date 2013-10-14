@@ -22,7 +22,8 @@
          * @private
          */
         _initDefaults: function() {
-            this._default = this.params['default'] || this._default;
+            //0 - это валидное значение для default
+            this._default = this.params['default'] === undefined ? this._default : this.params['default'];
             
             this._precision = this.params.precision === undefined ? 2 : this.params.precision;
 
