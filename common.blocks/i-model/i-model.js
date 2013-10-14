@@ -325,22 +325,24 @@
          * Назначает обработчик события на модель или поле модели
          * @param {String} [field] имя поля
          * @param {String} e имя события
+         * @param {Object} [data] дополнительные данные события
          * @param {Function} fn обработчик события
          * @param {Object} ctx контекст вызова обработчика
          * @returns {BEM.MODEL}
          */
-        on: function(field, e, fn, ctx) {
+        on: function(field, e, data, fn, ctx) {
             if ($.isFunction(e)) {
                 ctx = fn;
-                fn = e;
+                fn = data;
+                data = e;
                 e = field;
                 field = undefined;
             }
-
+            
             !field ?
-                this.__base(e, fn, ctx) :
+                this.__base(e, data, fn, ctx) :
                 field.split(' ').forEach(function(name) {
-                    this.fields[name].on(e, fn, ctx);
+                    this.fields[name].on(e, data, fn, ctx);
                 }, this);
 
             return this;
