@@ -15,6 +15,21 @@
             //Если было введено не число, то preprocess вернет NaN
             return value;
         },
+        
+        /**
+         * Определяем дефолтные значения для поля
+         * @returns {Object}
+         * @private
+         */
+        _initDefaults: function() {
+            this._default = this.params['default'] || this._default;
+            
+            this._precision = this.params.precision === undefined ? 2 : this.params.precision;
+
+            this._validationRules = this._getValidationRules();
+
+            return this;
+        },
 
 
         /**
@@ -24,7 +39,7 @@
          * @private
          */
         _format: function(value) {
-            return (value || 0).toFixed(2);
+            return (value || 0).toFixed(this._precision);
         },
 
         /**
