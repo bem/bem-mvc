@@ -24,7 +24,7 @@
         _initDefaults: function() {
             this._default = this.params['default'] || this._default;
             
-            this._precision = this.params.precision || 2;
+            this._precision = this.params.precision === undefined ? 2 : this.params.precision;
 
             this._validationRules = this._getValidationRules();
 
