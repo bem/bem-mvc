@@ -1,73 +1,4 @@
-<<<<<<< HEAD
-BEM.DOM.decl({ block: 'todos', baseBlock: 'i-glue' }, {
-
-    onSetMod: {
-
-        js: function() {
-            this.__base();
-
-            this.modelPath = this.model.path();
-            this._newTodoInput = this.findBlockOn('new-todo-input', 'input');
-            this._allDoneChecbox = this.findBlockOn('all-done', 'checkbox');
-
-            // DOM-события на элементах блока
-            this
-                .bindTo('new-todo-input', 'keypress', function(e, data) {
-                    if (e.keyCode == 13) {
-                        this.addTodoItem(this._newTodoInput.val());
-                        this._newTodoInput.val('');
-                    }
-                })
-                .bindTo('all-done', 'click', function(e, data) {
-                    this.afterCurrentEvent(function() {
-                        var state = this._allDoneChecbox.isChecked(),
-                            todoItems = this.model.get('list', 'raw');
-
-                        todoItems.forEach(function(item) {
-                            item.set('done', state);
-                        });
-                    });
-                })
-                .bindTo('clear-completed', 'click', function() {
-                    this.model.get('list')
-                        .filter(function(todo) {
-                            return todo.get('done');
-                        })
-                        .forEach(function(todo) {
-                            todo.destruct();
-                        });
-                })
-                .bindToWin('hashchange', function(e, data) {
-                    this.model.set('show', this._getShowType());
-                });
-
-            // события изменения модели
-            this.model
-                .on('list', 'add', function(e, data) {
-                    BEM.DOM.append(this.elem('todo-items'), this._generateTodoItem(data.model));
-                }, this)
-                .on('list', 'remove', function(e, data) {
-                    this.findElem('todo-item', 'id', data.model.id).remove();
-                }, this)
-                .on('itemsLeft', 'change', function() {
-                    var itemsLeft = this.model.get('itemsLeft');
-
-                    BEM.DOM.update(this.elem('items-left'), itemsLeft == 0
-                        ? '<b>All done</b>'
-                        : itemsLeft == 1
-                            ? '<b>1</b> item left'
-                            : '<b>' + itemsLeft + '</b>' + ' items left');
-
-                }, this)
-                .on('show', 'change', function(e, data) {
-                    this.delMod(this.elem('filter'), 'active');
-
-                    this.setMod(this.elem('filter', 'type', data.value), 'active', 'yes');
-                }, this);
-
-            this._initTodos();
-=======
-modules.define('i-bem__dom', ['jquery'], function(provide, $, DOM) {
+modules.define('i-bem__dom', ['jquery', 'BEMHTML'], function(provide, $, BEMHTML, DOM) {
 
 DOM.decl({ block: 'todos', baseBlock: 'glue' }, {
 
@@ -138,7 +69,6 @@ DOM.decl({ block: 'todos', baseBlock: 'glue' }, {
 
                 this._initTodos();
             }
->>>>>>> Port todos bundle from v1, some cleanup
         }
 
     },
@@ -171,11 +101,7 @@ DOM.decl({ block: 'todos', baseBlock: 'glue' }, {
     updateTodos: function(todos) {
         this.elem('todo-items').html('');
 
-<<<<<<< HEAD
-        todos && BEM.DOM.update(this.elem('todo-items'), BEMHTML.apply(todos.map(this._generateTodoItem, this)));
-=======
         todos && DOM.update(this.elem('todo-items'), BEMHTML.apply(todos.map(this._generateTodoItem, this)));
->>>>>>> Port todos bundle from v1, some cleanup
     },
 
     /**
@@ -215,9 +141,6 @@ DOM.decl({ block: 'todos', baseBlock: 'glue' }, {
 });
 
 
-<<<<<<< HEAD
-=======
 provide(DOM);
 
 });
->>>>>>> Port todos bundle from v1, some cleanup
