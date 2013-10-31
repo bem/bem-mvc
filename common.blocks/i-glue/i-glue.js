@@ -31,7 +31,7 @@ BEM.DOM.decl('i-glue', {
         var mParams = modelParams || this.getModelParams(),
             model;
 
-        if (mParams.id) {
+        if (mParams.id !== undefined) {
             model = BEM.MODEL.getOne(mParams);
         }
 
@@ -96,11 +96,9 @@ BEM.DOM.decl('i-glue', {
         if (this.params.modelParams) return this.params.modelParams;
 
         var params = {
-            name: this.getModelName()
+            name: this.getModelName(),
+            id: this.params.modelId
         };
-
-        if (this.params.modelId)
-            params.id = this.params.modelId;
 
         if (this.params.modelParentPath)
             params.parentPath = this.params.modelParentPath;
