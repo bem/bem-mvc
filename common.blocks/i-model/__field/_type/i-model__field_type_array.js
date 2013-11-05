@@ -87,12 +87,38 @@
         },
 
         /**
+         * Внутренний метод выставления значения
+         * @param {*} value значение
+         * @param {Object} opts доп. параметры
+         * @returns {BEM.MODEL.FIELD}
+         * @private
+         */
+        _set: function(value, opts) {
+            this._raw = this.checkEmpty(value) ? this._default.slice() : value;
+            this._value = (this.params.preprocess || this._preprocess).call(this, this._raw.slice());
+            this._formatted = (this.params.format || this._format).call(this, this._value.slice(), this.params.formatOptions || {});
+
+            opts && (opts.value = this._value);
+            this._trigger(opts && opts.isInit ? 'init' : 'change', opts);
+
+            return this;
+        },
+
+        /**
          * Проверяет что значение не пустое
          * @param value
          * @returns {Boolean}
          */
         checkEmpty: function(value) {
             return $.isEmptyObject(value) || value.length == 0;
+        },
+
+        /**
+         * Проверяет текущее значение поля на пустоту
+         * @returns {boolean}
+         */
+        isEmpty: function() {
+            return this.checkEmpty(this._raw) || this.isEqual(this._default);
         },
 
         /**
@@ -105,14 +131,6 @@
             return val && Array.isArray(value) && value.length === val.length && value.every(function(item, i) {
                 return val[i] === item;
             });
-        },
-
-        /**
-         * Возвращает дефолтное значение поля
-         * @returns {Array}
-         */
-        getDefault: function() {
-            return this._default.slice();
         }
 
     });
