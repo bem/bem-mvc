@@ -9,11 +9,33 @@
         initData: function(data) {
             this._value = MODEL.create({ name: this.params.modelName, patentMode: this.model }, data);
 
-            this._value.on('change', function() {
-                this._trigger('change', { fields: this._value.changed });
-            }, this);
+            this._initEvents();
 
             return this;
+        },
+
+        /**
+         * Инициализирует события на модели
+         * @private
+         */
+        _initEvents: function() {
+            this._value.on('change', this._onInnerModelChange, this);
+        },
+
+        /**
+         * Отписывается от событий на модели
+         * @private
+         */
+        _unBindEvents: function() {
+            this._value.un('change', this._onInnerModelChange, this);
+        },
+
+        /**
+         * Обрабатывает изменения модели, генерирует событие на родительской модели
+         * @private
+         */
+        _onInnerModelChange: function() {
+            this._trigger('change', { fields: this._value.changed });
         },
 
         /**
@@ -48,13 +70,26 @@
 
         /**
          * Проапдейтить модель данными
-         * @param {Object} data
+         * @param {Object|BEM.MODEL} data
          * @param {Object} opts
          * @returns {BEM.MODEL.FIELD}
          * @private
          */
         _set: function(data, opts) {
-            this._value.update(data);
+            if (data instanceof MODEL) {
+                if (data.name === this.params.modelName) {
+                    this._unBindEvents();
+                    this.params.destruct && opts.destruct !== false && this._value.destruct();
+
+                    this._value = data;
+                    this._initEvents();
+                } else {
+                    throw new Error('incorrect model "' + data.name +  '", expected model "' +
+                        this.params.modelName +  '"');
+                }
+            } else {
+                this._value.update(data);
+            }
 
             this._trigger(opts && opts.isInit ? 'init': 'change', opts);
 
@@ -86,6 +121,36 @@
          */
         toJSON: function() {
             return this._value.toJSON();
+        },
+
+        /**
+         * Правила валидиции для поля типа model
+         * @returns {Object}
+         * @private
+         */
+        _getValidationRules: function() {
+            var field = this;
+
+            return $.extend(this._commonRules(), {
+                /**
+                 * валидация вложенной модели
+                 */
+                deep: {
+                    value: true,
+                    validate: function(curValue, ruleValue, name) {
+                        return field._value.isValid() == ruleValue
+                    }
+                }
+            });
+        },
+
+        /**
+         * Уничтожает поле и модель этого поля
+         */
+        destruct: function() {
+            this._unBindEvents();
+
+            this.params.destruct && this._value.destruct();
         }
 
     });

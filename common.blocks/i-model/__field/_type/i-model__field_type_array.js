@@ -1,7 +1,18 @@
 ;(function(MODEL, $) {
     MODEL.FIELD.types.array = $.inherit(MODEL.FIELD, {
 
-        _default: [],
+        /**
+         * Определяем дефолтные значения для поля
+         * @returns {Object}
+         * @private
+         */
+        _initDefaults: function() {
+            this.__base();
+
+            this._default || (this._default = []);
+
+            return this;
+        },
 
         /**
          * Возвращает копию исходного массива, чтобы исключить возможность
@@ -9,7 +20,17 @@
          * @returns {Array}
          */
         raw: function() {
-            return this._raw.slice();
+            return this._raw && this._raw.slice();
+        },
+
+        /**
+         * Кеширует текущее состояние поля
+         * @returns {MODEL.FIELD}
+         */
+        fixData: function() {
+            this._fixedValue = this.raw();
+
+            return this;
         },
 
         /**
@@ -72,6 +93,18 @@
          */
         checkEmpty: function(value) {
             return $.isEmptyObject(value) || value.length == 0;
+        },
+
+        /**
+         * Проверяет, что занчение поля равно переданному значению по содержимому
+         * @param value
+         */
+        isEqual: function(value) {
+            var val = this._raw;
+
+            return val && Array.isArray(value) && value.length === val.length && value.every(function(item, i) {
+                return val[i] === item;
+            });
         }
 
     });

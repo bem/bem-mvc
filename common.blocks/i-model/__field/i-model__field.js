@@ -120,8 +120,9 @@
             this._value = (this.params.preprocess || this._preprocess).call(this, this._raw);
             this._formatted = (this.params.format || this._format).call(this, this._value, this.params.formatOptions || {});
 
+            opts && (opts.value = this._value);
             this._trigger(opts && opts.isInit ? 'init' : 'change', opts);
-
+            
             return this;
         },
 
@@ -309,10 +310,12 @@
                 if (getOrExec(validation.validate)) {
                     return true;
                 } else {
-                    this._trigger('error', {
+                    var invalidRule = {
                         text: getOrExec(validation.text)
-                    });
-                    return { valid: false };
+                    };
+
+                    this._trigger('error', invalidRule);
+                    return { valid: false, invalidRules: [invalidRule] };
                 }
             }
 
@@ -321,17 +324,19 @@
                     ruleParams = getOrExec(ruleParams);
                     ruleParams = typeof ruleParams === 'object' ? ruleParams : { value: ruleParams };
 
-                    var rule = $.extend({}, _this._validationRules[ruleName], ruleParams);
+                    var rule = $.extend({}, _this._validationRules[ruleName], ruleParams),
+                        invalidRule;
 
                     if (getOrExec(rule.needToValidate) === false) return true;
 
                     if (!getOrExec(rule.validate, getOrExec(rule.value))) {
-                        invalidRules.push(ruleName);
-
-                        _this.trigger('error', {
+                        invalidRule = {
                             rule: ruleName,
                             text: getOrExec(rule.text)
-                        });
+                        };
+                        invalidRules.push(invalidRule);
+
+                        _this._trigger('error', invalidRule);
                     }
                 });
             }

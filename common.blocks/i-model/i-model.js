@@ -325,22 +325,24 @@
          * Назначает обработчик события на модель или поле модели
          * @param {String} [field] имя поля
          * @param {String} e имя события
+         * @param {Object} [data] дополнительные данные события
          * @param {Function} fn обработчик события
          * @param {Object} ctx контекст вызова обработчика
          * @returns {BEM.MODEL}
          */
-        on: function(field, e, fn, ctx) {
+        on: function(field, e, data, fn, ctx) {
             if ($.isFunction(e)) {
                 ctx = fn;
-                fn = e;
+                fn = data;
+                data = e;
                 e = field;
                 field = undefined;
             }
-
+            
             !field ?
-                this.__base(e, fn, ctx) :
+                this.__base(e, data, fn, ctx) :
                 field.split(' ').forEach(function(name) {
-                    this.fields[name].on(e, fn, ctx);
+                    this.fields[name].on(e, data, fn, ctx);
                 }, this);
 
             return this;
@@ -441,19 +443,27 @@
          */
         validate: function(name) {
             var _this = this,
-                res = {};
+                res = {},
+                validateRes;
 
             if (name) {
-                if (!this.fields[name].isValid()) res.errorFields = [name];
+                validateRes = this.fields[name].validate();
+                if (validateRes !== true) {
+                    res.errorFields = [name];
+                    res.errors = validateRes.invalidRules;
+                }
             } else {
                 $.each(this.fieldsDecl, function(name) {
-                    if (!_this.fields[name].isValid()) {
+                    validateRes = _this.fields[name].validate();
+                    if (validateRes !== true) {
                         (res.errorFields || (res.errorFields = [])).push(name);
+                        res.errors = (res.errors || []).concat(validateRes.invalidRules);
+                        (res.errorsData || (res.errorsData = {}))[name] = validateRes.invalidRules;
                     }
                 });
             }
 
-            if (!res.errorFields)
+            if (!res.errors)
                 res.valid = true;
             else
                 this.trigger('error', res);
@@ -633,7 +643,7 @@
             if (typeof modelParams == 'string') modelParams = { name: modelParams };
 
             if (!modelParams.id) modelParams.id = ANY_ID;
-            
+
             var name = modelParams.name,
                 modelsByName = MODEL.models[name],
                 models = [],
@@ -690,7 +700,7 @@
             }
 
             if (typeof modelParams == 'string') modelParams = { name: modelParams };
-            
+
             var modelName = modelParams.name,
                 eventPath = MODEL.buildPath(modelParams),
                 triggers = !field ?
@@ -707,7 +717,7 @@
                     ctx: ctx
                 });
             });
-            
+
             MODEL.forEachModel(function() {
                 this.on(field, e, fn, ctx);
             }, modelParams, true);
@@ -959,7 +969,7 @@
          */
         forEachModel: function(callback, modelParams, dropCache) {
             var modelsByPath = MODEL.get(modelParams, dropCache);
-            
+
             if (Array.isArray(modelsByPath))
                 for (var i = 0, n = modelsByPath.length; i < n; i++)
                     if (callback.call(modelsByPath[i]) === false) break;

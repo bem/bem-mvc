@@ -12,9 +12,26 @@
 
             // перед преобразованием, необходимо часто вводимые символы на точку
             value = (new Number(value.toString().replace(/[//,.юЮбБ<>]/gi, '.'))).valueOf();
-
-            return isNaN(value) ? this._default : value;
+            //Если было введено не число, то preprocess вернет NaN
+            return value;
         },
+        
+        /**
+         * Определяем дефолтные значения для поля
+         * @returns {Object}
+         * @private
+         */
+        _initDefaults: function() {
+            //0 - это валидное значение для default
+            this._default = this.params['default'] === undefined ? this._default : this.params['default'];
+            
+            this._precision = this.params.precision === undefined ? 2 : this.params.precision;
+
+            this._validationRules = this._getValidationRules();
+
+            return this;
+        },
+
 
         /**
          * Форматированное значение содержит два десятичных знака
@@ -23,7 +40,7 @@
          * @private
          */
         _format: function(value) {
-            return (value || 0).toFixed(2);
+            return (value || 0).toFixed(this._precision);
         },
 
         /**
@@ -55,7 +72,14 @@
                     validate: function(curValue, ruleValue, name) {
                         return curValue >= ruleValue;
                     }
+                },
+                type: {
+                    value: true,
+                    validate: function(curValue) {
+                        return !isNaN(curValue);
+                    }
                 }
+
             })
         }
 

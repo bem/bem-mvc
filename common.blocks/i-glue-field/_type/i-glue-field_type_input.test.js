@@ -1,4 +1,6 @@
 BEM.TEST.decl('i-glue-field_type_input', function() {
+    if (!BEM.blocks['input']) return;
+
     BEM.MODEL.decl('glue-field-input-model', {
         num: 'number',
         str: 'string'
