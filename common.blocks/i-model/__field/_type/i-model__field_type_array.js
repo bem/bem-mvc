@@ -105,6 +105,14 @@
             return val && Array.isArray(value) && value.length === val.length && value.every(function(item, i) {
                 return val[i] === item;
             });
+        },
+
+        /**
+         * Возвращает дефолтное значение поля
+         * @returns {Array}
+         */
+        getDefault: function() {
+            return this._default.slice();
         }
 
     });
