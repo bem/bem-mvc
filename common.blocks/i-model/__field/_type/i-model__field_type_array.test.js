@@ -92,6 +92,16 @@ BEM.TEST.decl('i-model__field_type_array', function() {
                 .toEqual([3.14]);
         });
 
+        it('should not change default value', function() {
+            var model = BEM.MODEL.create('array-type-field');
+
+            model.set('f', []);
+            model.get('f').push('str');
+            model.set('f', []);
+
+            expect(model.get('f')).toEqual([]);
+        });
+
         it('should clear value', function() {
             expect(
                 BEM.MODEL
