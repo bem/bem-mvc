@@ -105,15 +105,17 @@ BEM.TEST.decl('i-model', function() {
         });
 
         var model = BEM.MODEL.create({ name: 'model-for-get', id: 1 }, { f1: 1 }),
+            model0 = BEM.MODEL.create({ name: 'model-for-get', id: 0 }, { f1: 1 }),
             model10 = BEM.MODEL.create({ name: 'model-for-get', id: 10 }, { f1: 1 }),
             subModel = BEM.MODEL.create({ name: 'sub-model-for-get', id: 1, parentName: 'model-for-get', parentId: 1 }, { f1: 1 }),
             subModel2 = BEM.MODEL.create({ name: 'sub-model-for-get', id: 2, parentModel: model }, { f1: 1 });
 
         it('should find model', function() {
-            expect(BEM.MODEL.get('model-for-get').length).toEqual(2);
-            expect(BEM.MODEL.get({ name: 'model-for-get', id: '*' }).length).toEqual(2);
+            expect(BEM.MODEL.get('model-for-get').length).toEqual(3);
+            expect(BEM.MODEL.get({ name: 'model-for-get', id: '*' }).length).toEqual(3);
             expect(BEM.MODEL.get({ name: 'model-for-get', id: 1 }).length).toEqual(1);
             expect(BEM.MODEL.get({ name: 'model-for-get', id: 1 })[0]).toEqual(model);
+            expect(BEM.MODEL.get({ name: 'model-for-get', id: 0 })[0]).toEqual(model0);
             expect(BEM.MODEL.get({ name: 'model-for-get', id: 10 })[0]).toEqual(model10);
         });
 
