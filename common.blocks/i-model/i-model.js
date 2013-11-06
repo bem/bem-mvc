@@ -642,7 +642,7 @@
         get: function(modelParams, dropCache) {
             if (typeof modelParams == 'string') modelParams = { name: modelParams };
 
-            if (!modelParams.id) modelParams.id = ANY_ID;
+            if (modelParams.id === undefined) modelParams.id = ANY_ID;
 
             var name = modelParams.name,
                 modelsByName = MODEL.models[name],
@@ -945,7 +945,7 @@
 
             return (parts.parent ? parts.parent + CHILD_SEPARATOR : '') +
                 pathParts.name +
-                ID_SEPARATOR + (pathParts.id || ANY_ID)  +
+                ID_SEPARATOR + (pathParts.id !== undefined ? pathParts.id : ANY_ID)  +
                 (parts.child ? CHILD_SEPARATOR + parts.child : '');
         },
 
