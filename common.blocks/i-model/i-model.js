@@ -170,7 +170,7 @@
             var field = this.fields[name],
                 fieldsScheme = this.fieldsDecl[name];
 
-            opts = $.extend(opts, { value: value });
+            opts = $.extend({}, opts, { value: value });
 
             if (!field || !fieldsScheme) return this;
 

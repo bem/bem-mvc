@@ -31,7 +31,7 @@
          * @private
          */
         _trigger: function(event, opts) {
-            opts = $.extend(opts, { field: this.name });
+            opts = $.extend({}, opts, { field: this.name });
 
             this.model.trigger('field-' + event, opts);
             this.trigger(event, opts);

@@ -67,7 +67,7 @@
                     field._raw.push(model);
 
                     field
-                        .trigger('add', $.extend(opts, { model: model }))
+                        .trigger('add', $.extend({}, opts, { model: model }))
                         ._trigger('change', opts);
 
                     return model;
@@ -85,7 +85,7 @@
                         var model = list.getByIndex(index);
 
                         field._raw.splice(index, 1);
-                        field.trigger('remove', $.extend(opts, { model: model }));
+                        field.trigger('remove', $.extend({}, opts, { model: model }));
                         model.destruct();
 
                         field._trigger('change', opts);
