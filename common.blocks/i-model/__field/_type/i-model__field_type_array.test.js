@@ -363,6 +363,16 @@ BEM.TEST.decl('i-model__field_type_array', function() {
             expect(onMap).toHaveBeenCalled();
         });
 
+        it('should be equal', function() {
+            var model = BEM.MODEL.create('array-type-field-special', { f: [1, 2, 3] }),
+                field = model.get('f');
+
+            field[0] = '';
+            model.set('f', field);	
+        
+            expect(model.get('f')).toEqual(model.get('f', 'format'));
+        });
+
     });
 
 });
