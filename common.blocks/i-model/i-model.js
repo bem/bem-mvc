@@ -194,8 +194,9 @@
                 opts = name;
 
                 $.each(this.fields, function(fieldName, field) {
-                    field.clear(opts);
-                });
+                    if (field.getType() !== 'id' && !this.fieldsDecl[fieldName].calculate)
+                        field.clear(opts);
+                }.bind(this));
             }
 
             this.trigger('clear', opts);

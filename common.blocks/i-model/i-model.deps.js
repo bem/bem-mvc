@@ -6,6 +6,7 @@
             elem: 'field',
             mods: {
                 type: [
+                    'id',
                     'string',
                     'number',
                     'boolean',
