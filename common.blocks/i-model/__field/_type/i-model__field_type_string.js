@@ -14,7 +14,7 @@
             var maxLength = {
                 value: Infinity,
                 validate: function(curValue, ruleValue, name) {
-                    return curValue.length <= ruleValue;
+                    return curValue && curValue.length <= ruleValue;
                 }
             };
 
