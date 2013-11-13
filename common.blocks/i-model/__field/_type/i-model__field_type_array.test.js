@@ -28,7 +28,7 @@ BEM.TEST.decl('i-model__field_type_array', function() {
             f4: {
                 type: 'array',
                 preprocess: function(value) {
-                    value.push('4');
+                    value.length && value.push('4');
                     return value;
                 }
             },
@@ -40,7 +40,7 @@ BEM.TEST.decl('i-model__field_type_array', function() {
                     value.forEach(function(item) {
                         val.push(item);
                     });
-                    val.push('5');
+                    val.length && val.push('5');
 
                     return val;
                 },

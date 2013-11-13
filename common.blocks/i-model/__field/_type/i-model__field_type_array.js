@@ -94,9 +94,12 @@
          * @private
          */
         _set: function(value, opts) {
-            this._raw = this.checkEmpty(value) ? this._default.slice() : value;
-            this._value = (this.params.preprocess || this._preprocess).call(this, this._raw.slice());
-            this._formatted = (this.params.format || this._format).call(this, this._value.slice(), this.params.formatOptions || {});
+            this._raw = this.checkEmpty(value) ? this._default && this._default.slice() : value;
+            this._value = (this.params.preprocess || this._preprocess).call(this, this._raw && this._raw.slice());
+            this._formatted = (this.params.format || this._format).call(
+                this,
+                this._value && this._value.slice(),
+                this.params.formatOptions || {});
 
             opts && (opts.value = this._value);
             this._trigger(opts && opts.isInit ? 'init' : 'change', opts);
@@ -139,9 +142,14 @@
         isEqual: function(value) {
             var val = this._raw;
 
-            return val && Array.isArray(value) && value.length === val.length && Array.every(value, function(item, i) {
-                return val[i] === item;
-            });
+            var res = val &&
+                Array.isArray(value) &&
+                value.length === val.length &&
+                Array.prototype.every.call(value, function(item, i) {
+                    return val[i] === item;
+                });
+
+            return res;
         }
 
     });
