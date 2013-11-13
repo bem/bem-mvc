@@ -612,10 +612,10 @@
             // выставляем id из поля типа 'id' или из декларации
             $.each(decl, function(name, field) {
                 if (field.type === 'id')
-                    modelParams.id = (data && data[name]) || $.identify();
+                    modelParams.id = (data && data[name]);
             });
 
-            if (modelParams.id === undefined)
+            if (typeof modelParams.id === 'undefined')
                 modelParams.id = $.identify();
 
             // создаем модель
@@ -643,7 +643,7 @@
         get: function(modelParams, dropCache) {
             if (typeof modelParams == 'string') modelParams = { name: modelParams };
 
-            if (modelParams.id === undefined) modelParams.id = ANY_ID;
+            if (typeof modelParams.id === 'undefined') modelParams.id = ANY_ID;
 
             var name = modelParams.name,
                 modelsByName = MODEL.models[name],
@@ -766,7 +766,7 @@
                     }
                 });
 
-                if (pos !== undefined) {
+                if (typeof pos !== 'undefined') {
 
                     // удаляем обработчик из хранилища
                     triggers[event].splice(pos, 1);
@@ -946,7 +946,7 @@
 
             return (parts.parent ? parts.parent + CHILD_SEPARATOR : '') +
                 pathParts.name +
-                ID_SEPARATOR + (pathParts.id !== undefined ? pathParts.id : ANY_ID)  +
+                ID_SEPARATOR + (typeof pathParts.id !== 'undefined' ? pathParts.id : ANY_ID)  +
                 (parts.child ? CHILD_SEPARATOR + parts.child : '');
         },
 
