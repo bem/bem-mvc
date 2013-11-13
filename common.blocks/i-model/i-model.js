@@ -633,6 +633,7 @@
          * @param {String|Object} modelParams имя модели или параметры модели
          * @param {String} modelParams.name имя модели
          * @param {String|Number} [modelParams.id] идентификатор, если не указан, создается автоматически
+         * @param {String} [modelParams.path] путь модели
          * @param {String} [modelParams.parentName] имя родительской модели
          * @param {String|Number} [modelParams.parentId] идентификатор родительской модели
          * @param {String} [modelParams.parentPath] путь родительской модели
@@ -650,7 +651,7 @@
                 models = [],
                 modelsCacheByName = modelsGroupsCache[name],
 
-                path = MODEL.buildPath(modelParams),
+                path = modelParams.path || MODEL.buildPath(modelParams),
                 paths = path.split(MODELS_SEPARATOR);
 
             if (!MODEL.decls[name])
