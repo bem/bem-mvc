@@ -28,13 +28,13 @@ BEM.TEST.decl('i-model__field_type_boolean', function() {
             f4: {
                 type: 'boolean',
                 preprocess: function(value) {
-                    return !value
+                    return value && !value
                 }
             },
             f5: {
                 type: 'boolean',
                 calculate: function(value) {
-                    return !value
+                    return value && !value
                 },
                 dependsFrom: 'f'
             }

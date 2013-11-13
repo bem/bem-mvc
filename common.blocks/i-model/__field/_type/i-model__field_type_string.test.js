@@ -29,13 +29,13 @@ BEM.TEST.decl('i-model__field_type_string', function() {
             f4: {
                 type: 'string',
                 preprocess: function(value) {
-                    return value + '4'
+                    return value && value + '4'
                 }
             },
             f5: {
                 type: 'string',
                 calculate: function(value) {
-                    return value + '5'
+                    return value && value + '5'
                 },
                 dependsFrom: 'f'
             }
