@@ -122,13 +122,24 @@
         },
 
         /**
+         * Форматирует значение поля
+         * @param {*} value
+         * @param {Object} [options]
+         * @returns {String}
+         * @private
+         */
+        _format: function(value, options) {
+            return value;
+        },
+
+        /**
          * Проверяет, что занчение поля равно переданному значению по содержимому
          * @param value
          */
         isEqual: function(value) {
             var val = this._raw;
 
-            return val && Array.isArray(value) && value.length === val.length && value.every(function(item, i) {
+            return val && Array.isArray(value) && value.length === val.length && Array.every(value, function(item, i) {
                 return val[i] === item;
             });
         }
