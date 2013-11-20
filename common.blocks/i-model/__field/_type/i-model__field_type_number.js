@@ -40,7 +40,19 @@
          * @private
          */
         _format: function(value) {
-            return (value || 0).toFixed(this._precision);
+            return this._toFixed(value || 0, this._precision);
+        },
+
+        /**
+         * Округление чисел
+         * @param {Number} number
+         * @param {Number} precision
+         * @returns {string}
+         */
+        _toFixed: function(number, precision) {
+            var multiplier = Math.pow(10, precision);
+
+            return (Math.round( number * multiplier ) / multiplier).toFixed(precision);
         },
 
         /**
