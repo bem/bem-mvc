@@ -175,7 +175,7 @@
             if (!field || !fieldsScheme) return this;
 
             if (!field.isEqual(value)) {
-                field.set(value, opts);
+                field[opts.isInit ? 'initData' : 'set'](value, opts);
             }
 
             return this;
