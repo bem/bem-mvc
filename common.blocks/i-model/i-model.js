@@ -663,7 +663,7 @@
                 var pathRegexp = MODEL._getPathRegexp(paths[ip]);
 
                 for (var mPath in modelsByName) {
-                    if (modelsByName.hasOwnProperty(mPath) && (new RegExp(pathRegexp, 'g')).test(mPath))
+                    if (modelsByName.hasOwnProperty(mPath) && modelsByName[mPath] !== null && (new RegExp(pathRegexp, 'g')).test(mPath))
                         models.push(modelsByName[mPath]);
                 }
             }
@@ -872,7 +872,7 @@
         _addModel: function(model) {
 
             MODEL.models[model.name][model.path()] = model;
-            delete modelsGroupsCache[model.name];
+            modelsGroupsCache[model.name] = null;
 
             MODEL
                 ._bindToModel(model)
@@ -902,11 +902,11 @@
                     field.destruct();
                 });
 
-                delete MODEL.models[this.name][this.path()];
+                MODEL.models[this.name][this.path()] = null;
                 this.trigger('destruct', { model: this });
             }, modelParams, true);
 
-            delete modelsGroupsCache[modelParams.name];
+            modelsGroupsCache[modelParams.name] = null;
 
             return this;
         },
