@@ -214,7 +214,7 @@
             var _this = this;
 
             $.each(data, function(name, val) {
-                _this.set(name, val);
+                _this.set(name, val, opts);
             });
 
             this.trigger('update', opts);
