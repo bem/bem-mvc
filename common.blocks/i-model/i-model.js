@@ -816,7 +816,6 @@
          * @private
          */
         _bindToModel: function(model) {
-
             return this._bindToEvents(model, MODEL.modelsTriggers[model.name]);
         },
 
