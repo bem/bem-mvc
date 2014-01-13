@@ -26,7 +26,7 @@ DOM.decl({ block: 'glue-field_type_checkbox', baseBlock: 'glue-field' }, {
     },
 
     onFieldChange: function(e, data) {
-        this.checkbox.getMod('focused') !== 'true' && this.checkbox.setMod(data.value);
+        this.checkbox.hasMod('focused') || this.checkbox.setMod('checked', data.value);
     }
 
 });
