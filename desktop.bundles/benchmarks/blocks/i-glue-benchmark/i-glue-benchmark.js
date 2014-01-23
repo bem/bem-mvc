@@ -1,8 +1,6 @@
 BEM.DOM.decl('i-glue-benchmark', {
     onSetMod: {
         js: function() {
-
-
             var suite = new Benchmark.Suite(),
                 smallModelsHolder = [],
                 smallModelsHtml,
@@ -27,7 +25,6 @@ BEM.DOM.decl('i-glue-benchmark', {
 
                 return result;
             }()));
-
 
             for(var i = 0; i < 100; i++) {
                 smallModelsHolder.push({
@@ -74,7 +71,7 @@ BEM.DOM.decl('i-glue-benchmark', {
                     });
                 })
                 .on('start', function() {
-                    console.log('benchmark started');
+                    console.log('i-glue benchmark started');
                 })
                 .on('cycle', function(e) {
                     console.log('completed ' + e.target.name);

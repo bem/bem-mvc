@@ -1,33 +1,32 @@
-BEM.MODEL.decl('simple-model', {
-    field1: { type: 'string' },
-    field2: { type: 'number' },
-    field3: { type: 'boolean' }
-});
-
-BEM.MODEL.decl('outer-model', {
-    inner: {
-        type: 'model',
-        modelName: 'inner-model'
-    }
-});
-BEM.MODEL.decl('inner-model', {
-    field: 'string'
-});
-
-BEM.MODEL.decl('outer-model-with-list', {
-    list: {
-        type: 'models-list',
-        modelName: 'inner-model-in-list'
-    }
-});
-BEM.MODEL.decl('inner-model-in-list', {
-    field: 'string'
-});
-
-
 BEM.DOM.decl('i-model-benchmark', {
     onSetMod: {
         js: function() {
+            BEM.MODEL.decl('simple-model', {
+                field1: { type: 'string' },
+                field2: { type: 'number' },
+                field3: { type: 'boolean' }
+            });
+
+            BEM.MODEL.decl('outer-model', {
+                inner: {
+                    type: 'model',
+                    modelName: 'inner-model'
+                }
+            });
+            BEM.MODEL.decl('inner-model', {
+                field: 'string'
+            });
+
+            BEM.MODEL.decl('outer-model-with-list', {
+                list: {
+                    type: 'models-list',
+                    modelName: 'inner-model-in-list'
+                }
+            });
+            BEM.MODEL.decl('inner-model-in-list', {
+                field: 'string'
+            });
+
             var suite = new Benchmark.Suite,
                 modelToSet = BEM.MODEL.create({ name: 'simple-model' }, {
                     field1: 'a',
@@ -118,7 +117,7 @@ BEM.DOM.decl('i-model-benchmark', {
                     });
                 })
                 .on('start', function() {
-                    console.log('benchmark started');
+                    console.log('i-model benchmark started');
                 })
                 .on('cycle', function(e) {
                     console.log('completed ' + e.target.name);

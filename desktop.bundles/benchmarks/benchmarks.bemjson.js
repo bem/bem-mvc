@@ -10,7 +10,8 @@
         { block: 'i-jquery', mods: { version: '1.8.3' } },
         { elem: 'js', url: '_benchmarks.js' },
 
+        { block: 'i-model-benchmark', js: true },
         { block: 'i-glue-benchmark', js: true }
-//        { block: 'i-model-benchmark', js: true }
+
     ]
 })
