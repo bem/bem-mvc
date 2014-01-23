@@ -1,0 +1,49 @@
+block i-glue-benchmark {
+    elem small-model, content: {
+        block: 'i-glue',
+        js: {
+            modelName: 'small-model',
+            modelData: this.ctx.data
+        },
+        content: [1, 2, 3].map(function(index) {
+            return {
+                block: 'input',
+                mods: { size: 'xs' },
+                mix: [{
+                    block: 'i-glue',
+                    elem: 'model-field',
+                    js: {
+                        name: 'field' + index,
+                        type: 'input'
+                    }
+                }],
+                content: [{ elem: 'control' }]
+            }
+        })
+    }
+    elem huge-model, content: {
+        block: 'i-glue',
+        js: {
+            modelName: 'huge-model',
+            modelData: this.ctx.data
+        },
+        content: (function(count) {
+            var result = [];
+            for (i = 0; i < count; i++) {
+                result.push({
+                    block: 'input',
+                    mods: { size: 'xs' },
+                    mix: [{
+                        block: 'i-glue',
+                        elem: 'model-field',
+                        js: {
+                            name: 'field' + i,
+                            type: 'input'
+                        }
+                    }],
+                    content: [{ elem: 'control' }]
+                })
+            }
+        }(this.ctx.fieldsCount))
+    }
+}
