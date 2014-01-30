@@ -26,7 +26,24 @@ BEM.TEST.decl('i-model', function() {
                     f2: 'F2'
                 });
         });
+    });
 
+    describe('model methods', function() {
+        BEM.MODEL.decl('model-with-methods', {
+            f1: 'number',
+            f2: 'number'
+        }, {
+            modelMethod: function() {},
+            getSum: function() { return this.get('f1') + this.get('f2'); },
+        });
+
+        it('should create model with methods', function() {
+            expect(typeof BEM.MODEL.create('model-with-methods', {}).modelMethod).toEqual('function');
+        });
+
+        it('should return sum of fields', function() {
+            expect(BEM.MODEL.create('model-with-methods', { f1: 1, f2: 2 }).getSum()).toEqual(3);
+        });
     });
 
     // BASE MODEL
