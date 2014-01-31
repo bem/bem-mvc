@@ -530,13 +530,14 @@
                     throw('baseModel "' + decl.baseModel + '" for "' + decl.model + '" is undefined');
 
                 fields = $.extend(true, {}, MODEL.decls[decl.baseModel], fields);
+                methods && $.extend(methods,  MODEL.methods[decl.baseModel]);
             }
 
             MODEL.methods  || (MODEL.methods = {});
 
             MODEL.models[decl.model] = {};
             MODEL.decls[decl.model] = fields;
-            MODEL.methods[decl.model] = methods || {};
+            MODEL.methods[decl.model] = methods;
 
             MODEL._buildDeps(fields, decl.model);
 
