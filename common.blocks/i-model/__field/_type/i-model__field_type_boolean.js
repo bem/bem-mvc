@@ -8,7 +8,7 @@
          * @private
          */
         _preprocess: function(value) {
-            if (this.checkEmpty(value)) return false;
+            if (this.checkEmpty(value)) return;
 
             return !!(typeof value == 'string' ? +value : value);
         },
