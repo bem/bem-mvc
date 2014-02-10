@@ -56,7 +56,7 @@
          * @private
          */
         _initDefaults: function() {
-            this._default = this.params['default'] || this._default;
+            this._default = this.params['default'] !== undefined ? this.params['default'] : this._default;
 
             this._validationRules = this._getValidationRules();
 
@@ -173,7 +173,7 @@
          * @returns {boolean}
          */
         isChanged: function() {
-            return !this.isEqual(this._fixedValue);
+            return !this.isEqual(this.getFixedValue());
         },
 
         /**
