@@ -21,16 +21,6 @@
          */
         _format: function(value) {
             return (0 + value).toString();
-        },
-
-        /**
-         * Возвращает начальное значение поля
-         * Для поля типа boolean false вполне корректное fixedValue - не надо его игнорировать
-         * @returns {Boolean}
-         */
-        getFixedValue: function() {
-            return this._fixedValue === undefined ? this.getDefault() : this._fixedValue;
         }
-
     });
 })(BEM.MODEL, jQuery);
