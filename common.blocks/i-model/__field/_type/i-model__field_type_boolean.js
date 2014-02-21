@@ -22,6 +22,5 @@
         _format: function(value) {
             return (0 + value).toString();
         }
-
     });
 })(BEM.MODEL, jQuery);
