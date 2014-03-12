@@ -56,9 +56,13 @@
          * @private
          */
         _initDefaults: function() {
-            this._default = this.params['default'] || this._default;
+            this._default = typeof this.params['default'] !== 'undefined' ?
+                this.params['default'] :
+                this._default;
 
             this._validationRules = this._getValidationRules();
+
+            this._fixedValue = this._default;
 
             return this;
         },
@@ -150,13 +154,24 @@
         },
 
         /**
+         * Проверяет, что значение является NaN, не используя приведение типов
+         * @param {*} v Значение.
+         * @returns {boolean}
+         */
+        isNaN: function(v) {
+            return v != v;
+        },
+
+        /**
          * Поверяет равно ли текущее значение поля значению переменной value
          * @param {*} value значение для сравнения с текущим значением
          * @returns {boolean}
          */
         isEqual: function(value) {
             value = (this.params.preprocess || this._preprocess).call(this, value); // fixme: preprocess выполняется 2 разе при вызове _set
-            return value === this.get() || this.isEmpty() && this.checkEmpty(value);
+            return value === this.get() ||
+                this.isEmpty() && this.checkEmpty(value) ||
+                this.isNaN(value) && this.isNaN(this.get());
         },
 
         /**

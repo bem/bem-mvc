@@ -2,6 +2,17 @@ BEM.TEST.decl('i-model__field', function() {
 
     // COMMON FIELD
     describe('Field with no type', function() {
+        var simpleField,
+            zeroField,
+            mockModel;
+
+        beforeEach(function() {
+            mockModel = jasmine.createSpyObj('mockModel', ['trigger']);
+
+            simpleField = new BEM.MODEL.FIELD({ 'default': 1 }, mockModel);
+            zeroField = new BEM.MODEL.FIELD({ 'default': 0 }, mockModel);
+        });
+
         BEM.MODEL.decl('no-type-field', {
             f: {
                 validation: {
@@ -32,6 +43,9 @@ BEM.TEST.decl('i-model__field', function() {
                     return value && { val: value.val + '5' }
                 },
                 dependsFrom: 'f'
+            },
+            f6: {
+                'default': { val: 1 }
             }
         });
 
@@ -108,17 +122,27 @@ BEM.TEST.decl('i-model__field', function() {
             var model = BEM.MODEL
                 .create('no-type-field', {
                     f: { val: 1 },
-                    f4: { val: 3 }
+                    f1: { val: 0 },
+                    f4: { val: 3 },
+                    f6: { val: 0 },
+                    f2: { val: NaN }
                 })
                 .fix()
                 .update({
                     f: { val: 11 },
-                    f4: { val: 33 }
+                    f1: { val: 1 },
+                    f4: { val: 33 },
+                    f6: { val: 1 },
+                    f2: { val: NaN }
                 });
 
             expect(model.isChanged('f')).toBe(true);
             expect(model.isChanged()).toBe(true);
+
+            expect(model.isChanged('f6')).toBe(true);
+            //expect(model.isChanged('f2')).toBe(false);
         });
+
 
         it('should update models', function() {
             var model = BEM.MODEL
@@ -139,7 +163,8 @@ BEM.TEST.decl('i-model__field', function() {
                 f2: { val: 'qwe2' },
                 f3: { val: 'qwe3' },
                 f4: { val: 'qwe4' },
-                f5: { val: 'qwe5' }
+                f5: { val: 'qwe5' },
+                f6: { val: 1 }
             });
         });
 
@@ -172,7 +197,8 @@ BEM.TEST.decl('i-model__field', function() {
                     f2: { val: 'up2' },
                     f3: { val: 'up3' },
                     f4: { val: 'up4' },
-                    f5: { val: 'up5' }
+                    f5: { val: 'up5' },
+                    f6: { val: 1 }
                 });
         });
 
@@ -180,13 +206,13 @@ BEM.TEST.decl('i-model__field', function() {
             var model = BEM.MODEL.create('no-type-field');
 
             expect(model
-                    .set('f', 1.28)
-                    .isValid())
+                .set('f', 1.28)
+                .isValid())
                 .toBe(true);
 
             expect(model
-                    .clear()
-                    .isValid())
+                .clear()
+                .isValid())
                 .toBe(false);
         });
 
@@ -216,6 +242,58 @@ BEM.TEST.decl('i-model__field', function() {
             expect(BEM.MODEL.get({ name: 'no-type-field', id: 'uniqModelId' }).length).toEqual(0);
         });
 
-    });
+        describe('.isNaN(value)', function() {
 
+            it('should return true if first param is exactly NaN', function() {
+                expect(simpleField.isNaN(NaN)).toBe(true);
+            });
+
+            it('should return false if first param is not exactly NaN', function() {
+                expect(simpleField.isNaN(1)).toBe(false);
+                expect(simpleField.isNaN('hello')).toBe(false);
+                expect(simpleField.isNaN({})).toBe(false);
+                expect(simpleField.isNaN([1, 2, 3])).toBe(false);
+            });
+        });
+
+        describe('.isEqual(value)', function() {
+            it('should return true if field value equal first param', function() {
+                simpleField.set(1).fixData();
+                expect(simpleField.isEqual(1)).toBe(true);
+            });
+
+            it('should return true if field value is NaN and param is NaN', function() {
+                simpleField.set(NaN).fixData();
+                expect(simpleField.isEqual(NaN)).toBe(true);
+            });
+        });
+
+        describe('.isChanged()', function() {
+            it('should return true if field changed', function() {
+                simpleField.set(1).fixData().set(2);
+                expect(simpleField.isChanged()).toBe(true);
+
+                simpleField.set(0).fixData().set(1);
+                expect(simpleField.isChanged()).toBe(true);
+            });
+            
+            it('should return false if field not changed', function() {
+                simpleField
+                    .set(1)
+                    .fixData()
+                    .set(1);
+                expect(simpleField.isChanged()).toBe(false);
+            });
+
+            it('should return false if set value same as default', function() {
+                simpleField.set(1);
+                expect(simpleField.isChanged()).toBe(false);
+            });
+
+            it('should return true if set null value and default zero', function() {
+                zeroField.set(null);
+                expect(zeroField.isChanged()).toBe(true);
+            });
+        });
+    });
 });
