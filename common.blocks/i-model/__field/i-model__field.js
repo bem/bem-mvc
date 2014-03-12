@@ -62,8 +62,6 @@
 
             this._validationRules = this._getValidationRules();
 
-            this._fixedValue = this._default;
-
             return this;
         },
 
@@ -188,7 +186,7 @@
          * @returns {boolean}
          */
         isChanged: function() {
-            return !this.isEqual(this._fixedValue);
+            return !this.isEqual(this.getFixedValue());
         },
 
         /**
@@ -196,7 +194,7 @@
          * @returns {*}
          */
         getFixedValue: function() {
-            return this._fixedValue || this.getDefault();
+            return typeof this._fixedValue !== 'undefined' ? this._fixedValue : this.getDefault();
         },
 
         /**
