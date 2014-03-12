@@ -175,6 +175,7 @@ BEMJSON в таком случае будет выглядеть так:
 ## Тестирование
 
 Запустить в корне `bem server`
+
 Открыть страницу `localhost:8080/desktop.bundles/tests/tests.html`
 
 ## Ссылки
