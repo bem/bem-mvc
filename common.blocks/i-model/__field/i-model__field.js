@@ -56,9 +56,7 @@
          * @private
          */
         _initDefaults: function() {
-            this._default = typeof this.params['default'] !== 'undefined' ?
-                this.params['default'] :
-                this._default;
+            this._default = this.params['default'] !== undefined ? this.params['default'] : this._default;
 
             this._validationRules = this._getValidationRules();
 
