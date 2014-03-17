@@ -32,6 +32,22 @@ BEM.MODEL.decl('model', {
     weight: 'number'
 });
 ````
+Также при декларации можно указать методы модели.
+````javascript
+BEM.MODEL.decl('model', {
+    name: 'string',
+    hasBoyfriend: {
+        type: 'boolean',
+        default: false
+    }
+}, {
+    toggleStatus: function() {
+        this.set('hasBoyfriend', !this.get('hasBoyfriend'));
+
+        return this;
+    }
+})
+````
 Типы полей
 *  string – строка
 *  number – число
@@ -45,6 +61,7 @@ BEM.MODEL.decl('model', {
 var model = BEM.MODEL.create('model', {
     name: 'Claudia Schiffer',
     birth: {
+        year: 1970,
         year: 1970,
         month: 8,
         day: 25

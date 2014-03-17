@@ -26,7 +26,24 @@ BEM.TEST.decl('i-model', function() {
                     f2: 'F2'
                 });
         });
+    });
 
+    describe('model methods', function() {
+        BEM.MODEL.decl('model-with-methods', {
+            f1: 'number',
+            f2: 'number'
+        }, {
+            modelMethod: function() {},
+            getSum: function() { return this.get('f1') + this.get('f2'); },
+        });
+
+        it('should create model with methods', function() {
+            expect(typeof BEM.MODEL.create('model-with-methods', {}).modelMethod).toEqual('function');
+        });
+
+        it('should return sum of fields', function() {
+            expect(BEM.MODEL.create('model-with-methods', { f1: 1, f2: 2 }).getSum()).toEqual(3);
+        });
     });
 
     // BASE MODEL
@@ -54,6 +71,34 @@ BEM.TEST.decl('i-model', function() {
                     baseField2: 'str2',
                     myField: 'mystr'
                 });
+        });
+    });
+
+    // BASE MODEL WITH METHODS
+    describe('base model with methods', function() {
+        BEM.MODEL.decl('base-model-with-methods', {
+            f1: 'number'
+        }, {
+            getF1: function() { return this.get('f1') }
+        });
+
+        BEM.MODEL.decl({ model: 'model-with-base-and-methods', baseModel: 'base-model-with-methods'}, {
+            f1: 'number',
+            f2: 'number'
+        }, {
+            getSum: function() { return this.get('f2') + this.getF1() }
+        });
+
+        it('should not have "getSum" method', function() {
+            expect(BEM.MODEL.create('base-model-with-methods', { f1: 1 }).getSum).not.toBeDefined();
+        });
+
+        it('should have "getF1" method', function() {
+            expect(BEM.MODEL.create('model-with-base-and-methods', { f1: 1, f2: 2 }).getF1).toBeDefined();
+        });
+
+        it('should return sum of f1 and f2', function() {
+            expect(BEM.MODEL.create('model-with-base-and-methods', { f1: 1, f2: 2 }).getSum()).toEqual(3);
         });
     });
 

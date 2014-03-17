@@ -511,8 +511,9 @@
          *         {String|Array} [dependsFrom] массив от которых зависит значение поля
          *     }
          * }} fields где ключ имя поля, значение строка с типом или объект вида
+         * @param {Object} methods Методы модели
          */
-        decl: function(decl, fields) {
+        decl: function(decl, fields, methods) {
             if (typeof decl == 'string') {
                 decl = { model: decl };
             } else if (decl.name) {
@@ -529,10 +530,14 @@
                     throw('baseModel "' + decl.baseModel + '" for "' + decl.model + '" is undefined');
 
                 fields = $.extend(true, {}, MODEL.decls[decl.baseModel], fields);
+                methods && $.extend(methods,  MODEL.methods[decl.baseModel]);
             }
+
+            MODEL.methods  || (MODEL.methods = {});
 
             MODEL.models[decl.model] = {};
             MODEL.decls[decl.model] = fields;
+            MODEL.methods[decl.model] = methods;
 
             MODEL._buildDeps(fields, decl.model);
 
@@ -619,7 +624,8 @@
                 modelParams.id = $.identify();
 
             // создаем модель
-            var model = new MODEL(modelParams, data);
+
+            var model = new ($.inherit(MODEL, MODEL.methods[modelParams.name]))(modelParams, data);
 
             MODEL._addModel(model);
             model.trigger('create', { model: model });
