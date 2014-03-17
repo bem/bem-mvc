@@ -13,6 +13,10 @@
 *   Наследование собственной функциональсти в использующих i-bem блоках
 *   Провязка с контролами из [bem-controls](https://github.com/bem/bem-controls)
 
+Зависимости
+*   [bem-bl](https://github.com/bem/bem-bl)
+*   [bem-controls](https://github.com/bem/bem-controls)
+
 ## Модели
 Для использования модели необходимо задекларировать её, указав имя модели и описав поля.
 ````javascript
