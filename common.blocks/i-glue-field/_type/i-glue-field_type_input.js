@@ -23,8 +23,8 @@ BEM.DOM.decl({ block: 'i-glue-field_type_input', baseBlock: 'i-glue-field' }, {
         this.input.val(value);
     },
 
-    onFieldChange: function(e, data) {
-        this.input.getMod('focused') !== 'yes' && this.input.val(data.value);
+    onFieldChange: function() {
+        this.input.getMod('focused') !== 'yes' && this.input.val(this.model.get(this.name, 'format'));
     }
 
 });
