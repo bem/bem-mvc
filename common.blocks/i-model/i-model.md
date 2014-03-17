@@ -148,8 +148,8 @@ toJSON()
 Возвращает объект с данными модели
 
 
-on(\[field\], e, fn, ctx)
--------------------------
+on(\[field\], e, \[data\], fn, ctx)
+-----------------------------------
 Назначает обработчик события на модель или поле модели
 
 
@@ -158,6 +158,8 @@ on(\[field\], e, fn, ctx)
 **[field]**:  *String*,  имя поля
 
 **e**:  *String*,  имя события
+
+**[data]**:  *Object*,  дополнительные данные события
 
 **fn**:  *Function*,  обработчик события
 
@@ -222,17 +224,22 @@ isValid()
 Возвращает результат проверки модели на валидность
 
 
-validate()
-----------
+validate(\[name\])
+------------------
 Проверяет модель на валидность, генерирует событие error с описанием ошибки(ок)
 
 
-decl(decl, decl.model|decl.name, \[decl.baseModel\], {{)
---------------------------------------------------------
+**Parameters**
+
+**[name]**:  *String*,  - имя поля
+
+decl(decl, decl.model|decl.name, \[decl.baseModel\], {{, staticProps)
+---------------------------------------------------------------------
 Декларирует описание модели
-XXX: {String|Number}
+XXX: {String|Number},
 XXX: {
 {String} [type] тип поля
+{Boolean} [internal] внутреннее поле
 {*|Function} [default] дефолтное значение
 {*|Function} [value] начанольное значение
 {Object|Function} [validation] ф-ия конструктор объекта валидации или он сам
@@ -258,6 +265,19 @@ XXX: {
 **{{**,  
 
 
+**staticProps**:  *Object*,  Статические методы и поля
+
+_buildDeps(fieldDecl, modelName)
+--------------------------------
+Устанавливает связи между зависимыми полями
+
+
+**Parameters**
+
+**fieldDecl**:  *Object*,  декларация полей
+
+**modelName**:  *String*,  имя модели
+
 create(modelParams, modelParams.name, \[modelParams.id\], \[modelParams.parentName\], \[modelParams.parentId\], \[modelParams.parentPath\], \[modelParams.parentModel\], \[data\])
 ----------------------------------------------------------------------------------------------------
 Создает экземпляр модели
@@ -281,7 +301,7 @@ create(modelParams, modelParams.name, \[modelParams.id\], \[modelParams.parentNa
 
 **[data]**:  *Object*,  данные, которыми будет проинициализирована модель
 
-get(modelParams, modelParams.name, \[modelParams.id\], \[modelParams.parentName\], \[modelParams.parentId\], \[modelParams.parentPath\], \[modelParams.parentModel\], \[dropCache\])
+get(modelParams, modelParams.name, \[modelParams.id\], \[modelParams.path\], \[modelParams.parentName\], \[modelParams.parentId\], \[modelParams.parentPath\], \[modelParams.parentModel\], \[dropCache\])
 ----------------------------------------------------------------------------------------------------
 Возвращает экземляр или массив экземпляров моделей по имени и пути
 
@@ -293,6 +313,8 @@ get(modelParams, modelParams.name, \[modelParams.id\], \[modelParams.parentName\
 **modelParams.name**:  *String*,  имя модели
 
 **[modelParams.id]**:  *String|Number*,  идентификатор, если не указан, создается автоматически
+
+**[modelParams.path]**:  *String*,  путь модели
 
 **[modelParams.parentName]**:  *String*,  имя родительской модели
 

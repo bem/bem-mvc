@@ -5,7 +5,8 @@
         ID_SEPARATOR = ':',
         MODELS_SEPARATOR = ',',
         ANY_ID = '*',
-        modelsGroupsCache = {};
+        modelsGroupsCache = {},
+        constructorsCache = {};
 
     /**
      * @namespace
@@ -511,8 +512,9 @@
          *         {String|Array} [dependsFrom] массив от которых зависит значение поля
          *     }
          * }} fields где ключ имя поля, значение строка с типом или объект вида
+         * @param {Object} staticProps Статические методы и поля
          */
-        decl: function(decl, fields) {
+        decl: function(decl, fields, staticProps) {
             if (typeof decl == 'string') {
                 decl = { model: decl };
             } else if (decl.name) {
@@ -534,9 +536,12 @@
             MODEL.models[decl.model] = {};
             MODEL.decls[decl.model] = fields;
 
-            MODEL._buildDeps(fields, decl.model);
+            staticProps && $.each(staticProps, function(name) {
+                if (name in MODEL.prototype) throw new Error('method "' + name + '" is protected');
+            });
+            constructorsCache[decl.model] = $.inherit(constructorsCache[decl.baseModel] || MODEL, staticProps);
 
-            // todo: реализовать возможность задавать статические свойства модели
+            MODEL._buildDeps(fields, decl.model);
 
             return this;
         },
@@ -619,7 +624,7 @@
                 modelParams.id = $.identify();
 
             // создаем модель
-            var model = new MODEL(modelParams, data);
+            var model = new (constructorsCache[modelParams.name] || MODEL)(modelParams, data);
 
             MODEL._addModel(model);
             model.trigger('create', { model: model });
