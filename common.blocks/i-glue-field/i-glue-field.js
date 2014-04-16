@@ -41,6 +41,15 @@ BEM.DOM.decl('i-glue-field', {
      * @param e
      * @param data
      */
-    onFieldChange: function(e, data) {}
+    onFieldChange: function(e, data) {},
+
+    /**
+     * Уничтожить блок, отписаться от событий
+     */
+    destruct: function() {
+        this.model.un(this.name, 'change', this.onFieldChange, this);
+
+        this.__base.apply(this, arguments);
+    }
 
 });

@@ -72,7 +72,7 @@ BEM.TEST.decl('i-glue-field', function() {
                         mix: [{
                             block: 'i-glue',
                             elem: 'model-field',
-                            mods: {
+                            js: {
                                 name: 'num'
                             }
                         }],
@@ -85,6 +85,45 @@ BEM.TEST.decl('i-glue-field', function() {
 
             $('.b-glued-field').remove();
             BEM.MODEL.getOne('glue-field-model').destruct();
+        });
+
+        it('should unbuind from model when destructed', function() {
+            var model = BEM.MODEL.create('glue-field-model', {
+                num: 123,
+                str: 'abc'
+            });
+
+            BEM.DOM.append('body', BEMHTML.apply({
+                block: 'b-glued-field',
+                mix: [{
+                    block: 'i-glue',
+                    js: {
+                        modelName: 'glue-field-model',
+                        modelId: model.id
+                    }
+                }],
+                js: true,
+                content: [
+                    {
+                        elem: 'bla',
+                        mix: [{
+                            block: 'i-glue',
+                            elem: 'model-field',
+                            js: {
+                                name: 'num'
+                            }
+                        }],
+                        content: 'num'
+                    }
+                ]
+            }));
+
+            var block = $('.b-glued-field').bem('b-glued-field');
+            block.destruct();
+
+            expect(function() {
+                model.set('num', 1);
+            }).not.toThrow();
         });
 
     });

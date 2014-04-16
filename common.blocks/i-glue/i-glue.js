@@ -125,6 +125,18 @@ BEM.DOM.decl('i-glue', {
      */
     getModelName: function() {
         return this.params.modelName || this.__self.getName();
+    },
+
+    /**
+     * Уничтожает блок и созданные им объекты
+     * @param keepDOM
+     */
+    destruct: function(keepDOM) {
+        this._fields && Object.keys(this._fields).forEach(function(name) {
+            this._fields[name].destruct(keepDOM);
+        }, this);
+
+        this.__base.apply(this, arguments);
     }
 
 
