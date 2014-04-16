@@ -67,14 +67,20 @@ BEM.DOM.decl('i-glue', {
         elem = this.elemify(elem, 'model-field'); // идентифицируем элемент для случая, когда на одной ноде несколько элементов
 
         var elemParams = this.elemParams(elem) || {};
-        elemParams.name || (elemParams.name = this.getMod(elem, 'name'));
-        elemParams.type || (elemParams.type = this.getMod(elem, 'type'));
 
-        var type = elemParams.type,
-            block = new BEM.DOM.blocks['i-glue-field' + (type ? '_type_' + type : '')](elem, elemParams, true);
+        if (!Array.isArray(elemParams))
+            elemParams = [elemParams];
 
-        this._fields[elemParams.name] = block;
-        block.init(this.model);
+        elemParams.forEach(function(fieldParams) {
+            fieldParams.name || (fieldParams.name = this.getMod(elem, 'name'));
+            fieldParams.type || (fieldParams.type = this.getMod(elem, 'type'));
+
+            var type = fieldParams.type,
+                block = new BEM.DOM.blocks['i-glue-field' + (type ? '_type_' + type : '')](elem, fieldParams, true);
+
+            this._fields[fieldParams.name] = block;
+            block.init(this.model);
+        }, this);
 
         return this;
     },
