@@ -13,6 +13,10 @@
 *   Наследование собственной функциональсти в использующих i-bem блоках
 *   Провязка с контролами из [bem-controls](https://github.com/bem/bem-controls)
 
+Зависимости
+*   [bem-bl](https://github.com/bem/bem-bl)
+*   [bem-controls](https://github.com/bem/bem-controls)
+
 ## Модели
 Для использования модели необходимо задекларировать её, указав имя модели и описав поля.
 ````javascript
@@ -28,6 +32,26 @@ BEM.MODEL.decl('model', {
     weight: 'number'
 });
 ````
+Также при декларации можно указать методы модели (переопределение бащовых методов модели породит ошибку).
+````javascript
+BEM.MODEL.decl('model', {
+    name: 'string',
+    hasBoyfriend: {
+        type: 'boolean',
+        default: false
+    }
+}, {
+    toggleStatus: function() {
+        this.set('hasBoyfriend', !this.get('hasBoyfriend'));
+
+        return this;
+    }
+});
+
+var model = BEM.MODEL.create('model', { name: 'Claudia Schiffer', hasBoyfriend: true });
+model.toggleStatus();
+model.get('hasBoyfriend'); // false
+````
 Типы полей
 *  string – строка
 *  number – число
@@ -41,6 +65,7 @@ BEM.MODEL.decl('model', {
 var model = BEM.MODEL.create('model', {
     name: 'Claudia Schiffer',
     birth: {
+        year: 1970,
         year: 1970,
         month: 8,
         day: 25
@@ -171,6 +196,12 @@ BEMJSON в таком случае будет выглядеть так:
 *  checkbox – провязка с блоком checkbox
 *  inline – вставка значения поля в html
 *  mod – изменение модификатора блока
+
+## Тестирование
+
+Запустить в корне `bem server`
+
+Открыть страницу `localhost:8080/desktop.bundles/tests/tests.html`
 
 ## Ссылки
 JS Docs:
