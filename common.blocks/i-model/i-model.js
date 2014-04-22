@@ -470,6 +470,8 @@
             else
                 this.trigger('error', res);
 
+            this.trigger('validated', res);
+
             return res;
         }
 
