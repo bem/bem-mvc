@@ -1,0 +1,17 @@
+block i-model-aggregator {
+
+    default: {
+        this._modelAggregation = true;
+        this._modelAggregatorData = [];
+
+        applyCtx(this.ctx.content);
+
+        this._modelAggregation = false;
+
+        applyCtx({
+            block: 'i-model',
+            modelsParams: this._modelAggregatorData
+        });
+    }
+
+}
