@@ -65,10 +65,10 @@
                     var model = list._createModel(itemData);
                     var at = opts && opts.at;
 
-                    if (!at) {
-                        field._raw.push(model);
-                    } else {
+                    if (typeof at === 'number') {
                         field._raw.splice(at, 0, model);
+                    } else {
+                        field._raw.push(model);
                     }
 
                     field

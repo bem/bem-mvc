@@ -39,8 +39,8 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
 
             expect(model.toJSON()).toEqual({
                 list: [
-                    { id: 1, f: 'f', n: 3 },
-                    { id: 11, f: 'ff', n: 33 }
+                    { id: 11, f: 'ff', n: 33 },
+                    { id: 1, f: 'f', n: 3 }
                 ]
             });
 
