@@ -63,8 +63,13 @@
                  */
                 add: function(itemData, opts) {
                     var model = list._createModel(itemData);
+                    var at = opts && opts.at;
 
-                    field._raw.push(model);
+                    if (!at) {
+                        field._raw.push(model);
+                    } else {
+                        field._raw.splice(at, 0, model);
+                    }
 
                     field
                         .trigger('add', $.extend({}, opts, { model: model }))

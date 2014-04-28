@@ -30,6 +30,23 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             expect(BEM.MODEL.get('list-inner-model').length).toEqual(0);
         });
 
+        it('should create models at index', function () {
+            var model = BEM.MODEL.create('model-list-type-field', {
+                list: [{ id: 1, f: 'f', n: 3 }]
+            });
+
+            model.get('list').add({ id: 11, f: 'ff', n: 33 }, {at: 0});
+
+            expect(model.toJSON()).toEqual({
+                list: [
+                    { id: 1, f: 'f', n: 3 },
+                    { id: 11, f: 'ff', n: 33 }
+                ]
+            });
+
+            model.destruct();
+        });
+
         it('should create inner models', function() {
             var model = BEM.MODEL.create('model-list-type-field', {
                     list: [{ id: 1, f: 'f1' }, { id: 2, f: 'f2' }]
