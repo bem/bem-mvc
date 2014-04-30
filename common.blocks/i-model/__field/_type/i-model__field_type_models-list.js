@@ -63,16 +63,31 @@
                  */
                 add: function(itemData, opts) {
                     var model = list._createModel(itemData);
-                    var at = opts && opts.at;
 
-                    if (typeof at === 'number') {
-                        field._raw.splice(at, 0, model);
-                    } else {
-                        field._raw.push(model);
-                    }
+                    field._raw.push(model);
 
                     field
                         .trigger('add', $.extend({}, opts, { model: model }))
+                        ._trigger('change', opts);
+
+                    return model;
+                },
+
+                /**
+                 * Добавляет модель в список по индексу
+                 *
+                 * @param  index
+                 * @param  itemData
+                 * @param  opts
+                 * @return {*}
+                 */
+                addByIndex: function(index, itemData, opts) {
+                    var model = list._createModel(itemData);
+
+                    field._raw.splice(index, 0, model);
+
+                    field
+                        .trigger('add', $.extend({}, opts, { model: model, index: index }))
                         ._trigger('change', opts);
 
                     return model;

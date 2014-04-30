@@ -35,7 +35,7 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
                 list: [{ id: 1, f: 'f', n: 3 }]
             });
 
-            model.get('list').add({ id: 11, f: 'ff', n: 33 }, {at: 0});
+            model.get('list').addByIndex(0, { id: 11, f: 'ff', n: 33 });
 
             expect(model.toJSON()).toEqual({
                 list: [
