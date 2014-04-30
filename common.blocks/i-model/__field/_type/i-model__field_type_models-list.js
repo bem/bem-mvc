@@ -74,6 +74,26 @@
                 },
 
                 /**
+                 * Добавляет модель в список по индексу
+                 *
+                 * @param  index
+                 * @param  itemData
+                 * @param  opts
+                 * @return {*}
+                 */
+                addByIndex: function(index, itemData, opts) {
+                    var model = list._createModel(itemData);
+
+                    field._raw.splice(index, 0, model);
+
+                    field
+                        .trigger('add', $.extend({}, opts, { model: model, index: index }))
+                        ._trigger('change', opts);
+
+                    return model;
+                },
+
+                /**
                  * Удаляет модель из списка по id
                  * @param id
                  * @param opts
