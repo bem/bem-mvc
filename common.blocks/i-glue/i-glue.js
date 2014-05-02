@@ -29,14 +29,16 @@ BEM.DOM.decl('i-glue', {
      */
     _initModel: function(modelParams, modelData) {
         var mParams = modelParams || this.getModelParams(),
+            data = modelData || this.params.modelData || (this.params.modelParams && this.params.modelParams.data),
             model;
 
-        if (mParams.id !== undefined) {
-            model = BEM.MODEL.getOne(mParams);
+        if (data) {
+            model = BEM.MODEL.create(mParams, data);
+        } else {
+            model = BEM.MODEL.getOrCreate(mParams);
         }
 
-        this.model = model || BEM.MODEL.create(mParams,
-                modelData || this.params.modelData || (this.params.modelParams && this.params.modelParams.data) || {});
+        this.model = model;
 
         return this;
     },

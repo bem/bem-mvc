@@ -10,7 +10,9 @@
             {
                 block: 'i-glue-field',
                 tech: 'bemhtml'
-            }
+            },
+            { block: 'i-model', tech: 'bemhtml' },
+            { block: 'i-model-aggregator', tech: 'bemhtml' }
         ]
     },
     {
@@ -20,6 +22,9 @@
             },
             {
                 block: 'i-glue'
+            },
+            {
+                block: 'i-model-aggregator'
             }
         ]
     }

@@ -118,5 +118,47 @@ BEM.TEST.decl('i-glue', function() {
         BEM.MODEL.getOne('glue-model').destruct();
     });
 
+    describe('glue with i-model', function() {
+        BEM.MODEL.decl('glue-without-model', {
+            f1: 'number',
+            f2: 'number'
+        });
+
+        BEM.DOM.append('body', BEMHTML.apply({
+            block: 'i-model-aggregator',
+            content: [
+                {
+                    block: 'b-glued-block',
+                    mix: [{
+                        block: 'i-glue',
+                        js: {
+                            modelName: 'glue-without-model'
+                        }
+                    }],
+                    content: [
+
+                    ]
+                },
+                {
+                    block: 'i-model',
+                    modelParams: {
+                        name: 'glue-without-model',
+                        data: {
+                            f1: 1,
+                            f2: 2
+                        }
+                    }
+                }
+            ]
+        }));
+
+        expect($('.i-glue').bem('i-glue').model.toJSON()).toEqual({
+            f1: 1,
+            f2: 2
+        });
+
+        $('.b-glued-block').remove();
+        $('.i-model').remove();
+    });
 
 });

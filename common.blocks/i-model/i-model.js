@@ -488,6 +488,11 @@
         decls: {},
 
         /**
+         * Хранилище данных для моделей
+         */
+        modelsData: {},
+
+        /**
          * Хранилища обработчиков событий на моделях и полях
          */
         modelsTriggers: {},
@@ -689,6 +694,27 @@
          */
         getOne: function(modelParams, dropCache) {
             return this.get(modelParams, dropCache).pop();
+        },
+
+        /**
+         * Возвращает созданный или создает экземпляр модели
+         * @param {Object|String} modelParams @see get.modelParams
+         * @returns {BEM.MODEL|undefined}
+         */
+        getOrCreate: function(modelParams) {
+            if (typeof modelParams === 'string') modelParams = { name: modelParams };
+
+            var model = MODEL.getOne(modelParams);
+
+            if (!model) {
+                model = MODEL.create(
+                    modelParams.name,
+                    MODEL.modelsData[modelParams.name][MODEL.buildPath(modelParams)] || {});
+            }
+
+            return MODEL.getOne(modelParams) || MODEL.create(
+                modelParams.name,
+                MODEL.modelsData[modelParams.name][MODEL.buildPath(modelParams)] || {});
         },
 
         /**
@@ -985,6 +1011,28 @@
             return this;
         }
 
+    });
+
+    BEM.DOM.decl('i-model', {
+        onSetMod: {
+            js: {
+                inited: function() {
+                    var data = MODEL.modelsData,
+                        modelsParams = this.params.data,
+                        storeData = function storeData(modelParams) {
+                            var modelData = data[modelParams.name] || (data[modelParams.name] = {});
+
+                            modelData[MODEL.buildPath(modelParams)] = modelParams.data;
+                        };
+
+                    if (Array.isArray(modelsParams)) {
+                        modelsParams.forEach(storeData);
+                    } else {
+                        storeData(modelsParams);
+                    }
+                }
+            }
+        }
     });
 
 })(BEM, jQuery);

@@ -197,6 +197,49 @@ BEMJSON в таком случае будет выглядеть так:
 *  inline – вставка значения поля в html
 *  mod – изменение модификатора блока
 
+## Агрегация моделей
+Иногда создание моделей с помощью блока `i-glue` может быть неудобной. Для случая, когда данные для модели генерируются во время шаблонизации, можно использовать блок `i-model`.
+```javascript
+{
+    block: 'i-model',
+    modelName: 'super-model',
+    modelData: {
+        name: 'Claudia Schiffer',
+        weight: 75,
+        height: 180.5
+    }
+}
+// или
+{
+    block: 'i-model',
+    modelParams: {
+        name: 'super-model',
+        data: {
+            name: 'Claudia Schiffer',
+            weight: 75,
+            height: 180.5
+        }
+    }
+}
+```
+В таком случае в DOM'е появится столько элементов, сколько в конечном bemjson'е блоков i-model. Чтобы избежать засорения DOM'а вспомогательными объектам, можно любой контент обернуть в блок `i-model-aggregator`
+```javascript
+{
+    block: 'i-model-aggregator',
+    content: [
+        { block: 'i-model', modelName: 'model1' },
+        {
+            block: 'view-block',
+            content: [
+                { block: 'i-model', modelName: 'model2' }
+            ]
+        },
+        { block: 'i-model', modelName: 'model3' }
+    ]
+}
+```
+В итоге все блоки `i-model` внутри агрегатора будут объеденены в один и модели будут проинициализированы до инииализации других блоков.
+
 ## Тестирование
 
 Запустить в корне `bem server`
