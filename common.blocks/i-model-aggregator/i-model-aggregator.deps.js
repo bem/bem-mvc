@@ -6,8 +6,7 @@
         ]
     },
     {
-        mustDeps: [
-        ],
+        mustDeps: [],
         shouldDeps: [
             {
                 block: 'i-model'

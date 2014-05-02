@@ -696,7 +696,7 @@
 
         /**
          * Возвращает созданный или создает экземпляр модели
-         * @param modelParams
+         * @param {Object|String} modelParams @see get.modelParams
          * @returns {BEM.MODEL|undefined}
          */
         getOrCreate: function(modelParams) {
@@ -710,7 +710,9 @@
                     MODEL.modelsData[modelParams.name][MODEL.buildPath(modelParams)] || {});
             }
 
-            return model;
+            return MODEL.getOne(modelParams) || MODEL.create(
+                modelParams.name,
+                MODEL.modelsData[modelParams.name][MODEL.buildPath(modelParams)] || {});
         },
 
         /**
@@ -1014,13 +1016,12 @@
             js: {
                 inited: function() {
                     var data = MODEL.modelsData,
-                        modelsParams = this.params.data;
+                        modelsParams = this.params.data,
+                        storeData = function storeData(modelParams) {
+                            var modelData = data[modelParams.name] || (data[modelParams.name] = {});
 
-                    function storeData(modelParams) {
-                        var modelData = data[modelParams.name] || (data[modelParams.name] = {});
-
-                        modelData[MODEL.buildPath(modelParams)] = modelParams.data;
-                    }
+                            modelData[MODEL.buildPath(modelParams)] = modelParams.data;
+                        };
 
                     if (Array.isArray(modelsParams)) {
                         modelsParams.forEach(storeData);
