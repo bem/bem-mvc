@@ -100,13 +100,14 @@
                  */
                 remove: function(id, opts) {
                     var index = list._getIndex(id);
+                    opts || (opts = {});
 
-                    if (index !== undefined) {
+                    if (typeof index !== 'undefined') {
                         var model = list.getByIndex(index);
 
                         field._raw.splice(index, 1);
                         field.trigger('remove', $.extend({}, opts, { model: model }));
-                        model.destruct();
+                        opts.keepModel !== true && model.destruct();
 
                         field._trigger('change', opts);
                     }
@@ -120,7 +121,7 @@
                     var tmp = field._raw.slice();
 
                     tmp.forEach(function(model) {
-                        model.destruct()
+                        list.remove(model.id, opts);
                     });
 
                     if (!opts || !opts.silent)
@@ -255,7 +256,7 @@
          * @returns {MODEL.FIELD}
          */
         clear: function(opts) {
-            this._value.clear();
+            this._value.clear(opts);
 
             return this;
         },
