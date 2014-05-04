@@ -31,6 +31,25 @@
          * @private
          */
         _createValueObject: function(field) {
+            /**
+             * Обработчик события "change" модели.
+             * В качестве контекста следует передать ссылку модель.
+             */
+            function change() {
+                field._trigger('change', { data: this });
+            }
+
+            /**
+             * Обработчик события "destruct" модели.
+             * В качестве контекста следует передать ссылку на объект list.
+             *
+             * @param  {Object} e
+             * @param  {Object} data
+             */
+            function destruct(e, data) {
+                this.remove(data.model.id);
+            }
+
             var list = {
 
                 /**
@@ -45,12 +64,8 @@
                         MODEL.create({ name: field.params.modelName, parentModel: field.model }, data);
 
                     model
-                        .on('change', function() {
-                            field._trigger('change', { data: model });
-                        })
-                        .on('destruct', function(e, data) {
-                            list.remove(data.model.id);
-                        });
+                        .on('change', change, model)
+                        .on('destruct', destruct, list);
 
                     return model;
                 },
@@ -108,6 +123,11 @@
                         field._raw.splice(index, 1);
                         field.trigger('remove', $.extend({}, opts, { model: model }));
                         opts.keepModel !== true && model.destruct();
+
+                        // Отписываем models-list от событий модели.
+                        model
+                            .un('change', change, model)
+                            .un('destruct', destruct, list);
 
                         field._trigger('change', opts);
                     }
