@@ -197,6 +197,43 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             expect(BEM.MODEL.get('list-inner-model').length).toEqual(0);
         });
 
+        it('shouldn\'t destruct models with "keepModel" flag.', function () {
+            var model = BEM.MODEL.create('list-inner-model', { id: 15, f: 'f3', n: 51 });
+            var modelsList = BEM.MODEL.create('model-list-type-field');
+
+            var destructHandler = jasmine.createSpy('destruct');
+            model.on('destruct', destructHandler);
+
+            modelsList.get('list').add(model);
+            modelsList.clear({keepModel: true});
+            expect(destructHandler.calls.length).toBe(0);
+        });
+
+        it('should unsubscribe from model events.', function () {
+            var model = BEM.MODEL.create('list-inner-model', { id: 15, f: 'f3', n: 51 });
+            var modelsList = BEM.MODEL.create('model-list-type-field');
+
+            var modelChanges = 0;
+
+            modelsList.on('list', 'change', function (e, data) {
+                // Если у объекта data есть поле data,
+                // значит произошло изменение какого-то поля модели.
+                data.data && modelChanges++;
+            });
+
+            modelsList.get('list').add(model);
+            model.set('id', 16);
+            modelsList.clear();
+            model.set('id', 17);
+
+            setTimeout(function () {
+                // Считаем, что models-list должен стриггерить только один раз нужное событие
+                // (изменение полей модели), т.к. при удалении модели из models-list,
+                // последний должен отписаться от событий модели.
+                expect(modelChanges).toBe(1);
+            }, 1000);
+        });
+
     });
 
 });
