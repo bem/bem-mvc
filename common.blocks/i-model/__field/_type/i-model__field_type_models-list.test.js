@@ -218,16 +218,22 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             model.on('list', 'reset', resetHandler);
 
             model.get('list').reset([
-                { f: 'f3' }
+                { id: 3, f: 'f3' }
             ]);
-            expect(model.get('list').length()).toBe(1);
-            expect(model.get('list').getByIndex(0).get('f')).toBe('f3');
+            expect(model.toJSON()).toEqual({
+                list: [{ id: 3, f: 'f3' }]
+            });
 
             model.get('list').reset([
-                { f: 'f4' },
-                { f: 'f5' }
+                { id: 4, f: 'f4' },
+                { id: 5, f: 'f5' }
             ]);
-            expect(model.get('list').length()).toBe(2);
+            expect(model.toJSON()).toEqual({
+                list: [
+                    { id: 4, f: 'f4' },
+                    { id: 5, f: 'f5' }
+                ]
+            });
 
             expect(resetHandler.calls.length).toBe(2);
         });
