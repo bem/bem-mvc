@@ -175,15 +175,16 @@
                  * @return {BEM.MODEL}
                  */
                 reset: function (models, opts) {
-                    Array.isArray(models) ||
+                    if (!Array.isArray(models)) {
                         throw new TypeError('Should use Array as a first argument for "reset" method.');
+                    }
 
                     this.clear(opts);
                     models.forEach(function (model) {
                         this.add(model, opts);
                     }, this);
 
-                    this.trigger('reset');
+                    field._trigger('reset');
                 },
 
                 /**
