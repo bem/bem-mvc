@@ -45,8 +45,9 @@
                         MODEL.create({ name: field.params.modelName, parentModel: field.model }, data);
 
                     model
-                        .on('change', function() {
-                            field._trigger('change', { data: model });
+                        .on('change', function(e, data) {
+                            var data = $.extend({ data: model }, data);
+                            field._trigger('change', data);
                         })
                         .on('destruct', function(e, data) {
                             list.remove(data.model.id);
