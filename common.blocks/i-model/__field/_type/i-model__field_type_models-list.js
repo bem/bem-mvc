@@ -46,7 +46,7 @@
 
                     model
                         .on('change', function(e, data) {
-                            var data = $.extend({ data: model }, data);
+                            data = $.extend({ data: model }, data);
                             field._trigger('change', data);
                         })
                         .on('destruct', function(e, data) {
