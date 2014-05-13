@@ -205,7 +205,7 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             model.on('destruct', destructHandler);
 
             modelsList.get('list').add(model);
-            modelsList.clear({keepModel: true});
+            modelsList.clear({ keepModel: true });
             expect(destructHandler.calls.length).toBe(0);
         });
 

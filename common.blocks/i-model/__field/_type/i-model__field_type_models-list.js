@@ -95,8 +95,9 @@
 
                 /**
                  * Удаляет модель из списка по id
-                 * @param id
-                 * @param opts
+                 * @param {String} id
+                 * @param {Object} opts
+                 * @param {Boolean} [opts.keepModel] Если указано значение true, то не будет вызван destruct модели
                  */
                 remove: function(id, opts) {
                     var index = list._getIndex(id);
@@ -166,12 +167,11 @@
                 },
 
                 /**
-                 * Позволяет обновить models-list целиком.
-                 * Используйте reset, чтобы заменить ML новым массивом моделей (или хэшей атрибутов).
+                 * Обновляет список моделями из массива.
+                 * Используйте reset, чтобы заменить список моделей новым из массива моделей (или хэшей атрибутов).
                  * При этом сработает событие "reset" в конце.
-                 *
-                 * @param  {Array}     models
-                 * @param  {Object}    opts
+                 * @param  {Array} models
+                 * @param  {Object} opts
                  * @return {BEM.MODEL}
                  */
                 reset: function (models, opts) {
