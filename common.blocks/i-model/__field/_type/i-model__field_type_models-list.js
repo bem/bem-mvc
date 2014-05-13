@@ -97,7 +97,8 @@
                  * Удаляет модель из списка по id
                  * @param {String} id
                  * @param {Object} opts
-                 * @param {Boolean} [opts.keepModel] Если указано значение true, то не будет вызван destruct модели
+                 * @param {Boolean} [opts.keepModel] Если указано значение true,
+                 *                                   то не будет вызван метод destruct модели
                  */
                 remove: function(id, opts) {
                     var index = list._getIndex(id);
