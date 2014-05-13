@@ -209,35 +209,6 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             expect(destructHandler.calls.length).toBe(0);
         });
 
-        it('should reset list.', function () {
-            var model = BEM.MODEL.create('model-list-type-field', {
-                list: [{ id: 1, f: 'f1' }, { id: 2, f: 'f2' }]
-            });
-
-            var resetHandler = jasmine.createSpy('reset');
-            model.on('list', 'reset', resetHandler);
-
-            model.get('list').reset([
-                { id: 3, f: 'f3' }
-            ]);
-            expect(model.toJSON()).toEqual({
-                list: [{ id: 3, f: 'f3' }]
-            });
-
-            model.get('list').reset([
-                { id: 4, f: 'f4' },
-                { id: 5, f: 'f5' }
-            ]);
-            expect(model.toJSON()).toEqual({
-                list: [
-                    { id: 4, f: 'f4' },
-                    { id: 5, f: 'f5' }
-                ]
-            });
-
-            expect(resetHandler.calls.length).toBe(2);
-        });
-
     });
 
 });

@@ -167,27 +167,6 @@
                 },
 
                 /**
-                 * Обновляет список моделями из массива.
-                 * Используйте reset, чтобы заменить список моделей новым из массива моделей (или хэшей атрибутов).
-                 * При этом сработает событие "reset" в конце.
-                 * @param  {Array} models
-                 * @param  {Object} opts
-                 * @return {BEM.MODEL}
-                 */
-                reset: function (models, opts) {
-                    if (!Array.isArray(models)) {
-                        throw new TypeError('Should use Array as a first argument for "reset" method.');
-                    }
-
-                    this.clear(opts);
-                    models.forEach(function (model) {
-                        this.add(model, opts);
-                    }, this);
-
-                    field._trigger('reset');
-                },
-
-                /**
                  * Возвращает массив моделей, соответствующих заданным парамтрам.
                  * @param {Object} attrs Объект, задающий условия поиска
                  * @returns {Array} Массив моделей
