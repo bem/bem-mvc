@@ -7,13 +7,13 @@ modules.define('test', ['model', 'sinon', 'jquery'], function(provide, MODEL, si
 describe('MODEL', function() {
 
     describe('create model', function() {
-        BEM.MODEL.decl('model-to-create', {
+        MODEL.decl('model-to-create', {
             f1: 'string',
             f2: 'string'
         });
 
         it('should create model without params', function() {
-            expect(BEM.MODEL
+            expect(MODEL
                 .create('model-to-create')
                 .toJSON()).toEqual({
                     f1: '',
@@ -22,7 +22,7 @@ describe('MODEL', function() {
         });
 
         it('should create model with params', function() {
-            expect(BEM.MODEL
+            expect(MODEL
                 .create('model-to-create', {
                     f1: 'F1',
                     f2: 'F2'
@@ -35,7 +35,7 @@ describe('MODEL', function() {
     });
 
     describe('model methods', function() {
-        BEM.MODEL.decl('model-with-methods', {
+        MODEL.decl('model-with-methods', {
             f1: 'number',
             f2: 'number'
         }, {
@@ -44,16 +44,16 @@ describe('MODEL', function() {
         });
 
         it('should create model with methods', function() {
-            expect(typeof BEM.MODEL.create('model-with-methods', {}).modelMethod).toEqual('function');
+            expect(typeof MODEL.create('model-with-methods', {}).modelMethod).toEqual('function');
         });
 
         it('should return sum of fields', function() {
-            expect(BEM.MODEL.create('model-with-methods', { f1: 1, f2: 2 }).getSum()).toEqual(3);
+            expect(MODEL.create('model-with-methods', { f1: 1, f2: 2 }).getSum()).toEqual(3);
         });
 
         it('should not override protected methods', function() {
             expect(function() {
-                BEM.MODEL.decl('model-with-protected-method', {
+                MODEL.decl('model-with-protected-method', {
                 }, {
                     set: function() {}
                 });
@@ -90,13 +90,13 @@ describe('MODEL', function() {
 
     // BASE MODEL WITH METHODS
     describe('base model with methods', function() {
-        BEM.MODEL.decl('base-model-with-methods', {
+        MODEL.decl('base-model-with-methods', {
             f1: 'number'
         }, {
             getF1: function() { return this.get('f1') }
         });
 
-        BEM.MODEL.decl({ model: 'model-with-base-and-methods', baseModel: 'base-model-with-methods'}, {
+        MODEL.decl({ model: 'model-with-base-and-methods', baseModel: 'base-model-with-methods'}, {
             f1: 'number',
             f2: 'number'
         }, {
@@ -104,20 +104,20 @@ describe('MODEL', function() {
         });
 
         it('should not have "getSum" method', function() {
-            expect(BEM.MODEL.create('base-model-with-methods', { f1: 1 }).getSum).not.toBeDefined();
+            expect(MODEL.create('base-model-with-methods', { f1: 1 }).getSum).not.toBeDefined();
         });
 
         it('should have "getF1" method', function() {
-            expect(BEM.MODEL.create('model-with-base-and-methods', { f1: 1, f2: 2 }).getF1).toBeDefined();
+            expect(MODEL.create('model-with-base-and-methods', { f1: 1, f2: 2 }).getF1).toBeDefined();
         });
 
         it('should return sum of f1 and f2', function() {
-            expect(BEM.MODEL.create('model-with-base-and-methods', { f1: 1, f2: 2 }).getSum()).toEqual(3);
+            expect(MODEL.create('model-with-base-and-methods', { f1: 1, f2: 2 }).getSum()).toEqual(3);
         });
     });
 
     describe('internal fields', function() {
-        BEM.MODEL.decl('model-with-internal-fields', {
+        MODEL.decl('model-with-internal-fields', {
             publicField: {
                 type: 'string'
             },
@@ -131,7 +131,7 @@ describe('MODEL', function() {
             }
         });
 
-        var model = BEM.MODEL.create('model-with-internal-fields',{
+        var model = MODEL.create('model-with-internal-fields',{
             publicField: 'public',
             internalField: 'i\'m internal',
             notInternalField: 'i\'m not internal'
@@ -139,7 +139,7 @@ describe('MODEL', function() {
 
         it('should show internal fields in toJSON', function() {
             expect(
-                BEM.MODEL
+                MODEL
                     .create('model-with-internal-fields', {
                         publicField: 'public',
                         internalField: 'i\'m internal',

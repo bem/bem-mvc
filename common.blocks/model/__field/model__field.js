@@ -1,7 +1,7 @@
 modules.define(
     'model',
     ['inherit', 'events', 'objects', 'functions'],
-    function(provide, inherit, events, objects, functions,  MODEL) {
+    function(provide, inherit, events, objects, functions, MODEL) {
 
 /**
  * @namespace
