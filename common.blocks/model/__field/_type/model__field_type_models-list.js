@@ -1,6 +1,6 @@
 modules.define(
     'model',
-    ['inherit', 'objects', 'model'],
+    ['inherit', 'objects'],
     function(provide, inherit, objects, MODEL) {
 
 
