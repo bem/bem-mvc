@@ -71,25 +71,24 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
         });
 
         it('should fire change event with correct opts', function () {
-            var model;
-            var onModelInListChanged;
-            var data = null;
-            runs(function () {
+            var model, onModelInListChanged, data = null;
+
+            runs(function() {
                 model = BEM.MODEL.create('model-list-type-field', {
-                    list: [{ id: 1, f: 'f1'}]
+                    list: [{ id: 1, f: 'f1' }]
                 });
 
-                model.on('list', 'change', function (e, d) {
+                model.on('list', 'change', function(e, d) {
                     data = d;
                 });
                 model.get('list').getByIndex(0).set('f', 123, {option: 'value'});
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return data;
             });
 
-            runs(function () {
+            runs(function() {
                 expect(data.option).toEqual('value');
                 model.destruct();
             });
