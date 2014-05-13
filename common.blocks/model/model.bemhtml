@@ -1,0 +1,77 @@
+/**
+ * {
+ *     block: 'model',
+ *
+ *     modelName: 'name',
+ *     modelId: 'id',
+ *     modelPath: '',
+ *     modelData: { ... },
+ *     modelParentName
+ *     modelParentPath
+ *     parentId
+ *
+ *     modelParams: {
+ *         name: '',
+ *         id: '',
+ *         data: '',
+ *         path: '',
+ *
+ *         parentId,
+ *         parentName,
+ *         parentPath
+ *     }
+ *
+ *     modelsParams: [
+ *         {
+ *             name: 'name',
+ *             id: 'id',
+ *             path: 'id',
+ *             data: { ... },
+ *
+ *             parentId,
+ *             parentName,
+ *             parentPath
+ *         }
+ *     ]
+ * }
+ */
+
+block model {
+
+    default, this._modelAggregation: {
+        this._modelAggregatorData.push(apply('get-params'));
+    }
+
+    default: {
+        this.ctx.js = { data: apply('get-params') };
+
+        applyNext();
+    }
+
+    get-params: {
+        var ctx = this.ctx;
+        
+        if (ctx.modelsParams) return ctx.modelsParams;
+        if (ctx.modelParams) return ctx.modelParams;
+
+        var params = {
+            name: ctx.modelName,
+            id: ctx.modelId
+        };
+
+        if (ctx.modelParentPath)
+            params.parentPath = ctx.modelParentPath;
+
+        if (ctx.modelParentName) {
+            params.parentName = ctx.modelParentName;
+            params.parentId = ctx.modelParentId;
+        }
+
+        return params;
+    }
+
+    attrs: {
+        style: 'display: none'
+    }
+
+}

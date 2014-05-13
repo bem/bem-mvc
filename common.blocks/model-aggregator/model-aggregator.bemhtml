@@ -1,4 +1,4 @@
-block i-model-aggregator {
+block model-aggregator {
 
     default: {
         this._modelAggregation = true;
@@ -9,7 +9,7 @@ block i-model-aggregator {
         this._modelAggregation = false;
 
         applyCtx({
-            block: 'i-model',
+            block: 'model',
             modelsParams: this._modelAggregatorData
         });
     }
