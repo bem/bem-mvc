@@ -46,8 +46,13 @@
 
                     model
                         .on('change', function(e, data) {
-                                                              //data field is deprecated, use model instead
-                            field._trigger('change', $.extend({ data: model, model: model }, data));
+                            field._trigger(
+                                'change',
+                                $.extend({
+                                    // @deprecated use model instead
+                                    data: model,
+                                    model: model
+                                }, data));
                         })
                         .on('destruct', function(e, data) {
                             list.remove(data.model.id);

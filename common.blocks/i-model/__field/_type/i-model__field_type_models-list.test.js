@@ -71,7 +71,9 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
         });
 
         it('should fire change event with correct opts', function () {
-            var model, onModelInListChanged, data = null;
+            var model,
+                onModelInListChanged,
+                data;
 
             runs(function() {
                 model = BEM.MODEL.create('model-list-type-field', {
