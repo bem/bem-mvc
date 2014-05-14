@@ -14,15 +14,18 @@
     "bem-environ": "1.4.x"
   },
   "devDependencies": {
+    "bower": "1.3.3",
     "enb-bem-docs": "git://github.com/andrewblond/enb-bem-docs.git#6b1544a8f3e516eaee3303cf84131e773868eb2b",
     "enb": "0.10.0",
     "enb-diverse-js": "0.1.0",
     "enb-modules": "0.1.1",
-    "enb-bemxjst": "1.1.1"
+    "enb-bemxjst": "1.1.1",
+    "enb-roole": "0.2.0",
+    "enb-autoprefixer": "0.1.0"
   },
   "scripts": {
-    "deps": "ls",
-    "build": "enb make docs -n"
+    "deps": "bower install",
+    "build": "enb make docs -n && enb make"
   },
   "private": true
 }
