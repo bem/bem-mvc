@@ -36,21 +36,18 @@
  * }
  */
 
-block model {
-
-    default, this._modelAggregation: {
+block('model')(
+    def().match(this._modelAggregation)(function() {
         this._modelAggregatorData.push(apply('get-params'));
-    }
-
-    default: {
+    }),
+    def()(function() {
         this.ctx.js = { data: apply('get-params') };
 
         applyNext();
-    }
-
-    get-params: {
+    }),
+    mode('get-params')(function() {
         var ctx = this.ctx;
-        
+
         if (ctx.modelsParams) return ctx.modelsParams;
         if (ctx.modelParams) return ctx.modelParams;
 
@@ -68,10 +65,6 @@ block model {
         }
 
         return params;
-    }
-
-    attrs: {
-        style: 'display: none'
-    }
-
-}
+    }),
+    attrs()({ style: 'display: none' })
+);
