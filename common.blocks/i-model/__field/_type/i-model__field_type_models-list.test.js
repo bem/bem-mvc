@@ -70,6 +70,32 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             expect(BEM.MODEL.get('list-inner-model').length).toEqual(0);
         });
 
+        it('should fire change event with correct opts', function () {
+            var model,
+                onModelInListChanged,
+                data;
+
+            runs(function() {
+                model = BEM.MODEL.create('model-list-type-field', {
+                    list: [{ id: 1, f: 'f1' }]
+                });
+
+                model.on('list', 'change', function(e, d) {
+                    data = d;
+                });
+                model.get('list').getByIndex(0).set('f', 123, {option: 'value'});
+            });
+
+            waitsFor(function() {
+                return data;
+            });
+
+            runs(function() {
+                expect(data.option).toEqual('value');
+                model.destruct();
+            });
+        });
+
         it('should fix and rollback data', function() {
             var model = BEM.MODEL.create('model-list-type-field', {
                 list: [{ id: 1, f: 'f1' }, { id: 2, f: 'f2' }]
