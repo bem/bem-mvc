@@ -1,17 +1,13 @@
-block model-aggregator {
+block('model-aggregator').def()(function() {
+    this._modelAggregation = true;
+    this._modelAggregatorData = [];
 
-    default: {
-        this._modelAggregation = true;
-        this._modelAggregatorData = [];
+    applyCtx(this.ctx.content);
 
-        applyCtx(this.ctx.content);
+    this._modelAggregation = false;
 
-        this._modelAggregation = false;
-
-        applyCtx({
-            block: 'model',
-            modelsParams: this._modelAggregatorData
-        });
-    }
-
-}
+    return applyCtx({
+        block: 'model',
+        modelsParams: this._modelAggregatorData
+    });
+});

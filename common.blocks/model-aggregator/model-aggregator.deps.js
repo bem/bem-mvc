@@ -6,11 +6,6 @@
         ]
     },
     {
-        mustDeps: [],
-        shouldDeps: [
-            {
-                block: 'model'
-            }
-        ]
+        shouldDeps: ['model']
     }
 ])

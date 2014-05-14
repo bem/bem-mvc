@@ -1,6 +1,4 @@
 ({
-    mustDeps: [
-    ],
     shouldDeps: [
         {
             mods: {
