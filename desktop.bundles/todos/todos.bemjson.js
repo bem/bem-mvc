@@ -2,9 +2,11 @@
     block: 'page',
     title: 'bem-mvc • TodoMVC',
     head: [
-        { elem: 'css', url: '_todos.css', ie: false },
-        { elem: 'css', url: '_todos', ie: true },
+        { elem: 'css', url: '_todos.css' },
         { elem: 'meta', attrs: { name: 'description', content: 'bem-mvc demo example' }}
+    ],
+    scripts: [
+        { elem: 'js', url: '_todos.js' }
     ],
     content:[
         // данные для модели
@@ -55,18 +57,15 @@
                                             }
                                         }
                                     ],
-                                    mods: { size: 'm' },
+                                    mods: { size: 'm', theme: 'normal' },
                                     checkboxAttrs: { autocomplete: 'off' }
                                 },
                                 {
                                     block: 'input',
                                     mix: { block: 'todos', elem: 'new-todo-input' },
+                                    mods: { size: 'm', theme: 'normal' },
                                     name: 'text',
-                                    placeholder: 'What needs to be done?',
-                                    mods: { size: 'm' },
-                                    content: [
-                                        { elem: 'control' }
-                                    ]
+                                    placeholder: 'What needs to be done?'
                                 }
                             ]
                         },
@@ -166,7 +165,6 @@
                 }
 
             ]
-        },
-        { elem: 'js', url: '_todos.js' }
+        }
     ]
 })
