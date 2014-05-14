@@ -223,6 +223,19 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             expect(BEM.MODEL.get('list-inner-model').length).toEqual(0);
         });
 
+        it('shouldn\'t destruct models with "keepModel" flag.', function () {
+            var model = BEM.MODEL.create('list-inner-model', { id: 15, f: 'f3', n: 51 }),
+                modelsList = BEM.MODEL.create('model-list-type-field'),
+                destructHandler = jasmine.createSpy('destruct');
+
+            model.on('destruct', destructHandler);
+
+            modelsList.get('list').add(model);
+            modelsList.clear({ keepModel: true });
+
+            expect(destructHandler.calls.length).toBe(0);
+        });
+
     });
 
 });
