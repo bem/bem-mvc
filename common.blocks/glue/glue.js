@@ -1,9 +1,12 @@
-modules.define('i-bem__dom', ['objects', 'jquery', 'model'], function(provide, objects, $, MODEL, DOM) {
+modules.define(
+    'glue',
+    ['i-bem__dom', 'objects', 'jquery', 'model'],
+    function(provide, BEMDOM, objects, $, MODEL) {
 
 /**
  * Блок для проклеивания моделей и DOM
  */
-DOM.decl('glue', {
+provide(BEMDOM.decl('glue', {
 
     onSetMod: {
         js: {
@@ -37,9 +40,9 @@ DOM.decl('glue', {
             model;
 
         if (data) {
-            model = BEM.MODEL.create(mParams, data);
+            model = MODEL.create(mParams, data);
         } else {
-            model = BEM.MODEL.getOrCreate(mParams);
+            model = MODEL.getOrCreate(mParams);
         }
 
         this.model = model;
@@ -57,7 +60,7 @@ DOM.decl('glue', {
 
         this._fields = {};
 
-        $.each(this.findElem('model-field'), function(i, elem) {
+        this.findElem('model-field').each(function(i, elem) {
             _this.initFieldBlock($(elem));
         });
 
@@ -82,7 +85,7 @@ DOM.decl('glue', {
             fieldParams.type || (fieldParams.type = this.getMod(elem, 'type'));
 
             var type = fieldParams.type,
-                block = new BEM.DOM.blocks['i-glue-field' + (type ? '_type_' + type : '')](elem, fieldParams, true);
+                block = new BEMDOM.blocks['glue-field' + (type ? '_type_' + type : '')](elem, fieldParams, true);
 
             this._fields[fieldParams.name] = block;
             block.init(this.model);
@@ -151,8 +154,6 @@ DOM.decl('glue', {
         this.__base.apply(this, arguments);
     }
 
-});
-
-provide(DOM);
+}));
 
 });

@@ -8,11 +8,12 @@
             elem: 'field',
             mods: {
                 type: [
+                    'id',
                     'string',
                     'number',
                     'boolean',
-                    'array',
                     'model',
+                    'array',
                     'models-list'
                 ]
             }

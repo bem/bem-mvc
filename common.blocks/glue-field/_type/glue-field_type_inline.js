@@ -1,13 +1,11 @@
-modules.define('i-bem__dom', [], function(provide, DOM) {
+modules.define('glue-field', ['i-bem__dom'], function(provide, BEMDOM) {
 
-DOM.decl({ block: 'glue-field_type_inline', baseBlock: 'glue-field' }, {
+provide(BEMDOM.decl({ block: 'glue-field_type_inline', baseBlock: 'glue-field' }, {
 
     onFieldChange: function(e, data) {
         this.domElem.html(this.model.get(this.name, 'format'));
     }
 
-});
-
-provide(DOM);
+}));
 
 });

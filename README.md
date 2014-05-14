@@ -2,6 +2,8 @@
 
 Набор i-bem блоков для реализации MVC-паттерна. Предоставляет API для работы с моделями и блоки для автоматического провязывания моделей с интерфейсом.
 
+**В связи с активной разработкой в бибилиотеках bem-core и bem-components некоторая функциональность может работать некорретно! Мы работаем над стабилизацией и не откажемся от любой помощи в этом**
+
 Требования к моделям
 *   Декларативный стиль описания моделей
 *   Доступ к созданным экземплярам моделей по имени и id
@@ -11,11 +13,11 @@
 Требование к биндингам
 *   i-bem ориентированость
 *   Наследование собственной функциональсти в использующих i-bem блоках
-*   Провязка с контролами из [bem-controls](https://github.com/bem/bem-controls)
+*   Провязка с контролами из [bem-components](https://github.com/bem/bem-components)
 
 Зависимости
-*   [bem-bl](https://github.com/bem/bem-bl)
-*   [bem-controls](https://github.com/bem/bem-controls)
+*   [bem-core](https://github.com/bem/bem-core)
+*   [bem-components](https://github.com/bem/bem-components)
 
 ## Модели
 Для использования модели необходимо задекларировать её, указав имя модели и описав поля.
@@ -198,10 +200,10 @@ BEMJSON в таком случае будет выглядеть так:
 *  mod – изменение модификатора блока
 
 ## Агрегация моделей
-Иногда создание моделей с помощью блока `i-glue` может быть неудобной. Для случая, когда данные для модели генерируются во время шаблонизации, можно использовать блок `i-model`.
+Иногда создание моделей с помощью блока `glue` может быть неудобной. Для случая, когда данные для модели генерируются во время шаблонизации, можно использовать блок `model`.
 ```javascript
 {
-    block: 'i-model',
+    block: 'model',
     modelName: 'super-model',
     modelData: {
         name: 'Claudia Schiffer',
@@ -211,7 +213,7 @@ BEMJSON в таком случае будет выглядеть так:
 }
 // или
 {
-    block: 'i-model',
+    block: 'model',
     modelParams: {
         name: 'super-model',
         data: {
@@ -222,29 +224,31 @@ BEMJSON в таком случае будет выглядеть так:
     }
 }
 ```
-В таком случае в DOM'е появится столько элементов, сколько в конечном bemjson'е блоков i-model. Чтобы избежать засорения DOM'а вспомогательными объектам, можно любой контент обернуть в блок `i-model-aggregator`
+В таком случае в DOM'е появится столько элементов, сколько в конечном bemjson'е блоков model. Чтобы избежать засорения DOM'а вспомогательными объектам, можно любой контент обернуть в блок `model-aggregator`
 ```javascript
 {
-    block: 'i-model-aggregator',
+    block: 'model-aggregator',
     content: [
-        { block: 'i-model', modelName: 'model1' },
+        { block: 'model', modelName: 'model1' },
         {
             block: 'view-block',
             content: [
-                { block: 'i-model', modelName: 'model2' }
+                { block: 'model', modelName: 'model2' }
             ]
         },
-        { block: 'i-model', modelName: 'model3' }
+        { block: 'model', modelName: 'model3' }
     ]
 }
 ```
-В итоге все блоки `i-model` внутри агрегатора будут объеденены в один и модели будут проинициализированы до инииализации других блоков.
+В итоге все блоки `model` внутри агрегатора будут объеденены в один и модели будут проинициализированы до инииализации других блоков.
 
 ## Тестирование
 
 Запустить в корне `bem server`
 
-Открыть страницу `localhost:8080/desktop.bundles/tests/tests.html`
+Открыть страницу `localhost:8080/desktop.bundles/all-tests/all-tests.html`
+
+Пример TodoMVC `localhost:8080/desktop.bundles/todos/todos.html`
 
 ## Ссылки
 JS Docs:

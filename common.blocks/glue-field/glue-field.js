@@ -1,6 +1,6 @@
-modules.define('i-bem__dom', [], function(provide, DOM) {
+modules.define('glue-field', ['i-bem__dom'], function(provide, BEMDOM) {
 
-DOM.decl('glue-field', {
+provide(BEMDOM.decl('glue-field', {
 
     onSetMod: {
         js: {
@@ -56,8 +56,6 @@ DOM.decl('glue-field', {
         this.__base.apply(this, arguments);
     }
 
-});
-
-provide(DOM);
+}));
 
 });

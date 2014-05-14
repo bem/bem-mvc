@@ -1,6 +1,6 @@
-modules.define('i-bem__dom', [], function(provide, DOM) {
+modules.define('glue-field', ['i-bem__dom'], function(provide, BEMDOM) {
 
-DOM.decl({ block: 'glue-field_type_mod', baseBlock: 'glue-field' }, {
+provide(BEMDOM.decl({ block: 'glue-field_type_mod', baseBlock: 'glue-field' }, {
 
     onSetMod: {
         js: {
@@ -23,13 +23,11 @@ DOM.decl({ block: 'glue-field_type_mod', baseBlock: 'glue-field' }, {
         var modVal = this.model.get(this.name);
 
         if (this._fieldType == 'boolean')
-            modVal = modVal ? 'yes' : '';
+            modVal = modVal ? true : false;
 
         this._gluedBlock.setMod(this._gluedElem, this.params.modName, modVal);
     }
 
-});
-
-provide(DOM);
+}));
 
 });

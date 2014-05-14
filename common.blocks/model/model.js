@@ -8,7 +8,8 @@ var changesTimeout = 500,
     ID_SEPARATOR = ':',
     MODELS_SEPARATOR = ',',
     ANY_ID = '*',
-    modelsGroupsCache = {};
+    modelsGroupsCache = {},
+    constructorsCache = {};
 
 var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
 
@@ -86,20 +87,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
             });
 
         objects.each(this.fieldsDecl, function(props, name) {
-            var field = _this.fields[name] = MODEL.FIELD.create(name, props, _this);
-
-            if (props.dependsFrom) {
-                if (!Array.isArray(props.dependsFrom))
-                    props.dependsFrom = [props.dependsFrom];
-
-                objects.each(props.dependsFrom, function(dependName) {
-                    var fieldsDecl = _this.fieldsDecl[dependName];
-
-                    fieldsDecl.dependsTo || (fieldsDecl.dependsTo = []);
-                    fieldsDecl.dependsTo.push(name);
-                });
-            }
-
+            _this.fields[name] = MODEL.FIELD.create(name, props, _this);
         });
 
         data && objects.each(this.fields, function(field, name) {
@@ -127,10 +115,19 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
 
         fieldsDecl && fieldsDecl.dependsTo && objects.each(fieldsDecl.dependsTo, function(childName) {
             var fieldDecl = _this.fieldsDecl[childName],
-                field = _this.fields[childName];
+                field = _this.fields[childName],
+                val;
 
-            field && fieldDecl.calculate &&
-            _this.set(childName, fieldDecl.calculate.call(_this, _this.fields[name].get()), opts);
+            if (field && fieldDecl.calculate && fieldDecl.dependsFrom) {
+                val = fieldDecl.dependsFrom.length > 1 ? fieldDecl.dependsFrom.reduce(function(res, name) {
+                    res[name] = _this.fields[name].get();
+
+                    return res;
+                }, {}) : _this.fields[fieldDecl.dependsFrom[0] || fieldDecl.dependsFrom].get();
+
+                _this.set(childName, fieldDecl.calculate.call(_this, val), opts);
+            }
+
         });
 
         return this;
@@ -154,8 +151,8 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
             }[type];
 
         if (this.hasField(name) && method) {
-            if (fieldDecl.calculate) // fixme: вызывать calculate только по изменению связанных полей
-                this.set(name, fieldDecl.calculate.call(this));
+            if (fieldDecl.calculate && !fieldDecl.dependsFrom)
+                return fieldDecl.calculate.call(this);
 
             return this.fields[name][method]();
         }
@@ -177,7 +174,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
         if (!field || !fieldsScheme) return this;
 
         if (!field.isEqual(value)) {
-            field.set(value, opts);
+            field[opts.isInit ? 'initData' : 'set'](value, opts);
         }
 
         return this;
@@ -195,9 +192,10 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
         } else {
             opts = name;
 
-            objects.each(this.fields, function(field) {
-                field.clear(opts);
-            });
+            objects.each(this.fields, function(field, fieldName) {
+                if (field.getType() !== 'id' && !this.fieldsDecl[fieldName].calculate)
+                    field.clear(opts);
+            }, this);
         }
 
         this.trigger('clear', opts);
@@ -312,10 +310,12 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      * @returns {Object}
      */
     toJSON: function() {
-        var res = {};
+        var res = {},
+            _this = this;
 
         objects.each(this.fields, function(field, fieldName) {
-            res[fieldName] = field.toJSON();
+            if (!_this.fieldsDecl[fieldName].internal)
+                res[fieldName] = field.toJSON();
         });
 
         return res;
@@ -325,23 +325,25 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      * Назначает обработчик события на модель или поле модели
      * @param {String} [field] имя поля
      * @param {String} e имя события
+     * @param {Object} [data] дополнительные данные события
      * @param {Function} fn обработчик события
      * @param {Object} ctx контекст вызова обработчика
-     * @returns {MODEL}
+     * @returns {BEM.MODEL}
      */
-    on: function(field, e, fn, ctx) {
+    on: function(field, e, data, fn, ctx) {
         if (functions.isFunction(e)) {
-            ctx = fn;
-            fn = e;
-            e = field;
-            field = undefined;
-        }
+                ctx = fn;
+                fn = data;
+                data = e;
+                e = field;
+                field = undefined;
+            }
 
-        !field ?
-            this.__base(e, fn, ctx) :
-            field.split(' ').forEach(function(name) {
-                this.fields[name].on(e, fn, ctx);
-            }, this);
+            !field ?
+                this.__base(e, data, fn, ctx) :
+                field.split(' ').forEach(function(name) {
+                    this.fields[name].on(e, data, fn, ctx);
+                }, this);
 
         return this;
     },
@@ -386,7 +388,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
         }
 
         !field ?
-            this.__base(e, data) :
+            this.emit(e, data) :
             field.split(' ').forEach(function(name) {
                 this.fields[name].trigger(e, data);
             }, this);
@@ -440,18 +442,32 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      */
     validate: function() {
         var _this = this,
-            res = {};
+            res = {},
+            validateRes;
 
-        objects.each(this.fieldsDecl, function(fieldDecl, fieldName) {
-            if (!_this.fields[fieldName].isValid()) {
-                (res.errorFields || (res.errorFields = [])).push(fieldName);
+        if (name) {
+            validateRes = this.fields[name].validate();
+            if (validateRes !== true) {
+                res.errorFields = [name];
+                res.errors = validateRes.invalidRules;
             }
-        });
+        } else {
+            objects.each(this.fieldsDecl, function(fieldDecl, name) {
+                validateRes = _this.fields[name].validate();
+                if (validateRes !== true) {
+                    (res.errorFields || (res.errorFields = [])).push(name);
+                    res.errors = (res.errors || []).concat(validateRes.invalidRules);
+                    (res.errorsData || (res.errorsData = {}))[name] = validateRes.invalidRules;
+                }
+            });
+        }
 
-        if (!res.errorFields)
+        if (!res.errors)
             res.valid = true;
         else
             this.trigger('error', res);
+
+        this.trigger('validated', res);
 
         return res;
     }
@@ -470,6 +486,11 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
     decls: {},
 
     /**
+     * Хранилище данных для моделей
+     */
+    modelsData: {},
+
+        /**
      * Хранилища обработчиков событий на моделях и полях
      */
     modelsTriggers: {},
@@ -486,6 +507,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      *     XXX: {String|Number}
      *     XXX: {
      *         {String} [type] тип поля
+     *         {Boolean} [internal] внутреннее поле
      *         {*|Function} [default] дефолтное значение
      *         {*|Function} [value] начанольное значение
      *         {Object|Function} [validation] ф-ия конструктор объекта валидации или он сам
@@ -495,8 +517,9 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      *         {String|Array} [dependsFrom] массив от которых зависит значение поля
      *     }
      * }} fields где ключ имя поля, значение строка с типом или объект вида
+     * @param {Object} staticProps Статические методы и поля
      */
-    decl: function(decl, fields) {
+    decl: function(decl, fields, staticProps) {
         if (typeof decl == 'string') {
             decl = { model: decl };
         } else if (decl.name) {
@@ -517,9 +540,67 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
 
         MODEL.models[decl.model] = {};
         MODEL.decls[decl.model] = fields;
-        // todo: реализовать возможность задавать статические свойства модели
+
+        staticProps && objects.each(staticProps, function(props, name) {
+            if (name in MODEL.prototype) throw new Error('method "' + name + '" is protected');
+        });
+        constructorsCache[decl.model] = inherit(constructorsCache[decl.baseModel] || MODEL, staticProps);
+
+        MODEL._buildDeps(fields, decl.model);
 
         return this;
+    },
+
+    /**
+     * Устанавливает связи между зависимыми полями
+     * @param {Object} fieldDecl декларация полей
+     * @param {String} modelName имя модели
+     * @private
+     */
+    _buildDeps: function(fieldDecl, modelName) {
+        var fieldNames = Object.keys(fieldDecl),
+            deps = {};
+
+        function pushDeps(fields, toPushDeps) {
+            fields.forEach(function(field) {
+                var decl = fieldDecl[field];
+
+                if (!decl)
+                    throw Error('in model "' + modelName + '" depended field "' + field +'" is not declared');
+                if (toPushDeps.indexOf(field) !== -1)
+                    throw Error('in model "' + modelName + '" circle fields dependence: ' +
+                        toPushDeps.concat(field).join(' -> '));
+
+                var fieldDeps = (deps[field] || (deps[field] = []));
+
+                fieldDeps.push.apply(fieldDeps, toPushDeps.filter(function(name) {
+                    return fieldDeps.indexOf(name) === -1
+                }));
+
+                if (decl.dependsFrom && !Array.isArray(decl.dependsFrom))
+                    decl.dependsFrom = [decl.dependsFrom];
+
+                decl.dependsFrom &&
+                    pushDeps(decl.dependsFrom, toPushDeps.concat(field));
+            });
+        }
+
+        fieldNames.forEach(function(fieldName) {
+            var field = fieldDecl[fieldName];
+
+            if (field.dependsFrom && !Array.isArray(field.dependsFrom))
+                field.dependsFrom = [field.dependsFrom];
+
+            deps[fieldName] || field.dependsFrom && pushDeps(field.dependsFrom, [fieldName]);
+        });
+
+        fieldNames.forEach(function(fieldName) {
+            if (deps[fieldName])
+                fieldDecl[fieldName].dependsTo = deps[fieldName].sort(function(a, b) {
+                    return deps[b] ? (deps[b].indexOf(a) != -1 ? 1 : -1) : 0;
+                });
+        });
+
     },
 
     /**
@@ -545,21 +626,15 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
 
         // выставляем id из поля типа 'id' или из декларации
         objects.each(decl, function(field, name) {
-            if (field.type === 'id') {
-                var id = data[name];
-
-                if (id === undefined)
-                    modelParams.id = data[name] = identify();
-                else
-                    modelParams.id = id;
-            }
+            if (field.type === 'id')
+                modelParams.id = (data && data[name]);
         });
 
-        if (modelParams.id === undefined)
+        if (typeof modelParams.id === 'undefined')
             modelParams.id = identify();
 
         // создаем модель
-        var model = new MODEL(modelParams, data);
+        var model = new (constructorsCache[modelParams.name] || MODEL)(modelParams, data);
 
         MODEL._addModel(model);
         model.trigger('create', { model: model });
@@ -583,26 +658,26 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
     get: function(modelParams, dropCache) {
         if (typeof modelParams == 'string') modelParams = { name: modelParams };
 
-        if (!modelParams.id) modelParams.id = ANY_ID;
+        if (typeof modelParams.id === 'undefined') modelParams.id = ANY_ID;
 
         var name = modelParams.name,
             modelsByName = MODEL.models[name],
             models = [],
             modelsCacheByName = modelsGroupsCache[name],
 
-            path = MODEL.buildPath(modelParams),
+            path = modelParams.path || MODEL.buildPath(modelParams),
             paths = path.split(MODELS_SEPARATOR);
 
         if (!MODEL.decls[name])
             throw('model "' + name + '" is not declared');
 
-        if (!dropCache && modelsCacheByName && modelsCacheByName[path]) return modelsCacheByName[path];
+        if (!dropCache && modelsCacheByName && modelsCacheByName[path]) return modelsCacheByName[path].slice();
 
         for (var ip = 0, np = paths.length; ip < np; ip++) {
             var pathRegexp = MODEL._getPathRegexp(paths[ip]);
 
             for (var mPath in modelsByName) {
-                if (modelsByName.hasOwnProperty(mPath) && (new RegExp(pathRegexp, 'g')).test(mPath))
+                if (modelsByName.hasOwnProperty(mPath) && modelsByName[mPath] !== null && (new RegExp(pathRegexp, 'g')).test(mPath))
                     models.push(modelsByName[mPath]);
             }
         }
@@ -621,6 +696,27 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      */
     getOne: function(modelParams, dropCache) {
         return this.get(modelParams, dropCache).pop();
+    },
+
+    /**
+     * Возвращает созданный или создает экземпляр модели
+     * @param {Object|String} modelParams @see get.modelParams
+     * @returns {BEM.MODEL|undefined}
+     */
+    getOrCreate: function(modelParams) {
+        if (typeof modelParams === 'string') modelParams = { name: modelParams };
+
+        var model = MODEL.getOne(modelParams);
+
+        if (!model) {
+            model = MODEL.create(
+                modelParams.name,
+                MODEL.modelsData[modelParams.name][MODEL.buildPath(modelParams)] || {});
+        }
+
+        return MODEL.getOne(modelParams) || MODEL.create(
+            modelParams.name,
+            MODEL.modelsData[modelParams.name][MODEL.buildPath(modelParams)] || {});
     },
 
     /**
@@ -811,7 +907,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
     _addModel: function(model) {
 
         MODEL.models[model.name][model.path()] = model;
-        delete modelsGroupsCache[model.name];
+        modelsGroupsCache[model.name] = null;
 
         MODEL
             ._bindToModel(model)
@@ -841,11 +937,11 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
                 field.destruct();
             });
 
-            delete MODEL.models[this.name][this.path()];
+            MODEL.models[this.name][this.path()] = null;
             this.trigger('destruct', { model: this });
         }, modelParams, true);
 
-        delete modelsGroupsCache[modelParams.name];
+        modelsGroupsCache[modelParams.name] = null;
 
         return this;
     },
@@ -886,7 +982,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
 
         return (parts.parent ? parts.parent + CHILD_SEPARATOR : '') +
             pathParts.name +
-            ID_SEPARATOR + (pathParts.id || ANY_ID)  +
+            ID_SEPARATOR + (typeof pathParts.id !== 'undefined' ? pathParts.id : ANY_ID)  +
             (parts.child ? CHILD_SEPARATOR + parts.child : '');
     },
 
@@ -921,5 +1017,32 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
 });
 
 provide(MODEL);
+
+});
+
+// todo: переименовать модуль согласно имени
+modules.define('i-model', ['i-bem__dom', 'model'], function(provide, BEMDOM, MODEL) {
+
+provide(BEMDOM.decl({ block : 'model' }, /** @lends link.prototype */{
+    onSetMod: {
+        js: {
+            inited: function() {
+                var data = MODEL.modelsData,
+                    modelsParams = this.params.data,
+                    storeData = function storeData(modelParams) {
+                        var modelData = data[modelParams.name] || (data[modelParams.name] = {});
+
+                        modelData[MODEL.buildPath(modelParams)] = modelParams.data;
+                    };
+
+                if (Array.isArray(modelsParams)) {
+                    modelsParams.forEach(storeData);
+                } else {
+                    storeData(modelsParams);
+                }
+            }
+        }
+    }
+}));
 
 });

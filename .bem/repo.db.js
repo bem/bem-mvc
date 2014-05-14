@@ -23,6 +23,10 @@ module.exports = {
         type     : 'git',
         url      : 'git://github.com/bem/bem-controls.git'
     },
+    'bem-components' : {
+        type     : 'git',
+        url      : 'git://github.com/bem/bem-components.git'
+    },
     'bem-core' : {
         type     : 'git',
         url      : 'git://github.com/bem/bem-core.git'

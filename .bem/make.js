@@ -3,22 +3,37 @@
 //process.env.YENV = 'production';
 process.env.XJST_ASYNCIFY = 'yes';
 
-require('bem-environ/lib/nodes');
+// make.js
 
-MAKE.decl('Arch', {
+// Initialize environ with global root path (see API section for more examples)
+var environ = require('bem-environ')(__dirname);
 
-    blocksLevelsRegexp: /^.+?\.blocks/,
+function extendMake(registry) {
 
-    bundlesLevelsRegexp: /^.+?\.bundles$/,
+    // Extend common `bem make` build process with `bem-environ`'s nodes (optional)
+    environ.extendMake(registry);
 
-    libraries: [
-        'bem-core @ v1.0.0',
-        'bem-controls @ v2',
-        'bem-pr @ v0.2'
-    ]
+    registry.decl('Arch', {
 
-});
+        blocksLevelsRegexp: /^.+?\.blocks/,
 
+        bundlesLevelsRegexp: /^.+?\.bundles$/,
+
+        libraries: [
+            'bem-core @ v2.2.1',
+            'bem-components @ v2',
+            'bem-pr @ v0.2'
+        ]
+
+    });
+
+}
+
+// For compatibility with bem-tools << 1.0.0
+if (MAKE) extendMake(MAKE);
+
+// For compatibility with bem-tools >= 1.0.0
+if (module && module.exports) module.exports = extendMake;
 
 MAKE.decl('BundleNode', {
 

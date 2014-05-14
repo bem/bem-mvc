@@ -37,7 +37,7 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
         opts = objects.extend(opts, { field: this.name });
 
         this.model.trigger('field-' + event, opts);
-        this.trigger(event, opts);
+        this.emit(event, opts);
 
         return this;
     },
@@ -59,7 +59,7 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
      * @private
      */
     _initDefaults: function() {
-        this._default = this.params['default'] || this._default;
+            this._default = this.params['default'] !== undefined ? this.params['default'] : this._default;
 
         this._validationRules = this._getValidationRules();
 
@@ -106,7 +106,7 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
      * @returns {FIELD}
      */
     set: function(value, opts) {
-        if (this.isEqual(value) && !(opts && opts.isInit)) return this;
+            if (!(opts && opts.isInit) && this.isEqual(value)) return this;
 
         return this._set(value, opts);
     },
@@ -122,6 +122,11 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
         this._raw = this.checkEmpty(value) ? this._default : value;
         this._value = (this.params.preprocess || this._preprocess).call(this, this._raw);
         this._formatted = (this.params.format || this._format).call(this, this._value, this.params.formatOptions || {});
+
+        if (opts)
+            opts.value = this._value;
+        else
+            opts = { value: this._value };
 
         this._trigger(opts && opts.isInit ? 'init' : 'change', opts);
 
@@ -148,14 +153,27 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
     },
 
     /**
+     * Проверяет, что значение является NaN, не используя приведение типов.
+     * @param {*} v Значение.
+     * @returns {boolean}
+     */
+    isNaN: function(v) {
+        // Такой способ позволяет точно выявить NaN константу
+        // в то время как глобальный isNaN использует приведение и вернет
+        // true при вычислении window.isNaN('hello')
+        return v != v;
+    },
+
+    /**
      * Поверяет равно ли текущее значение поля значению переменной value
      * @param {*} value значение для сравнения с текущим значением
      * @returns {boolean}
      */
     isEqual: function(value) {
         value = (this.params.preprocess || this._preprocess).call(this, value); // fixme: preprocess выполняется 2 разе при вызове _set
-        return value === this.get() || this.isEmpty() && this.checkEmpty(value);
-    },
+        return value === this.get() ||
+            this.isEmpty() && this.checkEmpty(value) ||
+            this.isNaN(value) && this.isNaN(this.get());    },
 
     /**
      * Проверка значения value на пустоту
@@ -171,7 +189,7 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
      * @returns {boolean}
      */
     isChanged: function() {
-        return !this.isEqual(this._fixedValue);
+        return !this.isEqual(this.getFixedValue());
     },
 
     /**
@@ -179,7 +197,7 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
      * @returns {*}
      */
     getFixedValue: function() {
-        return this._fixedValue || this.getDefault();
+        return typeof this._fixedValue !== 'undefined' ? this._fixedValue : this.getDefault();
     },
 
     /**
@@ -311,10 +329,12 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
             if (getOrExec(validation.validate)) {
                 return true;
             } else {
-                this._trigger('error', {
+                var invalidRule = {
                     text: getOrExec(validation.text)
-                });
-                return { valid: false };
+                };
+
+                this._trigger('error', invalidRule);
+                return { valid: false, invalidRules: [invalidRule] };
             }
         }
 
@@ -323,24 +343,32 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
                 ruleParams = getOrExec(ruleParams);
                 ruleParams = typeof ruleParams === 'object' ? ruleParams : { value: ruleParams };
 
-                var rule = objects.extend({}, _this._validationRules[ruleName], ruleParams);
+                var rule = objects.extend({}, _this._validationRules[ruleName], ruleParams),
+                    invalidRule;
 
                 if (getOrExec(rule.needToValidate) === false) return true;
 
                 if (!getOrExec(rule.validate, getOrExec(rule.value))) {
-                    invalidRules.push(ruleName);
-
-                    _this.trigger('error', {
+                    invalidRule = {
                         rule: ruleName,
                         text: getOrExec(rule.text)
-                    });
+                    };
+                    invalidRules.push(invalidRule);
+
+                    _this._trigger('error', invalidRule);
                 }
             });
         }
 
         return invalidRules.length ?
-        { valid: false, invalidRules: invalidRules } :
+            { valid: false, invalidRules: invalidRules } :
             true;
+    },
+
+    trigger: function() {
+        this.emit.apply(this, arguments);
+
+        return this;
     },
 
     destruct: function() {}

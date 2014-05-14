@@ -1,8 +1,10 @@
-modules.define('test', ['model', 'sinon', 'jquery'], function(provide, MODEL, sinon, $) {
+modules.define('test', ['model', 'sinon', 'jquery', 'chai'], function(provide, MODEL, sinon, $, chai) {
     var _spy = sinon.spy;
     sinon.spy = function() {
         return _spy.call(sinon)
     };
+
+    var expect = chai.expect;
 
 describe('MODEL', function() {
 
@@ -13,21 +15,21 @@ describe('MODEL', function() {
         });
 
         it('should create model without params', function() {
-            expect(MODEL
+            MODEL
                 .create('model-to-create')
-                .toJSON()).toEqual({
+                .toJSON().should.be.eql({
                     f1: '',
                     f2: ''
                 });
         });
 
         it('should create model with params', function() {
-            expect(MODEL
+            MODEL
                 .create('model-to-create', {
                     f1: 'F1',
                     f2: 'F2'
                 })
-                .toJSON()).toEqual({
+                .toJSON().should.be.eql({
                     f1: 'F1',
                     f2: 'F2'
                 });
@@ -40,24 +42,24 @@ describe('MODEL', function() {
             f2: 'number'
         }, {
             modelMethod: function() {},
-            getSum: function() { return this.get('f1') + this.get('f2'); },
+            getSum: function() { return this.get('f1') + this.get('f2'); }
         });
 
         it('should create model with methods', function() {
-            expect(typeof MODEL.create('model-with-methods', {}).modelMethod).toEqual('function');
+            (typeof MODEL.create('model-with-methods', {}).modelMethod).should.be.equal('function');
         });
 
         it('should return sum of fields', function() {
-            expect(MODEL.create('model-with-methods', { f1: 1, f2: 2 }).getSum()).toEqual(3);
+            MODEL.create('model-with-methods', { f1: 1, f2: 2 }).getSum().should.be.eql(3);
         });
 
         it('should not override protected methods', function() {
-            expect(function() {
+            (function() {
                 MODEL.decl('model-with-protected-method', {
                 }, {
                     set: function() {}
                 });
-            }).toThrow(new Error('method "set" is protected'));
+            }).should.to.throw('method "set" is protected');
         });
     });
 
@@ -104,15 +106,15 @@ describe('MODEL', function() {
         });
 
         it('should not have "getSum" method', function() {
-            expect(MODEL.create('base-model-with-methods', { f1: 1 }).getSum).not.toBeDefined();
+            expect(MODEL.create('base-model-with-methods', { f1: 1 }).getSum).to.be.undefined;
         });
 
         it('should have "getF1" method', function() {
-            expect(MODEL.create('model-with-base-and-methods', { f1: 1, f2: 2 }).getF1).toBeDefined();
+            expect(MODEL.create('model-with-base-and-methods', { f1: 1, f2: 2 }).getF1).to.be.defined;
         });
 
         it('should return sum of f1 and f2', function() {
-            expect(MODEL.create('model-with-base-and-methods', { f1: 1, f2: 2 }).getSum()).toEqual(3);
+            expect(MODEL.create('model-with-base-and-methods', { f1: 1, f2: 2 }).getSum()).to.be.equal(3);
         });
     });
 
@@ -146,7 +148,7 @@ describe('MODEL', function() {
                         notInternalField: 'i\'m not internal'
                     })
                     .toJSON())
-                .toEqual({
+                .to.be.eql({
                     publicField: 'public',
                     notInternalField: 'i\'m not internal'
                 });
@@ -289,6 +291,93 @@ describe('MODEL', function() {
 
         model1.trigger('custom-event');
     });
+
+    describe('trigger', function() {
+        MODEL.decl('model-for-trigger', { f1: 'number', f2: 'string' });
+
+        it('should trigger event (model name)', function() {
+            var onModelChange = sinon.spy('onModelChange'),
+                onFieldChange = sinon.spy('onFieldChange'),
+                disabledHandler = sinon.spy('disabledHandler');
+
+            MODEL
+                .create('model-for-trigger', { f1: 1, f2: 'bla' })
+                .on('change', onModelChange)
+                .on('f1', 'change', onFieldChange)
+                .on('change', disabledHandler)
+                .un('change', disabledHandler);
+
+            MODEL.trigger('model-for-trigger', 'f1', 'change');
+
+            // событие на поле не всплывёт после .trigger только после set
+            onModelChange.should.not.have.been.calledOnce;
+
+            onFieldChange.should.have.been.calledOnce;
+            disabledHandler.should.not.have.been.calledOnce;
+
+            MODEL.getOne('model-for-trigger').set('f1', 2);
+            onModelChange.should.have.been.calledOnce; // событие на поле всплывёт после set
+        });
+
+
+        it('should trigger event (model path object)', function() {
+            var onModelChange = sinon.spy('onModelChange'),
+                onFieldChange = sinon.spy('onFieldChange'),
+                disabledHandler = sinon.spy('disabledHandler'),
+                modelParams = { name: 'model-for-trigger', id: 1 };
+
+            MODEL
+                .create(modelParams, { f1: 1, f2: 'bla' })
+                .on('change', onModelChange)
+                .on('f1', 'change', onFieldChange)
+                .on('change', disabledHandler)
+                .un('change', disabledHandler);
+
+
+            MODEL.trigger(modelParams, 'f1', 'change');
+
+            onModelChange.should.not.have.been.calledOnce; // событие на поле не всплывёт после .trigger только после set
+
+            onFieldChange.should.have.been.calledOnce;
+            disabledHandler.should.not.have.been.calledOnce
+
+            MODEL.getOne(modelParams).set('f1', 2);
+            onModelChange.should.have.been.calledOnce; // событие на поле всплывёт после set
+        });
+
+
+    });
+
+    describe('destruct', function() {
+        MODEL.decl('model-for-destruct1', { f1: 'number', f2: 'string' });
+        MODEL.decl('model-for-destruct2-parent', { f1: 'number', f2: 'string' });
+        MODEL.decl('model-for-destruct2', { f1: 'number', f2: 'string' });
+        MODEL.decl('model-for-destruct3', { f1: 'number', f2: 'string' });
+
+        var modelForDestruct1 = MODEL.create('model-for-destruct1', { f1: 1, f2: 'bla' }),
+            modelForDestruct2Params = {
+                name: 'model-for-destruct2',
+                parentName: 'model-for-destruct2-parent'
+            },
+            modelForDestruct2 = MODEL.create(modelForDestruct2Params, { f1: 1, f2: 'bla' }),
+            modelForDestruct3 = MODEL.create('model-for-destruct3', { f1: 1, f2: 'bla' });
+
+        it('destruct(MODEL)', function() {
+            MODEL.destruct(modelForDestruct1);
+            expect(MODEL.get(modelForDestruct1.name, 1).length).to.be.equal(0);
+        });
+
+        it('destruct(name)', function() {
+            MODEL.destruct(modelForDestruct3.name);
+            expect(MODEL.get(modelForDestruct3.name, 1).length).to.be.equal(0);
+        });
+
+        it('destruct(modelPath)', function() {
+            MODEL.destruct(modelForDestruct2Params);
+            expect(MODEL.get(modelForDestruct2.name, 1).length).to.be.equal(0);
+        });
+
+    });
 /*
     //todo: написать тест на валидацию по максимально развернутой схеме
     describe('validate', function() {
@@ -355,93 +444,6 @@ describe('MODEL', function() {
         });
     });
 
-
-    describe('trigger', function() {
-        MODEL.decl('model-for-trigger', { f1: 'number', f2: 'string' });
-
-        it('should trigger event (model name)', function() {
-            var onModelChange = sinon.spy('onModelChange'),
-                onFieldChange = sinon.spy('onFieldChange'),
-                disabledHandler = sinon.spy('disabledHandler');
-
-            MODEL
-                .create('model-for-trigger', { f1: 1, f2: 'bla' })
-                .on('change', onModelChange)
-                .on('f1', 'change', onFieldChange)
-                .on('change', disabledHandler)
-                .un('change', disabledHandler);
-
-
-            MODEL.trigger('model-for-trigger', 'f1', 'change');
-
-            expect(onModelChange).not.toHaveBeenCalled(); // событие на поле не всплывёт после .trigger только после set
-
-            expect(onFieldChange).toHaveBeenCalled();
-            expect(disabledHandler).not.toHaveBeenCalled();
-
-            MODEL.getOne('model-for-trigger').set('f1', 2);
-            expect(onModelChange).toHaveBeenCalled(); // событие на поле всплывёт после set
-        });
-
-
-        it('should trigger event (model path object)', function() {
-            var onModelChange = sinon.spy('onModelChange'),
-                onFieldChange = sinon.spy('onFieldChange'),
-                disabledHandler = sinon.spy('disabledHandler'),
-                modelParams = { name: 'model-for-trigger', id: 1 };
-
-            MODEL
-                .create(modelParams, { f1: 1, f2: 'bla' })
-                .on('change', onModelChange)
-                .on('f1', 'change', onFieldChange)
-                .on('change', disabledHandler)
-                .un('change', disabledHandler);
-
-
-            MODEL.trigger(modelParams, 'f1', 'change');
-
-            expect(onModelChange).not.toHaveBeenCalled(); // событие на поле не всплывёт после .trigger только после set
-
-            expect(onFieldChange).toHaveBeenCalled();
-            expect(disabledHandler).not.toHaveBeenCalled();
-
-            MODEL.getOne(modelParams).set('f1', 2);
-            expect(onModelChange).toHaveBeenCalled(); // событие на поле всплывёт после set
-        });
-
-
-    });
-
-    describe('destruct', function() {
-        MODEL.decl('model-for-destruct1', { f1: 'number', f2: 'string' });
-        MODEL.decl('model-for-destruct2-parent', { f1: 'number', f2: 'string' });
-        MODEL.decl('model-for-destruct2', { f1: 'number', f2: 'string' });
-        MODEL.decl('model-for-destruct3', { f1: 'number', f2: 'string' });
-
-        var modelForDestruct1 = MODEL.create('model-for-destruct1', { f1: 1, f2: 'bla' }),
-            modelForDestruct2Params = {
-                name: 'model-for-destruct2',
-                parentName: 'model-for-destruct2-parent'
-            },
-            modelForDestruct2 = MODEL.create(modelForDestruct2Params, { f1: 1, f2: 'bla' }),
-            modelForDestruct3 = MODEL.create('model-for-destruct3', { f1: 1, f2: 'bla' });
-
-        it('destruct(MODEL)', function() {
-            MODEL.destruct(modelForDestruct1);
-            expect(MODEL.get(modelForDestruct1.name, 1).length).toEqual(0);
-        });
-
-        it('destruct(name)', function() {
-            MODEL.destruct(modelForDestruct3.name);
-            expect(MODEL.get(modelForDestruct3.name, 1).length).toEqual(0);
-        });
-
-        it('destruct(modelPath)', function() {
-            MODEL.destruct(modelForDestruct2Params);
-            expect(MODEL.get(modelForDestruct2.name, 1).length).toEqual(0);
-        });
-
-    });
 
     describe('buildPath', function() {
 
