@@ -1,31 +1,34 @@
 {
   "author": "",
-  "name": "yavmc",
-  "version": "0.0.1",
+  "name": "bem-mvc",
+  "version": "2.0.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/bem/bem-mvc.git"
   },
+  "bugs": "https://github.com/bem/bem-mvc/issues",
+  "private": true,
   "engines": {
-    "node": "0.6 | 0.7 | 0.8 | 0.9 | 0.10"
+    "node": ">=0.10"
   },
   "dependencies": {
-    "bem" : "0.8.x",
-    "bem-environ": "1.4.x"
+    "bem": "~0.8.0",
+    "bem-environ": "~1.4.0"
   },
   "devDependencies": {
-    "bower": "1.3.3",
+    "bower-npm-install": "~0.5.4",
     "enb-bem-docs": "git://github.com/andrewblond/enb-bem-docs.git#6b1544a8f3e516eaee3303cf84131e773868eb2b",
     "enb": "0.10.0",
     "enb-diverse-js": "0.1.0",
     "enb-modules": "0.1.1",
     "enb-bemxjst": "1.1.1",
     "enb-roole": "0.2.0",
-    "enb-autoprefixer": "0.1.0"
+    "enb-autoprefixer": "0.1.0",
+    "bem-tools-autoprefixer": "0.0.3",
+    "roole": "~0.9.0"
   },
   "scripts": {
-    "deps": "bower install",
+    "deps": "bower-npm-install --non-interactive",
     "build": "enb make docs -n && enb make"
-  },
-  "private": true
+  }
 }

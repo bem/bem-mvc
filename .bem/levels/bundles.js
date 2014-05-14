@@ -1,37 +1,22 @@
-var PATH = require('path'),
-    join = PATH.join,
-    environ = require('bem-environ'),
+var environ = require('bem-environ'),
+    getTechResolver = environ.getTechResolver,
 
-    PRJ_ROOT = environ.PRJ_ROOT,
-    PRJ_TECHS = join(PRJ_ROOT, '.bem/techs'),
     BEMCORE_TECHS = environ.getLibPath('bem-core', '.bem/techs'),
     BEMPR_TECHS = environ.getLibPath('bem-pr', 'bem/techs');
 
+exports.baseLevelPath = require.resolve('./blocks');
+
 exports.getTechs = function() {
+    var techs = this.__base();
 
-    return {
-        'bemjson.js'         : join(PRJ_TECHS, 'bemjson.js'),
-        'bemdecl.js'         : 'v2/bemdecl.js',
-        'deps.js'            : 'v2/deps.js',
-        'js'                 : 'v2/js-i',
-        'test.js'            : join(PRJ_TECHS, 'test.js.js'),
-        'test.js+browser.js+bemhtml.js' : join(BEMPR_TECHS, 'test.js+browser.js+bemhtml.js'),
-        'vanilla.js'         : join(BEMCORE_TECHS, 'vanilla.js.js'),
-        'browser.js'         : join(BEMCORE_TECHS, 'browser.js.js'),
-        'browser.js+bemhtml' : join(BEMCORE_TECHS, 'browser.js+bemhtml.js'),
-        'css'                : 'v2/css',
-        'ie.css'             : 'v2/ie.css',
-        'ie6.css'            : 'v2/ie6.css',
-        'ie7.css'            : 'v2/ie7.css',
-        'ie8.css'            : 'v2/ie8.css',
-        'ie9.css'            : 'v2/ie9.css',
+    // use techs from bem-pr library
+    ['test.js'].forEach(getTechResolver(techs, BEMPR_TECHS));
 
-        'bemhtml'            : join(BEMCORE_TECHS, 'bemhtml.js'),
-        'html'               : join(BEMCORE_TECHS, 'html.js')
-    };
+    // Use techs from lib bem-core
+    ['browser.js+bemhtml', 'html'].forEach(getTechResolver(techs, BEMCORE_TECHS));
 
+    return techs;
 };
 
 // Create bundles in bemjson.js tech
 exports.defaultTechs = ['bemjson.js'];
-

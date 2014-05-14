@@ -1,39 +1,19 @@
 "use strict";
+/* global MAKE:false */
 
 //process.env.YENV = 'production';
 process.env.XJST_ASYNCIFY = 'yes';
 
-// make.js
+var PATH = require('path');
 
-// Initialize environ with global root path (see API section for more examples)
-var environ = require('bem-environ')(__dirname);
+require('bem-tools-autoprefixer').extendMake(MAKE);
 
-function extendMake(registry) {
+MAKE.decl('Arch', {
 
-    // Extend common `bem make` build process with `bem-environ`'s nodes (optional)
-    environ.extendMake(registry);
+    blocksLevelsRegexp : /^.+?\.blocks/,
+    bundlesLevelsRegexp : /^.+?\.bundles$/
 
-    registry.decl('Arch', {
-
-        blocksLevelsRegexp: /^.+?\.blocks/,
-
-        bundlesLevelsRegexp: /^.+?\.bundles$/,
-
-        libraries: [
-            'bem-core @ v2.2.1',
-            'bem-components @ v2',
-            'bem-pr @ v0.2'
-        ]
-
-    });
-
-}
-
-// For compatibility with bem-tools << 1.0.0
-if (MAKE) extendMake(MAKE);
-
-// For compatibility with bem-tools >= 1.0.0
-if (module && module.exports) module.exports = extendMake;
+});
 
 MAKE.decl('BundleNode', {
 
@@ -46,6 +26,7 @@ MAKE.decl('BundleNode', {
             'test.js',
             'test.js+browser.js+bemhtml',
             'browser.js+bemhtml',
+            'roole',
             'css',
             'ie.css',
             'ie7.css',
@@ -55,28 +36,62 @@ MAKE.decl('BundleNode', {
         ];
     },
 
-    'create-js+bemhtml-optimizer-node': function(tech, sourceNode, bundleNode) {
+    getForkedTechs : function() {
+        return this.__base().concat(['browser.js+bemhtml', 'js+bemhtml', 'roole']);
+    },
 
-        sourceNode.getFiles().forEach(function(f) {
-            this['create-js-optimizer-node'](tech, this.ctx.arch.getNode(f), bundleNode);
-        }, this);
+    getLevelsMap : function() {
+        return {
+            desktop : [
+                'libs/bem-core/common.blocks',
+                'libs/bem-core/desktop.blocks',
+                'libs/bem-pr/test.blocks',
+                'libs/bem-components/common.blocks',
+                'libs/bem-components/desktop.blocks',
+                'libs/bem-components/design/common.blocks',
+                'libs/bem-components/design/desktop.blocks',
+                'common.blocks',
+                'desktop.blocks'
+            ]
+        };
+    },
 
+    getLevels : function() {
+        var resolve = PATH.resolve.bind(PATH, this.root),
+            buildLevel = this.getLevelPath().split('.')[0],
+            levels = this.getLevelsMap()[buildLevel] || [];
+
+        return levels
+            .map(function(path) { return resolve(path); })
+            .concat(resolve(PATH.dirname(this.getNodePrefix()), 'blocks'));
     },
 
     'create-test.js-optimizer-node': function(tech, sourceNode, bundleNode) {
-
         sourceNode.getFiles().forEach(function(f) {
             this['create-js-optimizer-node'](tech, this.ctx.arch.getNode(f), bundleNode);
         }, this);
-
     },
 
-    'create-browser.js+bemhtml-optimizer-node': function(tech, sourceNode, bundleNode) {
+    'create-css-node' : function(tech, bundleNode, magicNode) {
+        var source = this.getBundlePath('roole');
+        if(this.ctx.arch.hasNode(source)) {
+            return this.createAutoprefixerNode(tech, this.ctx.arch.getNode(source), bundleNode, magicNode);
+        }
+    }
 
-        sourceNode.getFiles().forEach(function(f) {
-            this['create-js-optimizer-node'](tech, this.ctx.arch.getNode(f), bundleNode);
-        }, this);
+});
 
+MAKE.decl('AutoprefixerNode', {
+
+    getBrowsers : function() {
+        return [
+            'last 2 versions',
+            'ie 7',
+            'ie 8',
+            'android 2.3',
+            'android 4',
+            'opera 12'
+        ];
     }
 
 });
