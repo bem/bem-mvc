@@ -212,7 +212,7 @@
     text-decoration: none;
 }
 
-.todos__filter_active_yes
+.todos__filter_active
 {
     font-weight: bold;
 }
@@ -226,7 +226,7 @@
     float: right;
 }
 
-.todos .todos__clear-completed_visible_yes
+.todos .todos__clear-completed_visible
 {
     visibility: visible;
 }

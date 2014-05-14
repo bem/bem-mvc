@@ -1,7 +1,7 @@
 modules.define(
     'todos',
-    ['i-bem__dom', 'jquery', 'BEMHTML', 'glue', 'next-tick'],
-    function(provide, BEMDOM, $, BEMHTML, Glue, nextTick) {
+    ['i-bem__dom', 'jquery', 'BEMHTML', 'glue', 'next-tick', 'keyboard__codes'],
+    function(provide, BEMDOM, $, BEMHTML, Glue, nextTick, keyboardCodes) {
 
 provide(BEMDOM.decl({ block: 'todos', baseBlock: Glue }, {
 
@@ -9,7 +9,7 @@ provide(BEMDOM.decl({ block: 'todos', baseBlock: Glue }, {
 
         js: {
             inited: function() {
-                this.__base();
+                this.__base.apply(this, arguments);
 
                 this.modelPath = this.model.path();
                 this._newTodoInput = this.findBlockOn('new-todo-input', 'input');
@@ -18,7 +18,7 @@ provide(BEMDOM.decl({ block: 'todos', baseBlock: Glue }, {
                 // DOM-события на элементах блока
                 this
                     .bindTo('new-todo-input', 'keypress', function(e, data) {
-                        if (e.keyCode == 13) {
+                        if (e.keyCode == keyboardCodes.ENTER) {
                             this.addTodoItem(this._newTodoInput.getVal());
                             this._newTodoInput.setVal('');
                         }
@@ -68,7 +68,7 @@ provide(BEMDOM.decl({ block: 'todos', baseBlock: Glue }, {
                     .on('show', 'change', function(e, data) {
                         this.delMod(this.elem('filter'), 'active');
 
-                        this.setMod(this.elem('filter', 'type', data.value), 'active', 'yes');
+                        this.setMod(this.elem('filter', 'type', data.value), 'active', true);
                     }, this);
 
                 this._initTodos();
@@ -103,9 +103,11 @@ provide(BEMDOM.decl({ block: 'todos', baseBlock: Glue }, {
      * @param {Array} todos
      */
     updateTodos: function(todos) {
-        this.elem('todo-items').html('');
+        var items = this.elem('todo-items');
 
-        todos && BEMDOM.update(this.elem('todo-items'), BEMHTML.apply(todos.map(this._generateTodoItem, this)));
+        items.html('');
+
+        todos && BEMDOM.update(items, BEMHTML.apply(todos.map(this._generateTodoItem, this)));
     },
 
     /**
@@ -118,7 +120,10 @@ provide(BEMDOM.decl({ block: 'todos', baseBlock: Glue }, {
         return BEMHTML.apply({
             block: 'todos',
             elem: 'todo-item',
-            mods: $.extend({ id: todo.id }, todo.get('done') ? { completed: true } : {}),
+            mods: {
+                id: todo.id,
+                completed: todo.get('done')
+            },
             parentPath: this.modelPath,
             text: todo.get('text'),
             done: todo.get('done'),

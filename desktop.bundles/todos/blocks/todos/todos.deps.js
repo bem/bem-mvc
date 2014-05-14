@@ -1,56 +1,52 @@
 ([
     {
         tech: 'js',
-        mustDeps: [
+        shouldDeps: [
             {
                 block: 'todos',
                 tech: 'bemhtml'
             },
             {
                 block: 'checkbox',
-                mods: { size: 'm' },
+                mods: { size: 'm', theme: 'normal' },
                 tech: 'bemhtml'
             },
             {
                 block: 'button',
                 mods: {
-                    size: ['m', 's', 'xs'],
-                    pseudo: 'yes'
+                    size: ['m', 's'],
+                    pseudo: 'yes',
+                    theme: 'normal'
                 },
                 tech: 'bemhtml'
             }
         ]
     },
     {
-        mustDeps: [
-            {
-                block: 'i-bem'
-            },
-            {
-                block: 'm-todos'
-            },
-            {
-                block: 'glue'
-            },
+        shouldDeps: [
+            'i-bem',
+            'm-todos',
+            'glue',
+            'i-glue-destroy',
             {
                 block: 'link',
-                mods: { pseudo: 'yes' }
-            }
-        ],
-        shouldDeps: [
-            {
-                block: 'i-glue-destroy'
+                mods: { pseudo: true }
             },
             {
                 block: 'checkbox',
-                mods: { size: 'm' }
+                mods: { size: 'm', theme: 'normal' }
             },
             {
                 block: 'button',
                 mods: {
-                    size: ['m', 's', 'xs'],
-                    pseudo: 'yes'
+                    size: ['m', 's'],
+                    pseudo: 'yes',
+                    theme: 'normal'
                 }
+            },
+            {
+                block: 'keyboard',
+                elem: 'codes'
             }
         ]
     }

@@ -1,7 +1,3 @@
 ({
-    mustDeps: [
-        {
-            block: 'model'
-        }
-    ]
+    shouldDeps: ['model']
 })

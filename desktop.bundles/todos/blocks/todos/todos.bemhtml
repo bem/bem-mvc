@@ -1,25 +1,21 @@
-block todos {
-
-    elem title, tag: 'h1'
-
-    elem filter, content: {
+block('todos')(
+    elem('title').tag()('h1'),
+    elem('filter').content()({
         block: 'link',
         url: this.ctx.url,
-        content: this.ctx.content
-    }
-
-    elem completed-count, tag: 'span'
-
-    elem todo-item {
-
-        mix: [
+        content: applyNext()
+    }),
+    elem('completed-count').tag()('span'),
+    elem('todo-item')(
+        mix()([
             {
                 block: 'glue',
                 js: {
                     modelName: 'todo-item',
                     modelId: this.ctx.id,
                     modelParentPath: this.ctx.parentPath
-                }
+                },
+                elemMods: this.extend(this.ctx.mods || {}, { completed: this.ctx.done })
             },
             {
                 block: 'glue',
@@ -32,11 +28,8 @@ block todos {
                     modName: 'completed'
                 }
             }
-        ]
-
-        elemMods: this.ctx.done && this._.extend(this.ctx.mods || {}, { completed: true })
-
-        content: [
+        ]),
+        content()([
             {
                 block: 'checkbox',
                 mix: [
@@ -54,18 +47,22 @@ block todos {
                         }
                     }
                 ],
-                mods: this._.extend({ size: 'm' }, this.ctx.done ? { checked: true } : {})
+                mods: {
+                    size: 'm',
+                    theme: 'normal',
+                    checked: this.ctx.done
+                }
             },
             {
                 elem: 'text',
-                mix: [{
+                mix: {
                     block: 'glue',
                     elem: 'model-field',
                     js: {
                         name: 'text',
                         type: 'inline'
                     }
-                }],
+                },
                 content: this.ctx.text
             },
             {
@@ -84,11 +81,12 @@ block todos {
                         }
                     }
                 ],
-                mods: { size: 's', pseudo: 'yes' },
+                mods: {
+                    size: 's',
+                    pseudo: 'yes'
+                },
                 content: '✖'
             }
-        ]
-
-    }
-
-}
+        ])
+    )
+);
