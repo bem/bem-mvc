@@ -13,6 +13,16 @@
     "bem" : "0.6.x",
     "bem-environ": "1.0.x"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "enb-bem-docs": "git://github.com/andrewblond/enb-bem-docs.git#6b1544a8f3e516eaee3303cf84131e773868eb2b",
+    "enb": "0.10.0",
+    "enb-diverse-js": "0.1.0",
+    "enb-modules": "0.1.1",
+    "enb-bemxjst": "1.1.1"
+  },
+  "scripts": {
+    "deps": "ls",
+    "build": "enb make docs -n"
+  },
   "private": true
 }

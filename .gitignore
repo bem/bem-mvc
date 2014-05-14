@@ -5,6 +5,8 @@ node_modules
 .project
 .svn
 .bem/cache
+.enb/tmp
+desktop.sets
 desktop.bundles/*/*.*
 !desktop.bundles/*/*.bemjson.js
 !desktop.bundles/.bem/*
