@@ -3,7 +3,7 @@ block todos {
     elem title, tag: 'h1'
 
     elem filter, content: {
-        block: 'b-link',
+        block: 'link',
         url: this.ctx.url,
         content: this.ctx.content
     }
@@ -14,11 +14,7 @@ block todos {
 
         mix: [
             {
-<<<<<<< HEAD
-                block: 'i-glue',
-=======
                 block: 'glue',
->>>>>>> Port todos bundle from v1, some cleanup
                 js: {
                     modelName: 'todo-item',
                     modelId: this.ctx.id,
@@ -26,11 +22,7 @@ block todos {
                 }
             },
             {
-<<<<<<< HEAD
-                block: 'i-glue',
-=======
                 block: 'glue',
->>>>>>> Port todos bundle from v1, some cleanup
                 elem: 'model-field',
                 js: {
                     type: 'mod',
@@ -42,7 +34,7 @@ block todos {
             }
         ]
 
-        elemMods: this.ctx.done && this._.extend(this.ctx.mods || {}, { completed: 'yes' })
+        elemMods: this.ctx.done && this._.extend(this.ctx.mods || {}, { completed: true })
 
         content: [
             {
@@ -53,11 +45,8 @@ block todos {
                         elem: 'done-checkbox'
                     },
                     {
-<<<<<<< HEAD
                         block: 'i-glue',
-=======
                         block: 'glue',
->>>>>>> Port todos bundle from v1, some cleanup
                         elem: 'model-field',
                         js: {
                             name: 'done',
@@ -65,16 +54,12 @@ block todos {
                         }
                     }
                 ],
-                mods: this._.extend({ size: 'm' }, this.ctx.done ? { checked: 'yes' } : {})
+                mods: this._.extend({ size: 'm' }, this.ctx.done ? { checked: true } : {})
             },
             {
                 elem: 'text',
                 mix: [{
-<<<<<<< HEAD
-                    block: 'i-glue',
-=======
                     block: 'glue',
->>>>>>> Port todos bundle from v1, some cleanup
                     elem: 'model-field',
                     js: {
                         name: 'text',

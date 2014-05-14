@@ -1,6 +1,9 @@
-modules.define('i-bem__dom', ['jquery', 'BEMHTML'], function(provide, $, BEMHTML, DOM) {
+modules.define(
+    'todos',
+    ['i-bem__dom', 'jquery', 'BEMHTML', 'glue', 'next-tick'],
+    function(provide, BEMDOM, $, BEMHTML, Glue, nextTick) {
 
-DOM.decl({ block: 'todos', baseBlock: 'glue' }, {
+provide(BEMDOM.decl({ block: 'todos', baseBlock: Glue }, {
 
     onSetMod: {
 
@@ -16,19 +19,9 @@ DOM.decl({ block: 'todos', baseBlock: 'glue' }, {
                 this
                     .bindTo('new-todo-input', 'keypress', function(e, data) {
                         if (e.keyCode == 13) {
-                            this.addTodoItem(this._newTodoInput.val());
-                            this._newTodoInput.val('');
+                            this.addTodoItem(this._newTodoInput.getVal());
+                            this._newTodoInput.setVal('');
                         }
-                    })
-                    .bindTo('all-done', 'click', function(e, data) {
-                        this.afterCurrentEvent(function() {
-                            var state = this._allDoneChecbox.isChecked(),
-                                todoItems = this.model.get('list', 'raw');
-
-                            todoItems.forEach(function(item) {
-                                item.set('done', state);
-                            });
-                        });
                     })
                     .bindTo('clear-completed', 'click', function() {
                         this.model.get('list')
@@ -43,10 +36,21 @@ DOM.decl({ block: 'todos', baseBlock: 'glue' }, {
                         this.model.set('show', this._getShowType());
                     });
 
+                this._allDoneChecbox.on('change', function() {
+                    nextTick(function() {
+                        var state = this._allDoneChecbox.hasMod('checked'),
+                            todoItems = this.model.get('list', 'raw');
+
+                        state !== this.model.get('allDone') && todoItems.forEach(function(item) {
+                            item.set('done', state);
+                        });
+                    }.bind(this));
+                }, this);
+
                 // события изменения модели
                 this.model
                     .on('list', 'add', function(e, data) {
-                        DOM.append(this.elem('todo-items'), this._generateTodoItem(data.model));
+                        BEMDOM.append(this.elem('todo-items'), this._generateTodoItem(data.model));
                     }, this)
                     .on('list', 'remove', function(e, data) {
                         this.findElem('todo-item', 'id', data.model.id).remove();
@@ -54,7 +58,7 @@ DOM.decl({ block: 'todos', baseBlock: 'glue' }, {
                     .on('itemsLeft', 'change', function() {
                         var itemsLeft = this.model.get('itemsLeft');
 
-                        DOM.update(this.elem('items-left'), itemsLeft == 0
+                        BEMDOM.update(this.elem('items-left'), itemsLeft == 0
                             ? '<b>All done</b>'
                             : itemsLeft == 1
                                 ? '<b>1</b> item left'
@@ -101,7 +105,7 @@ DOM.decl({ block: 'todos', baseBlock: 'glue' }, {
     updateTodos: function(todos) {
         this.elem('todo-items').html('');
 
-        todos && DOM.update(this.elem('todo-items'), BEMHTML.apply(todos.map(this._generateTodoItem, this)));
+        todos && BEMDOM.update(this.elem('todo-items'), BEMHTML.apply(todos.map(this._generateTodoItem, this)));
     },
 
     /**
@@ -114,7 +118,7 @@ DOM.decl({ block: 'todos', baseBlock: 'glue' }, {
         return BEMHTML.apply({
             block: 'todos',
             elem: 'todo-item',
-            mods: $.extend({ id: todo.id }, todo.get('done') ? { completed: 'yes' } : {}),
+            mods: $.extend({ id: todo.id }, todo.get('done') ? { completed: true } : {}),
             parentPath: this.modelPath,
             text: todo.get('text'),
             done: todo.get('done'),
@@ -138,9 +142,6 @@ DOM.decl({ block: 'todos', baseBlock: 'glue' }, {
         }
     }
 
-});
-
-
-provide(DOM);
+}));
 
 });

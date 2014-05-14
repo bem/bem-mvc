@@ -1,9 +1,5 @@
 ({
-<<<<<<< HEAD
-    block: 'b-page',
-=======
     block: 'page',
->>>>>>> Port todos bundle from v1, some cleanup
     title: 'bem-mvc • TodoMVC',
     head: [
         { elem: 'css', url: '_todos.css', ie: false },
@@ -11,16 +7,24 @@
         { elem: 'meta', attrs: { name: 'description', content: 'bem-mvc demo example' }}
     ],
     content:[
+        // данные для модели
         {
-            block: 'todos',
-            js: {
-                modelName: 'todos',
-                modelData: {
+            block: 'model',
+            modelParams: {
+                name: 'todos',
+                data: {
                     list: [
                         { text: 'milk', done: true },
                         { text: 'bread', done: false }
                     ]
                 }
+            }
+        },
+
+        {
+            block: 'todos',
+            js: {
+                modelName: 'todos'
             },
             content: [
                 {
@@ -58,9 +62,9 @@
                                     block: 'input',
                                     mix: { block: 'todos', elem: 'new-todo-input' },
                                     name: 'text',
+                                    placeholder: 'What needs to be done?',
                                     mods: { size: 'm' },
                                     content: [
-                                        { elem: 'hint', content: 'What needs to be done?' },
                                         { elem: 'control' }
                                     ]
                                 }
@@ -90,11 +94,7 @@
                             content: [
                                 {
                                     tag: 'b',
-<<<<<<< HEAD
                                     content: '1'
-=======
-                                    content: 1
->>>>>>> Port todos bundle from v1, some cleanup
                                 },
                                 ' item left'
                             ]
@@ -167,10 +167,6 @@
 
             ]
         },
-<<<<<<< HEAD
-        { block: 'i-jquery', mods: { version: '1.8.3' } },
-=======
->>>>>>> Port todos bundle from v1, some cleanup
         { elem: 'js', url: '_todos.js' }
     ]
 })

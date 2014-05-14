@@ -1,21 +1,9 @@
-<<<<<<< HEAD
-BEM.DOM.decl({ block: 'i-glue-destroy', baseBlock: 'i-glue' }, {
-    onSetMod: {
-        js: function() {
-            this.__base();
+modules.define(
+    'i-glue-destroy',
+    ['i-bem__dom', 'glue'],
+    function(provide, BEMDOM, Glue) {
 
-            this.bindTo('click', function() {
-
-                this.model.destruct();
-
-            }, this);
-        }
-    }
-});
-=======
-modules.define('i-bem__dom', function(provide, DOM) {
-
-DOM.decl({ block: 'i-glue-destroy', baseBlock: 'glue' }, {
+provide(BEMDOM.decl({ block: 'i-glue-destroy', baseBlock: Glue }, {
     onSetMod: {
         js: {
             inited: function() {
@@ -29,9 +17,6 @@ DOM.decl({ block: 'i-glue-destroy', baseBlock: 'glue' }, {
             }
         }
     }
-});
-
-provide(DOM);
+}));
 
 });
->>>>>>> Port todos bundle from v1, some cleanup
