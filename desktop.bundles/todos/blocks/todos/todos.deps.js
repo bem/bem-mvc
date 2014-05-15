@@ -23,15 +23,17 @@
         ]
     },
     {
-        shouldDeps: [
+        mustDeps: [
             'i-bem',
             'm-todos',
             'glue',
-            'i-glue-destroy',
             {
                 block: 'link',
                 mods: { pseudo: true }
-            },
+            }
+        ],
+        shouldDeps: [
+            'i-glue-destroy',
             {
                 block: 'checkbox',
                 mods: { size: 'm', theme: 'normal' }
