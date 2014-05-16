@@ -1,5 +1,12 @@
+var fs = require('fs'),
+    path = require('path'),
+    DEFAULT_LANGS = ['ru', 'en'];
+
 module.exports = function(config) {
-    var tools = require('enb-bem-docs')(config);
+    var tools = require('enb-bem-docs')(config),
+        langs = process.env.BEM_I18N_LANGS;
+
+    config.setLanguages(langs? langs.split(' ') : [].concat(DEFAULT_LANGS));
 
     config.nodes(['*.bundles/all-tests', '*.bundles/todos'], function(nodeConfig) {
         nodeConfig.addTechs([
@@ -45,9 +52,16 @@ module.exports = function(config) {
         ]);
     });
 
-    config.nodes(['*.bundles/all-tests', '*.bundles/todos'], function(nodeConfig) {
+    config.nodes(['desktop.bundles/all-tests', 'desktop.bundles/todos'], function(nodeConfig) {
+        var levels = getDesktopLevels(config),
+            absPath = path.join(nodeConfig._root, nodeConfig._path, 'blocks');
+
+        if(fs.existsSync(absPath)) {
+            levels = levels.concat(absPath);
+        }
+
         nodeConfig.addTechs([
-            [require('enb/techs/levels'), { levels : getDesktopLevels(config) }],
+            [require('enb/techs/levels'), { levels : levels }],
             [require('enb-autoprefixer/techs/css-autoprefixer'), {
                 sourceTarget : '?.noprefix.css',
                 destTarget : '?.css',
@@ -137,8 +151,8 @@ function getDesktopLevels(config) {
         { path : 'libs/bem-components/design/desktop.blocks', check : false },
         'common.blocks'
     ].map(function(level) {
-            return config.resolvePath(level);
-        });
+        return config.resolvePath(level);
+    });
 }
 
 function getDesktopBrowsers() {
