@@ -253,10 +253,3 @@ BEMJSON в таком случае будет выглядеть так
 Открыть страницу `localhost:8080/desktop.bundles/all-tests/all-tests.html`
 
 Пример TodoMVC `localhost:8080/desktop.bundles/todos/todos.html`
-
-## Ссылки
-
-JS Docs:
-
-*  [Models API](https://github.com/bem/bem-mvc/blob/v2/common.blocks/model/model.md)
-*  [glue](https://github.com/bem/bem-mvc/blob/v2/common.blocks/glue/glue.md)
