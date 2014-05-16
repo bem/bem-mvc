@@ -1,8 +1,8 @@
-# История изменений
+# Changelog
 
 ## v 0.1
 
-*  API моделей
-*  Блок i-glue для провязки моделей и DOM
-*  Тесты
-*  Документация
+*  Models' API
+*  i-glue block to bind models to DOM
+*  Tests
+*  Documentation
