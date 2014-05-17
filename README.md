@@ -1,4 +1,4 @@
-# BEM blocks library for MVCподумать как красиво
+# BEM blocks library for MVC
 
 bem-mvc library contains of i-bem blocks to enable you to realize MVC-pattern. Gives you an API to work with models 
 and blocks for automated binding of models with the interface.
