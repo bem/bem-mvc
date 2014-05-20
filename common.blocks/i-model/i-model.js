@@ -941,7 +941,7 @@
 
                 parts[el] = model && model.path() ||
                     (typeof path === 'object' ? MODEL.buildPath(path) : path) ||
-                    (name ? name + (id ? ID_SEPARATOR + id : '') : '');
+                    (name ? name + (!isNaN(parseFloat(id)) && isFinite(id) ? ID_SEPARATOR + id : '') : '');
             });
 
             return (parts.parent ? parts.parent + CHILD_SEPARATOR : '') +
