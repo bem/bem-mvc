@@ -703,10 +703,11 @@
          */
         getOrCreate: function(modelParams) {
             if (typeof modelParams === 'string') modelParams = { name: modelParams };
+            var modelData = MODEL.modelsData[modelParams.name];
 
             return MODEL.getOne(modelParams) || MODEL.create(
                 modelParams,
-                MODEL.modelsData[modelParams.name][MODEL.buildPath(modelParams)] || {});
+                modelData && modelData[MODEL.buildPath(modelParams)] || {});
         },
 
         /**
