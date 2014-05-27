@@ -703,7 +703,7 @@
          */
         getOrCreate: function(modelParams) {
             if (typeof modelParams === 'string') modelParams = { name: modelParams };
-            var modelData = MODEL.modelsData[modelParams.name];
+            var modelData = MODEL.modelsData[modelParams.name] || {};
 
             return MODEL.getOne(modelParams) || MODEL.create(
                 modelParams,
