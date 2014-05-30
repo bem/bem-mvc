@@ -8,6 +8,6 @@ $.inheritSelf(BEM.DOM, {}, {
             });
         }
 
-        this.__base.apply(this, arguments);
+        return this.__base.apply(this, arguments);
     }
 });
