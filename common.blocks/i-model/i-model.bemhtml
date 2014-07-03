@@ -55,6 +55,7 @@ block i-model {
         if (ctx.modelParams) return ctx.modelParams;
 
         var params = {
+            data: ctx.modelData,
             name: ctx.modelName,
             id: ctx.modelId
         };
