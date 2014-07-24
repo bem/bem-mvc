@@ -36,32 +36,24 @@
         /**
          * Форматированное значение содержит два десятичных знака
          * @param {Number} value
-         * @param {Object} [formatOptions]
          * @returns {string}
          * @private
          */
-        _format: function(value, formatOptions) {
+        _format: function(value) {
             return isNaN(value) ?
-                this._default !== undefined ?
-                    this._toFixed(this['default'], formatOptions.roundType) :
-                    '' :
-                this._toFixed(value, formatOptions.roundType)
+                typeof this._default !== 'undefined' ?  this._toFixed(this['default']) : '' :
+                this._toFixed(value);
         },
 
         /**
-         * Исправленная работа нативного метода toFixed
+         * Преобразует число оставляя заданное число десятичных знаков
          * @param {Number} number
-         * @param {'round'|'ceil'|'floor'} [roundType] тип округления
          * @returns {String}
          */
-        _toFixed: function(number, roundType) {
+        _toFixed: function(number) {
             var multiplier = Math.pow(10, this._precision);
 
-            roundType = roundType || 'round';
-
-            roundType = ['round', 'ceil', 'floor'].indexOf(roundType) !== -1 ? roundType : 'round';
-
-            return (Math[roundType]( number * multiplier ) / multiplier).toFixed(this._precision);
+            return (Math.round(number * multiplier) / multiplier).toFixed(this._precision);
         },
 
         /**
