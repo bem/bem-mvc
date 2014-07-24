@@ -55,7 +55,9 @@
          * @returns {String}
          */
         _toFixed: function(number, roundType) {
-            var multiplier = Math.pow(10, precision);
+            var multiplier = Math.pow(10, this._precision);
+
+            roundType = roundType || 'round';
 
             roundType = ['round', 'ceil', 'floor'].indexOf(roundType) !== -1 ? roundType : 'round';
 
