@@ -4,7 +4,8 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
         BEM.MODEL.decl('model-list-type-field', {
             list: {
                 type: 'models-list',
-                modelName: 'list-inner-model'
+                modelName: 'list-inner-model',
+                bubble: 'my-event'
             }
         });
         BEM.MODEL.decl('list-inner-model', {
@@ -94,6 +95,24 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
                 expect(data.option).toEqual('value');
                 model.destruct();
             });
+        });
+
+        it('should bubble events from inner models', function () {
+            var model,
+                spy = jasmine.createSpy('event-spy');
+
+            model = BEM.MODEL.create('model-list-type-field', {
+                list: [{ id: 1, f: 'f1'}]
+            });
+
+            model.on('field-my-event', spy);
+
+            var innerModel = model.get('list').getByIndex(0);
+            innerModel.trigger('my-event');
+
+            expect(spy).toHaveBeenCalled();
+
+            model.destruct();
         });
 
         it('should fix and rollback data', function() {
