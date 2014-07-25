@@ -58,6 +58,18 @@
                             list.remove(data.model.id);
                         });
 
+                    var events = field.params.bubble;
+                    if (!events) {
+                        return model;
+                    }
+                    events = Array.isArray(events) ? events : [events];
+
+                    events.forEach(function (event) {
+                        model.on(event, function (e, data) {
+                            field._trigger(event, $.extend({model: model}, data));
+                        });
+                    }, this);
+
                     return model;
                 },
 
