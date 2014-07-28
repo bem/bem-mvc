@@ -31,7 +31,8 @@
          * @private
          */
         _createValueObject: function(field) {
-            var list = {
+            var _this = this,
+                list = {
 
                 /**
                  * Создает модель и инициализирует ее переданными данными
@@ -71,6 +72,13 @@
                     var model = list._createModel(itemData);
 
                     field._raw.push(model);
+
+                    // bind field's event handlers to inner model
+                    $.each(_this._eventHandlers, function(e, events) {
+                        events && events.forEach(function(event) {
+                            model.on(e, event.data, event.fn, event.ctx);
+                        });
+                    });
 
                     field
                         .trigger('add', $.extend({}, opts, { model: model }))
@@ -113,7 +121,16 @@
                         var model = list.getByIndex(index);
 
                         field._raw.splice(index, 1);
+
+                        // unbind field's event handler from inner model
+                        $.each(_this._eventHandlers, function(e, events) {
+                            events && events.forEach(function(event) {
+                                model.un(e, event.data, event.fn, event.ctx);
+                            });
+                        });
+
                         field.trigger('remove', $.extend({}, opts, { model: model }));
+
                         opts.keepModel !== true && model.destruct();
 
                         field._trigger('change', opts);
@@ -258,6 +275,58 @@
         },
 
         /**
+         * Повесить обработчик события на поле и на все вложенные модели
+         * @param {String} e
+         * @param {*} data
+         * @param {Function} fn
+         * @param {Object} ctx
+         */
+        on: function(e, data, fn, ctx) {
+            // for custom events put event handler to cache
+            if (e !== 'change') {
+                (this._eventHandlers[e] = this._eventHandlers[e] || []).push({
+                    data: data,
+                    fn: fn,
+                    ctx: ctx
+                });
+
+                this._raw.forEach(function(model) {
+                    model.on(e, data, fn, ctx);
+                }, this);
+            }
+
+            this.__base.apply(this, arguments);
+        },
+
+        /**
+         * Снять обработчик события с поля и со всех вложенных моделей
+         * @param e
+         * @param fn
+         * @param ctx
+         */
+        un: function(e, fn, ctx) {
+            this._raw.forEach(function(model) {
+                model.un(e, fn, ctx);
+            }, this);
+
+            var eventHandlers = this._eventHandlers[e];
+
+            if (eventHandlers) {
+                for (var i = 0, n = eventHandlers.length, event; i < n; i++) {
+                    event = eventHandlers[i];
+
+                    if (event.fn === fn && event.ctx === ctx) {
+                        // remove event handler from cache
+                        eventHandlers.splice(i, 1);
+                        break;
+                    }
+                }
+            }
+
+            this.__base.apply(this, arguments);
+        },
+
+        /**
          * Очистить поле и удалить все вложенные модели
          * @param {Object} [opts]
          * @returns {MODEL.FIELD}
@@ -283,7 +352,12 @@
          */
         destruct: function() {
             this.clear();
-        }
+        },
+
+        /**
+         * Хранилище обработчиков событий на вложенных моделях
+         */
+        _eventHandlers: {}
 
     });
 })(BEM.MODEL, jQuery);

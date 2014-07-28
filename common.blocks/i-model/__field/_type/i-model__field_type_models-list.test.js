@@ -236,6 +236,35 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             expect(destructHandler.calls.length).toBe(0);
         });
 
+        it('should bubble events from inner models', function() {
+            var model = BEM.MODEL.create('model-list-type-field', {
+                    list: [
+                        { id: 1, f: 'f1' },
+                        { id: 2, f: 'f2' }
+                    ]
+                }),
+
+                onCustom = jasmine.createSpy('onCustom'),
+                onNewCustom = jasmine.createSpy('onNewCustom'),
+                onCustomDeactive = jasmine.createSpy('onCustomDeactive');
+
+            model.on('list', 'custom-event', onCustom);
+            model.get('list').getByIndex(0).trigger('custom-event');
+
+            model.on('list', 'custom-event', onNewCustom);
+            model.get('list').add({ id: 3, f: 'f3' }).trigger('custom-event');
+
+            model.on('list', 'custom-event', onCustomDeactive);
+            model.un('list', 'custom-event', onCustomDeactive);
+            model.get('list').getByIndex(0).trigger('custom-event');
+
+            expect(onCustom).toHaveBeenCalled();
+            expect(onNewCustom).toHaveBeenCalled();
+            expect(onCustomDeactive).not.toHaveBeenCalled();
+
+            model.destruct();
+        });
+
     });
 
 });
