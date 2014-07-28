@@ -76,7 +76,7 @@
                     // bind field's event handlers to inner model
                     $.each(_this._eventHandlers, function(e, events) {
                         events && events.forEach(function(event) {
-                            model.on(e, event.data, event.fn, event.ctx);
+                            model.on(e, event.fn, event.ctx);
                         });
                     });
 
@@ -125,7 +125,7 @@
                         // unbind field's event handler from inner model
                         $.each(_this._eventHandlers, function(e, events) {
                             events && events.forEach(function(event) {
-                                model.un(e, event.data, event.fn, event.ctx);
+                                model.un(e, event.fn, event.ctx);
                             });
                         });
 
@@ -277,21 +277,20 @@
         /**
          * Повесить обработчик события на поле и на все вложенные модели
          * @param {String} e
-         * @param {*} data
          * @param {Function} fn
          * @param {Object} ctx
          */
-        on: function(e, data, fn, ctx) {
+        on: function(e, fn, ctx) {
             // for custom events put event handler to cache
             if (e !== 'change') {
                 (this._eventHandlers[e] = this._eventHandlers[e] || []).push({
-                    data: data,
+                    name: e,
                     fn: fn,
                     ctx: ctx
                 });
 
                 this._raw.forEach(function(model) {
-                    model.on(e, data, fn, ctx);
+                    model.on(e, fn, ctx);
                 }, this);
             }
 
