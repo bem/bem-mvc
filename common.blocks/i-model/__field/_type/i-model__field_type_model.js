@@ -145,13 +145,51 @@
         },
 
         /**
+         * Повесить обработчик события на поле и на внутреннюю модель
+         * @param e
+         * @param fn
+         * @param ctx
+         */
+        on: function(e, fn, ctx) {
+            if (e !== 'change') {
+                this._eventHandlers.push({
+                    name: e,
+                    fn: fn,
+                    ctx: ctx
+                });
+
+                this._value.on(e, fn, ctx);
+            }
+
+            this.__base.apply(this, arguments);
+        },
+
+        /**
+         * Снять обработчик события с поля и с внутренней модели
+         * @param e
+         * @param fn
+         * @param ctx
+         */
+        un: function(e, fn, ctx) {
+            this._value.un(e, fn, ctx);
+
+            this.__base.apply(this, arguments);
+        },
+
+        /**
          * Уничтожает поле и модель этого поля
          */
         destruct: function() {
             this._unBindEvents();
 
+            this._eventHandlers.forEach(function(event) {
+                this._value.un(event.name, event.fn, event.ctx);
+            }, this);
+
             this.params.destruct && this._value.destruct();
-        }
+        },
+
+        _eventHandlers: []
 
     });
 })(BEM.MODEL, jQuery);
