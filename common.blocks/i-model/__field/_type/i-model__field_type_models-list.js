@@ -1,5 +1,5 @@
 ;(function(MODEL, $) {
-    MODEL.FIELD.types['models-list'] = $.inherit(MODEL.FIELD, {
+    MODEL.FIELD.types['models-list'] = $.inherit(MODEL.FIELD.types['inner-events-storage'], {
 
         /**
          * Инициализация поля
@@ -31,7 +31,7 @@
          * @private
          */
         _createValueObject: function(field) {
-            var _this = this,
+            var currentField = this,
                 list = {
 
                 /**
@@ -73,12 +73,7 @@
 
                     field._raw.push(model);
 
-                    // bind field's event handlers to inner model
-                    $.each(_this._eventHandlers, function(e, events) {
-                        events && events.forEach(function(event) {
-                            model.on(e, event.fn, event.ctx);
-                        });
-                    });
+                    currentField._bindFieldEventHandlers(model);
 
                     field
                         .trigger('add', $.extend({}, opts, { model: model }))
@@ -122,12 +117,7 @@
 
                         field._raw.splice(index, 1);
 
-                        // unbind field's event handler from inner model
-                        $.each(_this._eventHandlers, function(e, events) {
-                            events && events.forEach(function(event) {
-                                model.un(e, event.fn, event.ctx);
-                            });
-                        });
+                        currentField._unBindFieldEventHandlers(model);
 
                         field.trigger('remove', $.extend({}, opts, { model: model }));
 
@@ -281,17 +271,12 @@
          * @param {Object} ctx
          */
         on: function(e, fn, ctx) {
-            // for custom events put event handler to cache
             if (e !== 'change') {
-                (this._eventHandlers[e] = this._eventHandlers[e] || []).push({
-                    name: e,
-                    fn: fn,
-                    ctx: ctx
-                });
+                this._pushEventHandler(e, fn, ctx);
 
                 this._raw.forEach(function(model) {
                     model.on(e, fn, ctx);
-                }, this);
+                });
             }
 
             this.__base.apply(this, arguments);
@@ -299,28 +284,16 @@
 
         /**
          * Снять обработчик события с поля и со всех вложенных моделей
-         * @param e
-         * @param fn
-         * @param ctx
+         * @param {String} e
+         * @param {Function} fn
+         * @param {Object} ctx
          */
         un: function(e, fn, ctx) {
             this._raw.forEach(function(model) {
                 model.un(e, fn, ctx);
             }, this);
 
-            var eventHandlers = this._eventHandlers[e];
-
-            if (eventHandlers) {
-                for (var i = 0, n = eventHandlers.length, event; i < n; i++) {
-                    event = eventHandlers[i];
-
-                    if (event.fn === fn && event.ctx === ctx) {
-                        // remove event handler from cache
-                        eventHandlers.splice(i, 1);
-                        break;
-                    }
-                }
-            }
+            this._popEventHandler(e, fn, ctx);
 
             this.__base.apply(this, arguments);
         },
@@ -356,7 +329,70 @@
         /**
          * Хранилище обработчиков событий на вложенных моделях
          */
-        _eventHandlers: {}
+        _eventHandlers: {},
+
+        /**
+         * Сохранить обработчик события в хранилище
+         * @param {String} e
+         * @param {Function} fn
+         * @param {Object} ctx
+         * @private
+         */
+        _pushEventHandler: function(e, fn, ctx) {
+            if (!this._eventHandlers[e])
+                this._eventHandlers[e] = [];
+
+            this._eventHandlers[e].push({
+                name: e,
+                fn: fn,
+                ctx: ctx
+            });
+        },
+
+        /**
+         * Удалить обработчик события из хранилища
+         * @param {String} e
+         * @param {Function} fn
+         * @param {Object} ctx
+         * @private
+         */
+        _popEventHandler: function(e, fn, ctx) {
+            if (!this._eventHandlers[e]) return;
+
+            if (typeof fn !== 'undefined') {
+                this._eventHandlers[e].filter(function(event) {
+                    return !(fn === event.fn && ctx === event.ctx);
+                });
+            } else {
+                delete this._eventHandlers[e];
+            }
+        },
+
+        /**
+         * Повесить обработчики событий из хранилища на модель
+         * @param {MODEL} model
+         * @private
+         */
+        _bindFieldEventHandlers: function(model) {
+            $.each(this._eventHandlers, function(e, events) {
+                events && events.forEach(function(event) {
+                    model.on(e, event.fn, event.ctx);
+                });
+            });
+        },
+
+        /**
+         * Снять обработчики событий из хранилища с модели
+         * @param {MODEL} model
+         * @private
+         */
+        _unBindFieldEventHandlers: function(model) {
+            $.each(this._eventHandlers, function(e, events) {
+                events && events.forEach(function(event) {
+                    model.un(e, event.fn, event.ctx);
+                });
+            });
+        }
 
     });
 })(BEM.MODEL, jQuery);

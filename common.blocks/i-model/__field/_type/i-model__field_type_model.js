@@ -1,5 +1,5 @@
 ;(function(MODEL, $) {
-    MODEL.FIELD.types.model = $.inherit(MODEL.FIELD, {
+    MODEL.FIELD.types.model = $.inherit(MODEL.FIELD.types['inner-events-storage'], {
 
         /**
          * Инициализация поля
@@ -20,6 +20,7 @@
          */
         _initEvents: function() {
             this._value.on('change', this._onInnerModelChange, this);
+            this._bindFieldEventHandlers(this._value);
         },
 
         /**
@@ -28,6 +29,7 @@
          */
         _unBindEvents: function() {
             this._value.un('change', this._onInnerModelChange, this);
+            this._unBindFieldEventHandlers(this._value);
         },
 
         /**
@@ -146,34 +148,32 @@
 
         /**
          * Повесить обработчик события на поле и на внутреннюю модель
-         * @param e
-         * @param fn
-         * @param ctx
+         * @param {String} e
+         * @param {Function} fn
+         * @param {Object} [ctx]
          */
         on: function(e, fn, ctx) {
             if (e !== 'change') {
-                this._eventHandlers.push({
-                    name: e,
-                    fn: fn,
-                    ctx: ctx
-                });
+                this._pushEventHandler(e, fn, ctx);
 
                 this._value.on(e, fn, ctx);
             }
 
-            this.__base.apply(this, arguments);
+            return this.__base.apply(this, arguments);
         },
 
         /**
          * Снять обработчик события с поля и с внутренней модели
-         * @param e
-         * @param fn
-         * @param ctx
+         * @param {String} e
+         * @param {Function} fn
+         * @param {Object} [ctx]
          */
         un: function(e, fn, ctx) {
             this._value.un(e, fn, ctx);
 
-            this.__base.apply(this, arguments);
+            this._popEventHandler(e, fn, ctx);
+
+            return this.__base.apply(this, arguments);
         },
 
         /**
@@ -182,14 +182,8 @@
         destruct: function() {
             this._unBindEvents();
 
-            this._eventHandlers.forEach(function(event) {
-                this._value.un(event.name, event.fn, event.ctx);
-            }, this);
-
             this.params.destruct && this._value.destruct();
-        },
-
-        _eventHandlers: []
+        }
 
     });
 })(BEM.MODEL, jQuery);

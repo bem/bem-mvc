@@ -251,15 +251,15 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             model.on('list', 'custom-event', onCustom);
             model.get('list').getByIndex(0).trigger('custom-event');
 
-            model.on('list', 'custom-event', onNewCustom);
-            model.get('list').add({ id: 3, f: 'f3' }).trigger('custom-event');
+            model.on('list', 'new-custom-event', onNewCustom);
+            model.get('list').add({ id: 3, f: 'f3' }).trigger('new-custom-event');
 
-            model.on('list', 'custom-event', onCustomDeactive);
-            model.un('list', 'custom-event', onCustomDeactive);
-            model.get('list').getByIndex(0).trigger('custom-event');
+            model.on('list', 'deact-custom-event', onCustomDeactive);
+            model.un('list', 'deact-custom-event', onCustomDeactive);
+            model.get('list').getByIndex(0).trigger('deact-custom-event');
 
-            expect(onCustom).toHaveBeenCalled();
-            expect(onNewCustom).toHaveBeenCalled();
+            expect(onCustom.calls.length).toEqual(1);
+            expect(onNewCustom.calls.length).toEqual(1);
             expect(onCustomDeactive).not.toHaveBeenCalled();
 
             model.destruct();
