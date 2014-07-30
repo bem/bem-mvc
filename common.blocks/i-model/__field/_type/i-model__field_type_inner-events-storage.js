@@ -38,7 +38,7 @@
             if (!this._eventHandlers[e]) return;
 
             if (typeof fn !== 'undefined') {
-                this._eventHandlers[e].filter(function(event) {
+                this._eventHandlers[e] = this._eventHandlers[e].filter(function(event) {
                     return !(fn === event.fn && ctx === event.ctx);
                 });
             } else {

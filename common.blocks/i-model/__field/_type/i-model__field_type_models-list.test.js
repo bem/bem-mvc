@@ -257,6 +257,7 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             model.on('list', 'deact-custom-event', onCustomDeactive);
             model.un('list', 'deact-custom-event', onCustomDeactive);
             model.get('list').getByIndex(0).trigger('deact-custom-event');
+            model.get('list').add({ id: 4, f: 'f4' }).trigger('deact-custom-event');
 
             expect(onCustom.calls.length).toEqual(1);
             expect(onNewCustom.calls.length).toEqual(1);
