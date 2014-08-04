@@ -1,5 +1,5 @@
 ;(function(MODEL, $) {
-    MODEL.FIELD.types.model = $.inherit(MODEL.FIELD, {
+    MODEL.FIELD.types.model = $.inherit(MODEL.FIELD.types['inner-events-storage'], {
 
         /**
          * Инициализация поля
@@ -20,6 +20,7 @@
          */
         _initEvents: function() {
             this._value.on('change', this._onInnerModelChange, this);
+            this._bindFieldEventHandlers(this._value);
         },
 
         /**
@@ -28,6 +29,7 @@
          */
         _unBindEvents: function() {
             this._value.un('change', this._onInnerModelChange, this);
+            this._unBindFieldEventHandlers(this._value);
         },
 
         /**
@@ -142,6 +144,36 @@
                     }
                 }
             });
+        },
+
+        /**
+         * Повесить обработчик события на поле и на внутреннюю модель
+         * @param {String} e
+         * @param {Function} fn
+         * @param {Object} [ctx]
+         */
+        on: function(e, fn, ctx) {
+            if (e !== 'change') {
+                this._pushEventHandler(e, fn, ctx);
+
+                this._value.on(e, fn, ctx);
+            }
+
+            return this.__base.apply(this, arguments);
+        },
+
+        /**
+         * Снять обработчик события с поля и с внутренней модели
+         * @param {String} e
+         * @param {Function} fn
+         * @param {Object} [ctx]
+         */
+        un: function(e, fn, ctx) {
+            this._value.un(e, fn, ctx);
+
+            this._popEventHandler(e, fn, ctx);
+
+            return this.__base.apply(this, arguments);
         },
 
         /**

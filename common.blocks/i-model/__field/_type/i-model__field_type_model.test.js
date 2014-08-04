@@ -200,6 +200,30 @@ BEM.TEST.decl('i-model__field_type_model', function() {
             expect(BEM.MODEL.get('inner-model').length).toEqual(0);
         });
 
+        it('should bubble events from inner model', function() {
+            var model = BEM.MODEL.create('model-type-field', {
+                    f: {
+                        innerF: 'str'
+                    }
+                }),
+
+                onCustom = jasmine.createSpy('onCustom'),
+                onNewCustom = jasmine.createSpy('onNewCustom');
+
+            model.on('f', 'custom-event', onCustom);
+            model.get('f').trigger('custom-event');
+
+            var newInner = BEM.MODEL.create('inner-model', { innerF: 'str1' });
+
+            model.on('f', 'new-custom-event', onNewCustom);
+            model.set('f', newInner);
+            newInner.trigger('new-custom-event');
+
+            model.destruct();
+            expect(onCustom.calls.length).toEqual(1);
+            expect(onNewCustom).toHaveBeenCalled();
+        });
+
     });
 
 });
