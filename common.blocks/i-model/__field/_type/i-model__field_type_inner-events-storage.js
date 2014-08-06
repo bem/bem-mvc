@@ -5,9 +5,18 @@
     MODEL.FIELD.types['inner-events-storage'] = $.inherit(MODEL.FIELD, {
 
         /**
-         * Хранилище обработчиков событий на вложенных моделях
+         * @class Конструктор поля модели
+         * @constructs
+         * @private
          */
-        _eventHandlers: {},
+        __constructor: function() {
+            /**
+             * Хранилище обработчиков событий на вложенных моделях
+             */
+            this._eventHandlers = {};
+
+            this.__base.apply(this, arguments);
+        },
 
         /**
          * Сохранить обработчик события в хранилище

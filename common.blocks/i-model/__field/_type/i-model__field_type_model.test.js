@@ -219,7 +219,17 @@ BEM.TEST.decl('i-model__field_type_model', function() {
             model.set('f', newInner);
             newInner.trigger('new-custom-event');
 
+            var model2 = BEM.MODEL.create('model-type-field', {
+                f: {
+                    innerF: 'str'
+                }
+            });
+
+            model2.get('f').trigger('custom-event');
+
             model.destruct();
+            model2.destruct();
+
             expect(onCustom.calls.length).toEqual(1);
             expect(onNewCustom).toHaveBeenCalled();
         });
