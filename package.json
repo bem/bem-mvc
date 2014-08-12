@@ -17,15 +17,19 @@
   "devDependencies": {
     "bem": "~0.8.0",
     "bower-npm-install": "~0.5.4",
-    "enb-bem-docs": "git://github.com/andrewblond/enb-bem-docs.git#6b1544a8f3e516eaee3303cf84131e773868eb2b",
-    "enb": "0.10.0",
+    "enb-bem-docs": "0.2.6",
+    "enb-bem-examples": "0.2.7",
+    "enb-bem-specs": "0.2.2",
+    "enb-bem-tmpl-specs": "git://github.com/andrewblond/enb-bem-tmpl-specs.git#df9e9348ecb5cce3fd2fe1aef4b2d1bd077650c1",
+    "enb": "0.13.4",
+    "enb-bh": "0.2.1",
+    "enb-borschik": "1.0.4",
     "enb-diverse-js": "0.1.0",
     "enb-modules": "0.1.1",
-    "enb-bemxjst": "1.1.1",
-    "enb-roole": "0.2.1",
-    "enb-autoprefixer": "0.1.0",
-    "bem-tools-autoprefixer": "0.0.3",
-    "roole": "~0.9.0"
+    "enb-bemxjst": "1.2.0",
+    "enb-stylus": "https://github.com/tadatuta/enb-stylus/archive/master.tar.gz",
+    "enb-autoprefixer": "0.1.1",
+    "bem-tools-autoprefixer": "0.0.3"
   },
   "scripts": {
     "deps": "bower-npm-install --non-interactive",
