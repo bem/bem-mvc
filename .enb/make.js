@@ -21,7 +21,7 @@ var fs = require('fs'),
     mergeFiles = require('enb/techs/file-merge'),
     borschik = require('enb-borschik/techs/borschik'),
     PLATFORMS = {
-        'desktop' : ['common', 'desktop']
+        'desktop' : ['common']
     };
 
 module.exports = function(config) {
@@ -205,27 +205,6 @@ function configureSets(platform, config, sets) {
         destPath : platform + '.specs',
         levels : getLibLevels(platform, config),
         sourceLevels : getSpecLevels(platform, config)
-    });
-
-    sets.docs.configure({
-        sourceLevels : getSpecLevels(platform, config),
-        engines : {
-            bh : {
-                tech : 'enb-bh/techs/bh-server',
-                options : {
-                    jsAttrName : 'data-bem',
-                    jsAttrScheme : 'json'
-                }
-            },
-            'bemhtml-dev' : {
-                tech : 'enb-bemxjst/techs/bemhtml-old',
-                options : { devMode : true }
-            },
-            'bemhtml-prod' : {
-                tech : 'enb-bemxjst/techs/bemhtml-old',
-                options : { devMode : false }
-            }
-        }
     });
 }
 
