@@ -1,10 +1,7 @@
 var fs = require('fs'),
     path = require('path'),
     DEFAULT_LANGS = ['ru', 'en'],
-    docSets = require('enb-bem-docs'),
-    exampleSets = require('enb-bem-examples'),
-    specSets = require('enb-bem-specs'),
-    tmplSets = require('enb-bem-tmpl-specs'),
+    naming = require('bem-naming'),
     levels = require('enb/techs/levels'),
     provide = require('enb/techs/file-provider'),
     bemdeclFromDepsByTech = require('enb/techs/bemdecl-from-deps-by-tech'),
@@ -17,7 +14,6 @@ var fs = require('fs'),
     js = require('enb-diverse-js/techs/browser-js'),
     ym = require('enb-modules/techs/prepend-modules'),
     bemhtml = require('enb-bemxjst/techs/bemhtml-old'),
-    bemtree = require('enb-bemxjst/techs/bemtree-old'),
     html = require('enb-bemxjst/techs/html-from-bemjson'),
     bh = require('enb-bh/techs/bh-server'),
     bhHtml = require('enb-bh/techs/html-from-bemjson'),
@@ -25,15 +21,21 @@ var fs = require('fs'),
     mergeFiles = require('enb/techs/file-merge'),
     borschik = require('enb-borschik/techs/borschik'),
     PLATFORMS = {
-        'desktop' : ['common']
+        'desktop' : ['common', 'desktop']
     };
 
 module.exports = function(config) {
+    config.includeConfig('enb-bem-examples');
+    config.includeConfig('enb-bem-docs');
+    config.includeConfig('enb-bem-specs');
+    config.includeConfig('enb-bem-tmpl-specs');
+
     var sets = {
-            docs : docSets.create('docs', config),
-            examples : exampleSets.create('examples', config),
-            tests : exampleSets.create('tests', config),
-            specs : specSets.create('specs', config)
+            tests : config.module('enb-bem-examples').createConfigurator('tests'),
+            examples : config.module('enb-bem-examples').createConfigurator('examples'),
+            docs : config.module('enb-bem-docs').createConfigurator('docs', 'examples'),
+            specs : config.module('enb-bem-specs').createConfigurator('specs'),
+            tmplSpecs : config.module('enb-bem-tmpl-specs').createConfigurator('tmpl-specs')
         },
         langs = process.env.BEM_I18N_LANGS;
 
@@ -45,13 +47,15 @@ module.exports = function(config) {
 
     configureAutoprefixer('desktop', config, sets);
 
+    config.nodes(['*.pages/*', '*.bundles/*'], function(nodeConfig) {
+        nodeConfig.addTech([provide, { target : '?.bemjson.js' }]);
+    });
+
     config.nodes(['*.bundles/all-tests', '*.bundles/todos'], function(nodeConfig) {
         var langs = config.getLanguages();
 
         // Base techs
         nodeConfig.addTechs([
-            [provide, { target : '?.bemjson.js' }],
-            [copyFile, { source : '?.bemjson.js', target : '_?.bemjson.js' }],
             [bemdecl],
             [deps],
             [files]
@@ -120,7 +124,7 @@ module.exports = function(config) {
         });
 
         nodeConfig.addTargets([
-            '_?.bemjson.js', '_?.css', '_?.js', '?.html'
+            '_?.css', '_?.js', '?.html'
         ]);
     });
 
@@ -175,16 +179,26 @@ function configureLevels(platform, config) {
 }
 
 function configureSets(platform, config, sets) {
-    sets.examples.build({
+    sets.examples.configure({
         destPath : platform + '.examples',
         levels : getLibLevels(platform, config),
+        techSuffixes : ['examples'],
+        fileSuffixes : ['bemjson.js', 'title.txt'],
         inlineBemjson : true
     });
 
-    sets.tests.build({
+    sets.tests.configure({
         destPath : platform + '.tests',
         levels : getLibLevels(platform, config),
-        suffixes : ['tests']
+        suffixes : ['tests'],
+        techSuffixes : ['tests'],
+        fileSuffixes : ['bemjson.js', 'title.txt']
+    });
+
+    sets.docs.configure({
+        destPath : platform + '.docs',
+        levels : getLibLevels(platform, config),
+        exampleSets : [platform + '.examples']
     });
 
     sets.specs.configure({
@@ -194,10 +208,24 @@ function configureSets(platform, config, sets) {
     });
 
     sets.docs.configure({
-        destPath : platform + '.docs',
-        levels : getLibLevels(platform, config),
-        examplePattern : [platform + '.examples/?/*', platform + '.tests/?/*'],
-        inlineExamplePattern : platform + '.examples/?/*'
+        sourceLevels : getSpecLevels(platform, config),
+        engines : {
+            bh : {
+                tech : 'enb-bh/techs/bh-server',
+                options : {
+                    jsAttrName : 'data-bem',
+                    jsAttrScheme : 'json'
+                }
+            },
+            'bemhtml-dev' : {
+                tech : 'enb-bemxjst/techs/bemhtml-old',
+                options : { devMode : true }
+            },
+            'bemhtml-prod' : {
+                tech : 'enb-bemxjst/techs/bemhtml-old',
+                options : { devMode : false }
+            }
+        }
     });
 }
 
@@ -236,6 +264,60 @@ function getSpecLevels(platform, config) {
         config.resolvePath({ path : path.join('libs', 'bem-pr'), check : false }),
         getSourceLevels(platform, config)
     );
+}
+
+function wrapInPage(bemjson, meta) {
+    var basename = path.basename(meta.filename, '.bemjson.js');
+    var res = {
+        block : 'page',
+        title : naming.stringify(meta.notation),
+        head : [
+            { elem : 'css', url : '_' + basename + '.css' },
+            { elem : 'js', url : '_' + basename + '.js' }
+        ],
+        content : bemjson
+    };
+    var theme = getThemeFromBemjson(bemjson);
+
+    if(theme) {
+        res.mods = { theme : theme };
+    }
+
+    return res;
+}
+
+function getThemeFromBemjson(bemjson) {
+    var theme;
+
+    if(Array.isArray(bemjson)) {
+        for(var i = 0; i < bemjson.length; ++i) {
+            theme = getThemeFromBemjson(bemjson[i]);
+
+            if(theme) {
+                return theme;
+            }
+        }
+    } else {
+        for(var key in bemjson) {
+            if(bemjson.hasOwnProperty(key)) {
+                var value = bemjson[key];
+
+                if(key === 'mods') {
+                    var mods = bemjson[key];
+
+                    theme = mods && mods.theme;
+
+                    if(theme) {
+                        return theme;
+                    }
+                }
+
+                if(key === 'content' && Array.isArray(value) || (typeof value === 'object' && value !== null)) {
+                    return getThemeFromBemjson(bemjson[key]);
+                }
+            }
+        }
+    }
 }
 
 function getBrowsers(platform) {
