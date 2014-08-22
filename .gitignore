@@ -10,3 +10,4 @@ desktop.sets
 desktop.bundles/*/*.*
 !desktop.bundles/*/*.bemjson.js
 !desktop.bundles/.bem/*
+*.docs
