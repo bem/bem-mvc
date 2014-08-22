@@ -1,92 +1,98 @@
 block('todos')(
     elem('title').tag()('h1'),
-    elem('filter').content()({
-        block: 'link',
-        url: this.ctx.url,
-        content: applyNext()
+    elem('filter').content()(function() {
+        return {
+            block: 'link',
+            url: this.ctx.url,
+            content: applyNext()
+        };
     }),
     elem('completed-count').tag()('span'),
     elem('todo-item')(
-        mix()([
-            {
-                block: 'glue',
-                js: {
-                    modelName: 'todo-item',
-                    modelId: this.ctx.id,
-                    modelParentPath: this.ctx.parentPath
-                },
-                elemMods: this.extend(this.ctx.mods || {}, { completed: this.ctx.done })
-            },
-            {
-                block: 'glue',
-                elem: 'model-field',
-                js: {
-                    type: 'mod',
-                    name: 'done',
-                    block: 'todos',
-                    elem: 'todo-item',
-                    modName: 'completed'
-                }
-            }
-        ]),
-        content()([
-            {
-                block: 'checkbox',
-                mix: [
-                    {
-                        block: 'todos',
-                        elem: 'done-checkbox'
+        mix()(function() {
+            return [
+                {
+                    block: 'glue',
+                    js: {
+                        modelName: 'todo-item',
+                        modelId: this.ctx.id,
+                        modelParentPath: this.ctx.parentPath
                     },
-                    {
-                        block: 'i-glue',
-                        block: 'glue',
-                        elem: 'model-field',
-                        js: {
-                            name: 'done',
-                            type: 'checkbox'
-                        }
-                    }
-                ],
-                mods: {
-                    size: 'm',
-                    theme: 'normal',
-                    checked: this.ctx.done
-                }
-            },
-            {
-                elem: 'text',
-                mix: {
+                    elemMods: this.extend(this.ctx.mods || {}, { completed: this.ctx.done })
+                },
+                {
                     block: 'glue',
                     elem: 'model-field',
                     js: {
-                        name: 'text',
-                        type: 'inline'
-                    }
-                },
-                content: this.ctx.text
-            },
-            {
-                block: 'button',
-                mix: [
-                    {
+                        type: 'mod',
+                        name: 'done',
                         block: 'todos',
-                        elem: 'destroy'
-                    },
-                    {
-                        block: 'i-glue-destroy',
-                        js: {
-                            modelParentPath: this.ctx.parentPath,
-                            modelName: 'todo-item',
-                            modelId: this.ctx.id
-                        }
+                        elem: 'todo-item',
+                        modName: 'completed'
                     }
-                ],
-                mods: {
-                    size: 's',
-                    pseudo: 'yes'
+                }
+            ];
+        }),
+        content()(function() {
+            return [
+                {
+                    block: 'checkbox',
+                    mix: [
+                        {
+                            block: 'todos',
+                            elem: 'done-checkbox'
+                        },
+                        {
+                            block: 'i-glue',
+                            block: 'glue',
+                            elem: 'model-field',
+                            js: {
+                                name: 'done',
+                                type: 'checkbox'
+                            }
+                        }
+                    ],
+                    mods: {
+                        size: 'm',
+                        theme: 'normal',
+                        checked: this.ctx.done
+                    }
                 },
-                content: '✖'
-            }
-        ])
+                {
+                    elem: 'text',
+                    mix: {
+                        block: 'glue',
+                        elem: 'model-field',
+                        js: {
+                            name: 'text',
+                            type: 'inline'
+                        }
+                    },
+                    content: this.ctx.text
+                },
+                {
+                    block: 'button',
+                    mix: [
+                        {
+                            block: 'todos',
+                            elem: 'destroy'
+                        },
+                        {
+                            block: 'i-glue-destroy',
+                            js: {
+                                modelParentPath: this.ctx.parentPath,
+                                modelName: 'todo-item',
+                                modelId: this.ctx.id
+                            }
+                        }
+                    ],
+                    mods: {
+                        size: 's',
+                        pseudo: 'yes'
+                    },
+                    content: '✖'
+                }
+            ];
+        })
     )
 );
