@@ -1,17 +1,23 @@
+/**
+ * @module model
+ */
+
 modules.define(
     'model',
     ['inherit', 'events', 'objects', 'functions'],
     function(provide, inherit, events, objects, functions, MODEL) {
 
 /**
- * @namespace
- * @name MODEL.FIELD
+ * @exports
+ * @class FIELD
+ * @augments events:Emitter
+ * @bem model__field
  */
-var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
+var FIELD = MODEL.FIELD = inherit(events.Emitter, /** @lends FIELD.prototype */{
 
     /**
-     * @class Конструктор поля модели
-     * @constructs
+     * Конструктор поля модели
+     * @constructor
      * @param {Object} params
      * @param {MODEL} model
      * @private
@@ -30,7 +36,7 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
      * На модели генерируется событие с приставкой field-[имя события]
      * @param {String} event имя события
      * @param {Object} opts доп. параметры
-     * @returns {FIELD}
+     * @returns {FIELD} this
      * @private
      */
     _trigger: function(event, opts) {
@@ -44,7 +50,7 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
 
     /**
      * Инициализация поля
-     * @returns {FIELD}
+     * @returns {FIELD} this
      * @private
      */
     _init: function() {
@@ -55,11 +61,11 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
 
     /**
      * Определяем дефолтные значения для поля
-     * @returns {Object}
+     * @returns {FIELD} this
      * @private
      */
     _initDefaults: function() {
-            this._default = this.params['default'] !== undefined ? this.params['default'] : this._default;
+        this._default = this.params['default'] !== undefined ? this.params['default'] : this._default;
 
         this._validationRules = this._getValidationRules();
 
@@ -67,9 +73,9 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
     },
 
     /**
-     * Инициализирует поле занчением
+     * Инициализирует поле значением
      * @param {*} value инициализационное значение
-     * @returns {Object}
+     * @returns {FIELD} this
      */
     initData: function(value) {
         this
@@ -81,7 +87,7 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
 
     /**
      * Кешериуем текущее состояние
-     * @returns {FIELD}
+     * @returns {FIELD} this
      */
     fixData: function() {
         this._fixedValue = this.get();
@@ -91,7 +97,7 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
 
     /**
      * Восстанавливает закешированое значение поля
-     * @returns {FIELD}
+     * @returns {FIELD} this
      */
     rollback: function() {
         this.set(this._fixedValue, { rollback: true });
@@ -102,11 +108,11 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
     /**
      * Устанавливает значение поля
      * @param {*} value значение для установки
-     * @param {Object} [opts] доп. параметры доступные в обработчике события change
-     * @returns {FIELD}
+     * @param {Object} [opts] доп. параметры, доступные в обработчике события change
+     * @returns {FIELD} this
      */
     set: function(value, opts) {
-            if (!(opts && opts.isInit) && this.isEqual(value)) return this;
+        if (!(opts && opts.isInit) && this.isEqual(value)) return this;
 
         return this._set(value, opts);
     },
@@ -115,7 +121,7 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
      * Внутренний метод выставления значения
      * @param {*} value значение
      * @param {Object} opts доп. параметры
-     * @returns {FIELD}
+     * @returns {FIELD} this
      * @private
      */
     _set: function(value, opts) {
@@ -136,7 +142,7 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
     /**
      * Выставляет пустое или дефолтное (если указано) значение поля
      * @param {Object} [opts] доп. параметры
-     * @returns {FIELD}
+     * @returns {FIELD} this
      */
     clear: function(opts) {
         this.set(undefined, opts);
@@ -155,7 +161,7 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
     /**
      * Проверяет, что значение является NaN, не используя приведение типов.
      * @param {*} v Значение.
-     * @returns {boolean}
+     * @returns {Boolean}
      */
     isNaN: function(v) {
         // Такой способ позволяет точно выявить NaN константу
@@ -167,18 +173,20 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
     /**
      * Поверяет равно ли текущее значение поля значению переменной value
      * @param {*} value значение для сравнения с текущим значением
-     * @returns {boolean}
+     * @returns {Boolean}
      */
     isEqual: function(value) {
         value = (this.params.preprocess || this._preprocess).call(this, value); // fixme: preprocess выполняется 2 разе при вызове _set
+
         return value === this.get() ||
             this.isEmpty() && this.checkEmpty(value) ||
-            this.isNaN(value) && this.isNaN(this.get());    },
+            this.isNaN(value) && this.isNaN(this.get());
+    },
 
     /**
      * Проверка значения value на пустоту
      * @param {*} value значение
-     * @returns {boolean}
+     * @returns {Boolean}
      */
     checkEmpty: function(value) {
         return value == undefined || !!(value + '').match(/^\s*$/);
@@ -186,7 +194,7 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
 
     /**
      * Менялось ли значение поля с момента последней фиксации начального состояния
-     * @returns {boolean}
+     * @returns {Boolean}
      */
     isChanged: function() {
         return !this.isEqual(this.getFixedValue());
@@ -252,7 +260,7 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
     },
 
     /**
-     * Возвращает значение пригодное для сериализации
+     * Возвращает значение, пригодное для сериализации
      */
     toJSON: function() {
         return this.get();
@@ -270,7 +278,7 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
 
     /**
      * Возвращает результат проверки поля на валидность
-     * @returns {boolean}
+     * @returns {Boolean}
      */
     isValid: function() {
         return this.validate() === true;
@@ -311,7 +319,7 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
 
     /**
      * Проверяет поле на валидность
-     * @returns {*}
+     * @returns {Object|Boolean}
      */
     validate: function() {
         if (!this.params.validation) return true;
@@ -365,6 +373,10 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
             true;
     },
 
+    /**
+     * Тригерит обработчик события
+     * @returns {FIELD} this
+     */
     trigger: function() {
         this.emit.apply(this, arguments);
 
@@ -373,7 +385,7 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
 
     destruct: function() {}
 
-}, {
+}, /** @lends FIELD */{
 
     /**
      * Хранилище модификаций класса
@@ -384,7 +396,7 @@ var FIELD = MODEL.FIELD = inherit(events.Emitter, /** lends FIELD.prototype */ {
      * Создает поле модели
      * @param {String} name имя поля
      * @param {Object} params параметры
-     * @param {MODEL} model экземпляр модели в которой создается поле
+     * @param {MODEL} model экземпляр модели, в которой создается поле
      * @returns {*}
      */
     create: function(name, params, model) {

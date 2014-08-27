@@ -1,14 +1,23 @@
+/**
+ * module model
+ */
+
 modules.define(
     'model',
     ['inherit', 'objects'],
     function(provide, inherit, objects, MODEL) {
 
-
-MODEL.FIELD.types.array = inherit(MODEL.FIELD, {
+/**
+ * exports model:blocks.model__field_type_array
+ * @class model__field_type_array
+ * @augments MODEL:FIELD
+ * @bem model__field_type_array
+ */
+MODEL.FIELD.types.array = inherit(MODEL.FIELD, /** @lends model__field_type_array.prototype */ {
 
     /**
      * Определяем дефолтные значения для поля
-     * @returns {Object}
+     * @returns {Object} this
      * @private
      */
     _initDefaults: function() {
@@ -30,7 +39,7 @@ MODEL.FIELD.types.array = inherit(MODEL.FIELD, {
 
     /**
      * Кеширует текущее состояние поля
-     * @returns {MODEL.FIELD}
+     * @returns {MODEL.FIELD} this
      */
     fixData: function() {
         this._fixedValue = this.raw();
@@ -95,7 +104,7 @@ MODEL.FIELD.types.array = inherit(MODEL.FIELD, {
      * Внутренний метод выставления значения
      * @param {*} value значение
      * @param {Object} opts доп. параметры
-     * @returns {BEM.MODEL.FIELD}
+     * @returns {MODEL.FIELD} this
      * @private
      */
     _set: function(value, opts) {
@@ -113,7 +122,7 @@ MODEL.FIELD.types.array = inherit(MODEL.FIELD, {
     },
 
     /**
-     * Проверяет что значение не пустое
+     * Проверяет, что значение не пустое
      * @param value
      * @returns {Boolean}
      */
@@ -123,7 +132,7 @@ MODEL.FIELD.types.array = inherit(MODEL.FIELD, {
 
     /**
      * Проверяет текущее значение поля на пустоту
-     * @returns {boolean}
+     * @returns {Boolean}
      */
     isEmpty: function() {
         return this.checkEmpty(this._raw) || this.isEqual(this._default);

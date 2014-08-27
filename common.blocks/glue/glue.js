@@ -1,3 +1,7 @@
+/**
+ * @module glue
+ */
+
 modules.define(
     'glue',
     ['i-bem__dom', 'objects', 'jquery', 'model'],
@@ -5,8 +9,11 @@ modules.define(
 
 /**
  * Блок для проклеивания моделей и DOM
+ * @exports
+ * @class glue
+ * @bem
  */
-provide(BEMDOM.decl('glue', {
+provide(BEMDOM.decl('glue', /** @lends glue.prototype */{
 
     onSetMod: {
         js: {
@@ -70,7 +77,7 @@ provide(BEMDOM.decl('glue', {
     /**
      * Инициализируем блок glue-field (или его потомка) на BEM-блоке
      * @param {jQuery} elem
-     * @returns {BEM}
+     * @returns {glue} this
      */
     initFieldBlock: function(elem) {
         elem = this.elemify(elem, 'model-field'); // идентифицируем элемент для случая, когда на одной ноде несколько элементов

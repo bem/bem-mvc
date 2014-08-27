@@ -1,15 +1,25 @@
+/**
+ * @module model
+ */
+
 modules.define(
     'model',
     ['inherit'],
     function(provide, inherit, MODEL) {
 
 
-    MODEL.FIELD.types.model = inherit(MODEL.FIELD, {
+    /**
+     * @exports model:blocks.model__field_type_model
+     * @class model__field_type_model
+     * @augments MODEL:FIELD
+     * @bem model__field_type_model
+     */
+    MODEL.FIELD.types.model = inherit(MODEL.FIELD, /** @lends model__field_type_model.prototype */{
 
         /**
          * Инициализация поля
          * @param data
-         * @returns {FIELD}
+         * @returns {FIELD} this
          */
         initData: function(data) {
             this._value = MODEL.create({ name: this.params.modelName, parentModel: this.model }, data);
@@ -45,7 +55,7 @@ modules.define(
 
         /**
          * Закешировать состояние модели
-         * @returns {FIELD}
+         * @returns {FIELD} this
          */
         fixData: function() {
             this._value.fix();
@@ -55,7 +65,7 @@ modules.define(
 
         /**
          * Откатить значение на закешированное
-         * @returns {FIELD}
+         * @returns {FIELD} this
          */
         rollback: function() {
             this._value.rollback();
@@ -67,7 +77,7 @@ modules.define(
          * Задать значение
          * @param {Object} value
          * @param {Object} opts
-         * @returns {FIELD}
+         * @returns {FIELD} this
          */
         set: function(value, opts) {
             return this._set(value, opts);
@@ -75,9 +85,9 @@ modules.define(
 
         /**
          * Проапдейтить модель данными
-         * @param {Object|BEM.MODEL} data
+         * @param {Object|MODEL} data
          * @param {Object} opts
-         * @returns {FIELD}
+         * @returns {FIELD} this
          * @private
          */
         _set: function(data, opts) {
@@ -104,7 +114,7 @@ modules.define(
         /**
          * Очистить поля модели
          * @param {Object} opts
-         * @returns {FIELD}
+         * @returns {FIELD} this
          */
         clear: function(opts) {
             this._value.clear(opts);

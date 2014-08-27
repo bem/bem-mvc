@@ -1,6 +1,16 @@
+/**
+ * @module  glue-field
+ */
+
 modules.define('glue-field', ['i-bem__dom'], function(provide, BEMDOM) {
 
-provide(BEMDOM.decl('glue-field', {
+/**
+ * Блок для проклеивания моделей и DOM
+ * @exports
+ * @class glue-field
+ * @bem
+ */
+provide(BEMDOM.decl('glue-field', /** @lends glue-field.prototype */{
 
     onSetMod: {
         js: {
@@ -14,6 +24,7 @@ provide(BEMDOM.decl('glue-field', {
      * Инициализирует блок glue-field
      * @protected
      * @param model
+     * @returns {glue-field} this
      */
     init: function(model) {
         this.model = model;
@@ -26,6 +37,7 @@ provide(BEMDOM.decl('glue-field', {
     /**
      * Выставить значение поля модели
      * @param {*} val Значение поля
+     * @returns {glue-field} this
      */
     set: function(val) {
         this.model.set(this.name, val);
@@ -34,7 +46,8 @@ provide(BEMDOM.decl('glue-field', {
     },
 
     /**
-     * Получить занчение поля модели
+     * Получить значение поля модели
+     * @returns {String}
      */
     get: function() {
         return this.model.get(this.name);

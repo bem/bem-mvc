@@ -1,15 +1,24 @@
+/**
+ * @module model
+ */
+
 modules.define(
     'model',
     ['inherit', 'objects'],
     function(provide, inherit, objects, MODEL) {
 
-
-    MODEL.FIELD.types['models-list'] = inherit(MODEL.FIELD, {
+    /**
+     * @exports model:blocks.model__field_type_models-list
+     * @class model__field_type_models-list
+     * @augments MODEL:FIELD
+     * @bem model__field_type_models-list
+     */
+    MODEL.FIELD.types['models-list'] = inherit(MODEL.FIELD, /** @lends model__field_type_models-list.prototype */{
 
         /**
          * Инициализация поля
          * @param {Object} data
-         * @returns {BEM.MODEL.FIELD}
+         * @returns {FIELD} this
          */
         initData: function(data) {
             this.params['default'] || (this.params['default'] = []);
@@ -25,14 +34,7 @@ modules.define(
         /**
          * Создает значение поля типа models-list, которое предоставляет методы для работы со списком
          * @param field контекст текущего поля
-         * @returns {{
-         * _createModel: Function,
-         * add: Function,
-         * remove: Function,
-         * getById: Function,
-         * _getIndex: Function,
-         * getByIndex: Function
-         * }}
+         * @returns {Object} Объект с методами _createModel, add, remove, getById, _getIndex, getByIndex
          * @private
          */
         _createValueObject: function(field) {
@@ -80,11 +82,10 @@ modules.define(
 
                 /**
                  * Добавляет модель в список по индексу
-                 *
                  * @param index
                  * @param itemData
                  * @param opts
-                 * @return {*}
+                 * @returns {*}
                  */
                 addByIndex: function(index, itemData, opts) {
                     var model = list._createModel(itemData);
@@ -135,7 +136,7 @@ modules.define(
                 /**
                  * Возвращает модель из списка по id
                  * @param id
-                 * @returns {BEM.MODEL}
+                 * @returns {MODEL}
                  */
                 getById: function(id) {
                     return list.getByIndex(list._getIndex(id));
@@ -163,7 +164,7 @@ modules.define(
                 /**
                  * Возвращает модель из списка по индексу
                  * @param i
-                 * @returns {BEM.MODEL}
+                 * @returns {MODEL}
                  */
                 getByIndex: function(i) {
                     return field._raw[i];
@@ -215,7 +216,7 @@ modules.define(
 
         /**
          * Закешировать состояние
-         * @returns {MODEL.FIELD}
+         * @returns {FIELD} this
          */
         fixData: function() {
             this._fixedValue = this._raw.map(function(model) {
@@ -239,7 +240,7 @@ modules.define(
          * Задает значение для поля
          * @param {Array} data
          * @param {Object} opts
-         * @returns {MODEL.FIELD}
+         * @returns {FIELD} this
          * @private
          */
         _set: function(data, opts) {
@@ -257,7 +258,7 @@ modules.define(
         /**
          * Очистить поле и удалить все вложенные модели
          * @param {Object} [opts]
-         * @returns {MODEL.FIELD}
+         * @returns {FIELD} this
          */
         clear: function(opts) {
             this._value.clear();
@@ -266,7 +267,7 @@ modules.define(
         },
 
         /**
-         * Полчить данные поля
+         * Получить данные поля
          * @returns {Array}
          */
         toJSON: function() {

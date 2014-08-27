@@ -1,10 +1,19 @@
+/**
+ * @module model
+ */
+
 modules.define(
     'model',
     ['inherit', 'objects'],
     function(provide, inherit, objects, MODEL) {
 
-
-MODEL.FIELD.types.number = inherit(MODEL.FIELD, {
+/**
+ * @exports model:blocks.model__field_type_number
+ * @class model__field_type_number
+ * @augments MODEL:FIELD
+ * @bem model__field_type_number
+ */
+MODEL.FIELD.types.number = inherit(MODEL.FIELD, /** @lends model__field_type_number.prototype */{
 
     /**
      * Перед записью приводит значение к числу
@@ -23,7 +32,7 @@ MODEL.FIELD.types.number = inherit(MODEL.FIELD, {
 
     /**
      * Определяем дефолтные значения для поля
-     * @returns {Object}
+     * @returns {FIELD} this
      * @private
      */
     _initDefaults: function() {
@@ -41,7 +50,7 @@ MODEL.FIELD.types.number = inherit(MODEL.FIELD, {
     /**
      * Форматированное значение содержит два десятичных знака
      * @param {Number} value
-     * @returns {string}
+     * @returns {String}
      * @private
      */
     _format: function(value) {
@@ -50,6 +59,7 @@ MODEL.FIELD.types.number = inherit(MODEL.FIELD, {
 
     /**
      * Правила валидации для поля типа number
+     * @returns {Object}
      * @private
      */
     _getValidationRules: function() {

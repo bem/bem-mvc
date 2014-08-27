@@ -1,15 +1,24 @@
+/**
+ * @module model
+ */
+
 modules.define(
     'model',
     ['inherit'],
     function(provide, inherit, MODEL) {
 
-
-MODEL.FIELD.types.boolean = inherit(MODEL.FIELD, {
+/**
+ * @exports model:blocks.model__field_type_boolean
+ * @class model__field_type_boolean
+ * @augments MODEL:FIELD
+ * @bem model__field_type_boolean
+ */
+MODEL.FIELD.types.boolean = inherit(MODEL.FIELD, /** @lends model__field_type_boolean.prototype */{
 
     /**
      * Перед записью приводит значение к boolean
      * @param {*} value
-     * @returns {boolean}
+     * @returns {Boolean}
      * @private
      */
     _preprocess: function(value) {
@@ -21,7 +30,7 @@ MODEL.FIELD.types.boolean = inherit(MODEL.FIELD, {
     /**
      * Приводит к 1 или 0
      * @param {Boolean} value
-     * @returns {string}
+     * @returns {String}
      * @private
      */
     _format: function(value) {

@@ -1,10 +1,19 @@
+/**
+ * @module model
+ */
+
 modules.define(
     'model',
     ['inherit', 'objects'],
     function(provide, inherit, objects, MODEL) {
 
-
-MODEL.FIELD.types.string = inherit(MODEL.FIELD, {
+/**
+ * @exports model:blocks.model__field_type_string
+ * @class model__field_type_string
+ * @augments MODEL:FIELD
+ * @bem model__field_type_string
+ */
+MODEL.FIELD.types.string = inherit(MODEL.FIELD, /** @lends model__field_type_string.prototype */{
 
     /**
      * Значение по умолчанию пустая строка
@@ -12,7 +21,8 @@ MODEL.FIELD.types.string = inherit(MODEL.FIELD, {
     _default: '',
 
     /**
-     * Правила валидации для поля типа string
+     * Правила валидации для поля типа String
+     * @returns {Object}
      * @private
      */
     _getValidationRules: function() {

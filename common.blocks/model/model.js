@@ -1,3 +1,7 @@
+/**
+ * @module modele
+ */
+
 modules.define(
     'model',
     ['inherit', 'events', 'identify', 'objects', 'functions', 'functions__throttle', 'functions__debounce'],
@@ -10,7 +14,12 @@ var changesTimeout = 500,
     ANY_ID = '*',
     modelsGroupsCache = {},
     constructorsCache = {};
+/**
 
+ * @class MODEL
+ * @augments events:Emitter
+ * @bem
+ */
 var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
 
     /**
@@ -19,8 +28,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
     changesTimeout: changesTimeout,
 
     /**
-     * @class Конструктор модели
-     * @constructs
+     * @constructor
      * @param {String|Object} modelParams параметры модели
      * @param {String} modelParams.name имя модели
      * @param {String|Number} [modelParams.id] идентификатор модели
@@ -28,7 +36,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      * @param {String} [modelParams.parentPath] путь родительской модели
      * @param {Object} [modelParams.parentModel] экземпляр родительской модели
      * @param {Object} [data] данные для инициализации полей модели
-     * @returns {MODEL}
+     * @returns {MODEL} this
      * @private
      */
     __constructor: function(modelParams, data) {
@@ -67,7 +75,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
     /**
      * Инициализирует поля модели
      * @param {Object} data данные для инициализации полей модели
-     * @returns {MODEL}
+     * @returns {MODEL} this
      * @private
      */
     _initFields: function(data) {
@@ -103,10 +111,10 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
     },
 
     /**
-     * Вычиляет заначения зависимых полей
+     * Вычиляет значения зависимых полей
      * @param {String} name имя поля
      * @param {Object} opts дополнительные парметры доступные в обработчиках событий
-     * @returns {MODEL}
+     * @returns {MODEL} this
      * @private
      */
     _calcDependsTo: function(name, opts) {
@@ -162,8 +170,8 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      * Задает значение полю модели
      * @param {String} name имя поля
      * @param {*} value значение
-     * @param {Object} [opts] дополнительные парметры доступные в обработчиках событий change
-     * @returns {MODEL}
+     * @param {Object} [opts] дополнительные парметры, доступные в обработчиках событий change
+     * @returns {MODEL} this
      */
     set: function(name, value, opts) {
         var field = this.fields[name],
@@ -183,8 +191,8 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
     /**
      * Очищает поля модели
      * @param {String} [name] имя поля
-     * @param {Object} [opts] дополнительные парметры доступные в обработчиках событий change
-     * @returns {MODEL}
+     * @param {Object} [opts] дополнительные парметры, доступные в обработчиках событий change
+     * @returns {MODEL} this
      */
     clear: function(name, opts) {
         if (typeof name === 'string') {
@@ -205,9 +213,9 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
 
     /**
      * Задает поля модели по данным из объекта, генерирует событие update на модели
-     * @param {Object} data данные устанавливаемые в модели
+     * @param {Object} data данные, устанавливаемые в модели
      * @param {Object} [opts] доп. параметры
-     * @returns {MODEL}
+     * @returns {MODEL} this
      */
     update: function(data, opts) {
         var _this = this;
@@ -224,7 +232,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
     /**
      * Проверяет наличие поля у модели
      * @param {String} name имя поля
-     * @returns {boolean}
+     * @returns {Boolean}
      */
     hasField: function(name) {
         return !!this.fields[name];
@@ -278,7 +286,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
     /**
      * Кеширует значения полей модели, генерирует событие fix на модели
      * @param {Object} [opts] доп. параметры
-     * @returns {MODEL}
+     * @returns {MODEL} this
      */
     fix: function(opts) {
         objects.each(this.fields, function(field) {
@@ -293,7 +301,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
     /**
      * Восстанавливает значения полей модели из кеша, генерирует событие update на модели
      * @param {Object} [opts] доп. параметры
-     * @returns {MODEL}
+     * @returns {MODEL} this
      */
     rollback: function(opts) {
         objects.each(this.fields, function(field) {
@@ -328,7 +336,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      * @param {Object} [data] дополнительные данные события
      * @param {Function} fn обработчик события
      * @param {Object} ctx контекст вызова обработчика
-     * @returns {BEM.MODEL}
+     * @returns {MODEL} this
      */
     on: function(field, e, data, fn, ctx) {
         if (functions.isFunction(e)) {
@@ -354,7 +362,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      * @param {String} e имя события
      * @param {Function} fn обработчик события
      * @param {Object} ctx контекст вызова обработчика
-     * @returns {MODEL}
+     * @returns {MODEL} this
      */
     un: function(field, e, fn, ctx) {
         if (functions.isFunction(e)) {
@@ -378,7 +386,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      * @param {String} [field] имя поля
      * @param {String} e имя события
      * @param [data] данные доступные в обработчике события
-     * @returns {MODEL}
+     * @returns {MODEL} this
      */
     trigger: function(field, e, data) {
         if (!(typeof field == 'string' && typeof e == 'string')) {
@@ -400,7 +408,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      * Тригерит (с декоратором throttle) событие change на модели при изменении полей
      * @param {String} name имя поля
      * @param {Object} opts доп. параметры
-     * @returns {MODEL}
+     * @returns {MODEL} this
      * @private
      */
     _onFieldChange: function(name, opts) {
@@ -430,7 +438,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
 
     /**
      * Возвращает результат проверки модели на валидность
-     * @returns {boolean}
+     * @returns {Boolean}
      */
     isValid: function() {
         return !!this.validate().valid;
@@ -498,25 +506,20 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
 
     /**
      * Декларирует описание модели
-     * @static
      * @protected
      * @param {String|Object} decl
      * @param {String} decl.model|decl.name
      * @param {String} [decl.baseModel]
-     * @param {{
-     *     XXX: {String|Number}
-     *     XXX: {
-     *         {String} [type] тип поля
-     *         {Boolean} [internal] внутреннее поле
-     *         {*|Function} [default] дефолтное значение
-     *         {*|Function} [value] начанольное значение
-     *         {Object|Function} [validation] ф-ия конструктор объекта валидации или он сам
-     *         {Function} [format] ф-ия форматирования
-     *         {Function} [preprocess] ф-ия вызываемая до записи значения
-     *         {Function} [calculate] ф-ия вычисления значения, вызывается, если изменилось одно из связанных полей
-     *         {String|Array} [dependsFrom] массив от которых зависит значение поля
-     *     }
-     * }} fields где ключ имя поля, значение строка с типом или объект вида
+     * @param {String|Number|Object} fields строка с типом
+     * @param {String} [fields.type] тип поля
+     * @param {Boolean} [fields.internal] внутреннее поле
+     * @param {*|Function} [fields.default] дефолтное значение
+     * @param {*|Function} [fields.value] начальное значение
+     * @param {Object|Function} [fields.validation] ф-ия конструктор объекта валидации или он сам
+     * @param {Function} [fields.format] ф-ия форматирования
+     * @param {Function} [fields.preprocess] ф-ия, вызываемая до записи значения
+     * @param {Function} [fields.calculate] ф-ия вычисления значения, вызывается, если изменилось одно из связанных полей
+     * @param {String|Array} [fields.dependsFrom] строка или массив, от которых зависит значение поля
      * @param {Object} staticProps Статические методы и поля
      */
     decl: function(decl, fields, staticProps) {
@@ -614,7 +617,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      * @param {String} [modelParams.parentPath] путь родительской модели
      * @param {Object} [modelParams.parentModel] экземпляр родительской модели
      * @param {Object} [data] данные, которыми будет проинициализирована модель
-     * @returns {MODEL}
+     * @returns {MODEL} this
      */
     create: function(modelParams, data) {
         if (typeof modelParams === 'string') modelParams = { name: modelParams };
@@ -701,7 +704,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
     /**
      * Возвращает созданный или создает экземпляр модели
      * @param {Object|String} modelParams @see get.modelParams
-     * @returns {BEM.MODEL|undefined}
+     * @returns {MODEL|undefined}
      */
     getOrCreate: function(modelParams) {
         if (typeof modelParams === 'string') modelParams = { name: modelParams };
@@ -721,12 +724,12 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
 
     /**
      * Назначает глобальный обработчик событий на экземпляры моделей по пути
-     * @param {String|Object} modelParams Имя модели или параметры описываеющие path модели
+     * @param {String|Object} modelParams Имя модели или параметры, описывающие path модели
      * @param {String} [field] имя поля
      * @param {String} e имя события
      * @param {Function} fn обработчик события
      * @param {Object} [ctx] контекст выполнения обработчика
-     * @returns {MODEL}
+     * @returns {MODEL} this
      */
     on: function(modelParams, field, e, fn, ctx) {
         if (functions.isFunction(e)) {
@@ -764,12 +767,12 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
 
     /**
      * Удаляет глобальный обработчик событий на экземпляры моделей по пути
-     * @param {String|Object} modelParams Имя модели или параметры описываеющие path модели
+     * @param {String|Object} modelParams Имя модели или параметры, описывающие path модели
      * @param {String} [field] имя поля
      * @param {String} e имя события
      * @param {Function} fn обработчик события
      * @param {Object} [ctx] контекст выполнения обработчика
-     * @returns {MODEL}
+     * @returns {MODEL} this
      */
     un: function(modelParams, field, e, fn, ctx) {
         if (functions.isFunction(e)) {
@@ -820,11 +823,11 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
 
     /**
      * Тригерит событие на моделях по имени и пути
-     * @param {String|Object} modelParams Имя модели или параметры описываеющие path модели
+     * @param {String|Object} modelParams Имя модели или параметры, описывающие path модели
      * @param {String} [field] имя поля
      * @param {String} e имя события
-     * @param {Object} [data] данные передаваемые в обработчик события
-     * @returns {MODEL}
+     * @param {Object} [data] данные, передаваемые в обработчик события
+     * @returns {MODEL} this
      */
     trigger: function(modelParams, field, e, data) {
         if (!(typeof field == 'string' && typeof e == 'string')) {
@@ -847,18 +850,17 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
     /**
      * Назначает глобальные обработчики событий на экземпляр модели
      * @param {MODEL} model экземпляр модели
-     * @returns {MODEL}
+     * @returns {MODEL} this
      * @private
      */
     _bindToModel: function(model) {
-
         return this._bindToEvents(model, MODEL.modelsTriggers[model.name]);
     },
 
     /**
      * Назначает глобальные обработчики событий на поля экземпляра модели
      * @param {MODEL} model экземпляр модели
-     * @returns {MODEL}
+     * @returns {MODEL} this
      * @private
      */
     _bindToFields: function(model) {
@@ -878,7 +880,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      * Хелпер навешивания событий на экземпляр модели
      * @param {MODEL} model экземпляр модели
      * @param {Object} events события
-     * @returns {MODEL}
+     * @returns {MODEL} this
      * @private
      */
     _bindToEvents: function(model, events) {
@@ -901,7 +903,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      * Добавляет модель в хранилище
      * @private
      * @param {MODEL} model экземпляр модели
-     * @returns {MODEL}
+     * @returns {MODEL} this
      * @private
      */
     _addModel: function(model) {
@@ -918,8 +920,8 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
 
     /**
      * Уничтожает экземпляр модели, удаляет его из хранилища
-     * @param {MODEL|String|Object} modelParams Модель, имя модели или параметры описываеющие path модели
-     * @returns {MODEL}
+     * @param {MODEL|String|Object} modelParams Модель, имя модели или параметры, описывающие path модели
+     * @returns {MODEL} this
      */
     destruct: function(modelParams) {
         if (typeof modelParams == 'string') modelParams = { name: modelParams };
@@ -1023,7 +1025,7 @@ provide(MODEL);
 // todo: переименовать модуль согласно имени
 modules.define('i-model', ['i-bem__dom', 'model'], function(provide, BEMDOM, MODEL) {
 
-provide(BEMDOM.decl({ block : 'model' }, /** @lends link.prototype */{
+provide(BEMDOM.decl({ block : 'model' }, {
     onSetMod: {
         js: {
             inited: function() {
