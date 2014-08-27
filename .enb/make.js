@@ -47,11 +47,11 @@ module.exports = function(config) {
 
     configureAutoprefixer('desktop', config, sets);
 
-    config.nodes(['*.pages/*', '*.bundles/*'], function(nodeConfig) {
+    config.nodes(['*.bundles/*'], function(nodeConfig) {
         nodeConfig.addTech([provide, { target : '?.bemjson.js' }]);
     });
 
-    config.nodes(['*.bundles/all-tests', '*.bundles/todos'], function(nodeConfig) {
+    config.nodes(['*.tests/*/*', '*.examples/*/*', '*.bundles/*'], function(nodeConfig) {
         var langs = config.getLanguages();
 
         // Base techs
@@ -184,13 +184,13 @@ function configureSets(platform, config, sets) {
         levels : getLibLevels(platform, config),
         techSuffixes : ['examples'],
         fileSuffixes : ['bemjson.js', 'title.txt'],
-        inlineBemjson : true
+        inlineBemjson : true,
+        processInlineBemjson : wrapInPage
     });
 
     sets.tests.configure({
         destPath : platform + '.tests',
         levels : getLibLevels(platform, config),
-        suffixes : ['tests'],
         techSuffixes : ['tests'],
         fileSuffixes : ['bemjson.js', 'title.txt']
     });
@@ -198,13 +198,15 @@ function configureSets(platform, config, sets) {
     sets.docs.configure({
         destPath : platform + '.docs',
         levels : getLibLevels(platform, config),
-        exampleSets : [platform + '.examples']
+        exampleSets : [platform + '.examples'],
+        langs : config.getLanguages()
     });
 
     sets.specs.configure({
         destPath : platform + '.specs',
         levels : getLibLevels(platform, config),
-        sourceLevels : getSpecLevels(platform, config)
+        sourceLevels : getSpecLevels(platform, config),
+        jsSuffixes : ['vanilla.js', 'browser.js', 'js']
     });
 }
 
@@ -233,8 +235,7 @@ function getSourceLevels(platform, config) {
 
 function getTestLevels(platform, config) {
     return [].concat(
-        getSourceLevels(platform, config),
-        config.resolvePath('test.blocks')
+        getSourceLevels(platform, config)
     );
 }
 
@@ -246,56 +247,25 @@ function getSpecLevels(platform, config) {
 }
 
 function wrapInPage(bemjson, meta) {
-    var basename = path.basename(meta.filename, '.bemjson.js');
-    var res = {
+    var basename = '_' + path.basename(meta.filename, '.bemjson.js');
+    return {
         block : 'page',
         title : naming.stringify(meta.notation),
-        head : [
-            { elem : 'css', url : '_' + basename + '.css' },
-            { elem : 'js', url : '_' + basename + '.js' }
-        ],
+        head : [{ elem : 'css', url : basename + '.css' }],
+        scripts : [{ elem : 'js', url : basename + '.js' }],
+        mods : { theme : getThemeFromBemjson(bemjson) },
         content : bemjson
     };
-    var theme = getThemeFromBemjson(bemjson);
-
-    if(theme) {
-        res.mods = { theme : theme };
-    }
-
-    return res;
 }
 
 function getThemeFromBemjson(bemjson) {
-    var theme;
+    if(typeof bemjson !== 'object') return;
 
-    if(Array.isArray(bemjson)) {
-        for(var i = 0; i < bemjson.length; ++i) {
-            theme = getThemeFromBemjson(bemjson[i]);
+    var theme, key;
 
-            if(theme) {
-                return theme;
-            }
-        }
-    } else {
-        for(var key in bemjson) {
-            if(bemjson.hasOwnProperty(key)) {
-                var value = bemjson[key];
-
-                if(key === 'mods') {
-                    var mods = bemjson[key];
-
-                    theme = mods && mods.theme;
-
-                    if(theme) {
-                        return theme;
-                    }
-                }
-
-                if(key === 'content' && Array.isArray(value) || (typeof value === 'object' && value !== null)) {
-                    return getThemeFromBemjson(bemjson[key]);
-                }
-            }
-        }
+    for(key in bemjson) {
+        if(theme = key === 'mods' ? bemjson.mods.theme :
+            getThemeFromBemjson(bemjson[key])) return theme;
     }
 }
 
