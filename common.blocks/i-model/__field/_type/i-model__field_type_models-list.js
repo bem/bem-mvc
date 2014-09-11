@@ -18,6 +18,19 @@
         },
 
         /**
+         *
+         * @param {String} event
+         * @param {Object} opts
+         * @returns {BEM.MODEL.FIELD}
+         * @private
+         */
+        _trigger: function (event, opts) {
+            var innerField = opts && opts.field;
+
+            return this.__base(event, $.extend({ innerField: innerField }, opts));
+        },
+
+        /**
          * Создает значение поля типа models-list, которое предоставляет методы для работы со списком
          * @param field контекст текущего поля
          * @returns {{
