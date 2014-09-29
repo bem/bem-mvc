@@ -92,6 +92,7 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
 
             runs(function() {
                 expect(data.option).toEqual('value');
+                expect(data.innerField).toEqual('f');
                 model.destruct();
             });
         });

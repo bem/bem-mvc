@@ -655,6 +655,7 @@
          */
         get: function(modelParams, dropCache) {
             if (typeof modelParams == 'string') modelParams = { name: modelParams };
+            modelParams = $.extend({}, modelParams);
 
             if (typeof modelParams.id === 'undefined') modelParams.id = ANY_ID;
 
