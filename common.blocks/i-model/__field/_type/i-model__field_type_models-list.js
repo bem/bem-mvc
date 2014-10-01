@@ -249,6 +249,17 @@
         },
 
         /**
+         * Returns if some of inner models was changed
+         *
+         * @returns {Boolean}
+         */
+        isChanged: function() {
+            return this._value.some(function (model) {
+                return model.isChanged();
+            });
+        },
+
+        /**
          * Задать новое значение для поля
          * @param {Array} value
          * @param {Object} opts

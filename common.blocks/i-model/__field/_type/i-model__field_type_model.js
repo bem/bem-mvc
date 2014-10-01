@@ -61,6 +61,15 @@
         },
 
         /**
+         * Returns if field was changed
+         *
+         * @return {Boolean}
+         */
+        isChanged: function() {
+            return this._value.isChanged();
+        },
+
+        /**
          * Задать значение
          * @param {Object} value
          * @param {Object} opts

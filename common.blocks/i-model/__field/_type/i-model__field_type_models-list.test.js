@@ -116,6 +116,18 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             expect(BEM.MODEL.get('list-inner-model').length).toEqual(0);
         });
 
+        it('isChanged() should return true if one of inner models was changed', function () {
+            var model = BEM.MODEL.create('model-list-type-field', {
+                list: [{ id: 1, f: 'f1' }, { id: 2, f: 'f2' }]
+            });
+
+            expect(model.isChanged()).toEqual(false);
+            model.get('list').getByIndex(0).set('f', 'new-value');
+            expect(model.isChanged()).toEqual(true);
+
+            model.destruct();
+        });
+
         it('should add models', function() {
             var model = BEM.MODEL.create('model-list-type-field', {
                     list: [{ id: 1, f: 'f1' }, { id: 2, f: 'f2' }]
