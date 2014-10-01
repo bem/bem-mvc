@@ -94,7 +94,8 @@
          * @private
          */
         _set: function(value, opts) {
-            this._raw = this.checkEmpty(value) ? this._default && this._default.slice() : value;
+            var defaultValue = this.getDefault();
+            this._raw = this.checkEmpty(value) ? defaultValue && defaultValue.slice() : value;
             this._value = (this.params.preprocess || this._preprocess).call(this, this._raw && this._raw.slice());
             this._formatted = (this.params.format || this._format).call(
                 this,
@@ -121,7 +122,7 @@
          * @returns {boolean}
          */
         isEmpty: function() {
-            return this.checkEmpty(this._raw) || this.isEqual(this._default);
+            return this.checkEmpty(this._raw) || this.isEqual(this.getDefault());
         },
 
         /**

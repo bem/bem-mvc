@@ -57,9 +57,6 @@
          */
         _initDefaults: function() {
             this._default = this.params['default'] !== undefined ? this.params['default'] : this._default;
-            if (typeof this._default === 'function') {
-                this._default = this._default();
-            }
             this._validationRules = this._getValidationRules();
 
             return this;
@@ -118,7 +115,7 @@
          * @private
          */
         _set: function(value, opts) {
-            this._raw = this.checkEmpty(value) ? this._default : value;
+            this._raw = this.checkEmpty(value) ? this.getDefault() : value;
             this._value = (this.params.preprocess || this._preprocess).call(this, this._raw);
             this._formatted = (this.params.format || this._format).call(this, this._value, this.params.formatOptions || {});
 
@@ -205,7 +202,7 @@
          * @returns {*}
          */
         getDefault: function() {
-            return this._default;
+            return typeof this._default === 'function' ? this._default() : this._default;
         },
 
         /**
@@ -221,7 +218,7 @@
          * @returns {boolean}
          */
         isEmpty: function() {
-            return this.checkEmpty(this._raw) || this._raw === this._default;
+            return this.checkEmpty(this._raw) || this._raw === this.getDefault();
         },
 
         /**
