@@ -263,6 +263,11 @@ BEM.TEST.decl('i-model__field', function() {
                 simpleField.set(NaN).fixData();
                 expect(simpleField.isEqual(NaN)).toBe(true);
             });
+
+            it('should return true if field value equal to object', function () {
+                simpleField.set({isTrue: true}).fixData();
+                expect(simpleField.isEqual({isTrue: true})).toBe(true);
+            });
         });
 
         describe('.isChanged()', function() {
