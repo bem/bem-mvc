@@ -174,6 +174,11 @@
                 this.isNaN(value) && this.isNaN(this.get());
         },
 
+        /**
+         *
+         * @param {*} value
+         * @return {Boolean}
+         */
         _isEqualToObject: function (value) {
             var currentValue = this.get();
             if (!$.isPlainObject(currentValue) || !$.isPlainObject(value)) {
