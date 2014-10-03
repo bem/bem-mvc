@@ -202,7 +202,7 @@
          * @returns {*}
          */
         getDefault: function() {
-            return typeof this._default === 'function' ? this._default() : this._default;
+            return typeof this._default === 'function' ? this._default.call(this.model) : this._default;
         },
 
         /**
