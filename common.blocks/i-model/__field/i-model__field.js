@@ -180,18 +180,22 @@
          * @return {Boolean}
          */
         _isEqualToObject: function (value) {
-            var currentValue = this.get();
+            var currentValue = this.get(),
+                currentValueKeys,
+                valueKeys,
+                keysWithDifferentValues;
+
             if (!$.isPlainObject(currentValue) || !$.isPlainObject(value)) {
                 return false;
             }
 
-            var currentValueKeys = Object.keys(currentValue);
-            var valueKeys = Object.keys(value);
+            currentValueKeys = Object.keys(currentValue);
+            valueKeys = Object.keys(value);
             if (currentValueKeys.length !== valueKeys.length) {
                 return false;
             }
 
-            var keysWithDifferentValues = valueKeys.filter(function (key) {
+            keysWithDifferentValues = valueKeys.filter(function (key) {
                 return value[key] !== currentValue[key];
             });
 
