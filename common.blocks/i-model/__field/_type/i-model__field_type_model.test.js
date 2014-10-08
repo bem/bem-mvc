@@ -104,6 +104,21 @@ BEM.TEST.decl('i-model__field_type_model', function() {
             expect(BEM.MODEL.get('inner-model').length).toEqual(0);
         });
 
+        it('isChanged() should return true if inner model was changed', function () {
+            var model = BEM.MODEL.create('model-type-field', {
+                    f: {
+                        innerF: 'str'
+                    }
+                });
+
+            expect(model.isChanged()).toEqual(false);
+
+            model.get('f').set('innerF', 'new value');
+
+            expect(model.isChanged()).toEqual(true);
+            model.destruct();
+        });
+
         it('should serialize data', function() {
             var model = BEM.MODEL.create('model-type-field', {
                 f: {
