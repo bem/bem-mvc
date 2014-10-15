@@ -254,7 +254,7 @@
          * @returns {Boolean}
          */
         isChanged: function() {
-            return this._value.some(function (model) {
+            return this._value.length() !== this._fixedValue.length || this._value.some(function (model) {
                 return model.isChanged();
             });
         },
