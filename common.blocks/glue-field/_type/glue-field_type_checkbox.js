@@ -15,8 +15,8 @@ provide(BEMDOM.decl({ block: 'glue-field_type_checkbox', baseBlock: 'glue-field'
     init: function() {
         this.__base.apply(this, arguments);
 
-        this.checkbox.on('change', function() {
-            this.model.set(this.name, this.checkbox.getMod('checked'));
+        this.checkbox.on({ modName: 'checked', modVal: '*' }, function(e, data) {
+            this.model.set(this.name, !!data.modVal);
         }, this);
     },
 
