@@ -702,7 +702,7 @@
             if (!modelParams.id) modelParams.id = this._getModelId(modelParams, data);
 
             var modelDataHash =  MODEL.modelsData[modelParams.name],
-                modelData = $.extend(true, data || {}, modelDataHash && modelDataHash[MODEL.buildPath(modelParams)] || {}),
+                modelData = $.extend(true, modelDataHash && modelDataHash[MODEL.buildPath(modelParams)] || {}, data || {}),
                 model = MODEL.getOne(modelParams);
 
             if (model) {
