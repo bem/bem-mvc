@@ -7,7 +7,7 @@
          * @returns {MODEL.FIELD.types.model}
          */
         initData: function(data) {
-            this._value = MODEL.create({ name: this.params.modelName, parentModel: this.model }, data);
+            this._value = MODEL.getOrCreate({ name: this.params.modelName, parentModel: this.model }, data);
 
             this._initEvents();
 
