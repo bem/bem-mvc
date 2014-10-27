@@ -705,8 +705,6 @@
                 modelData = $.extend(true, data || {}, modelDataHash && modelDataHash[MODEL.buildPath(modelParams)] || {}),
                 model = MODEL.getOne(modelParams);
 
-            (modelParams.name == "m-banner") && console.log('path: ', MODEL.buildPath(modelParams), ' model =', model, ' data ', data);
-
             if (model) {
                 return model.update(modelData);
             }
