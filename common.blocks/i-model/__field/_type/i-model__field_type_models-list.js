@@ -56,7 +56,7 @@
                 _createModel: function(data) {
                     var model = data instanceof MODEL ?
                         data :
-                        MODEL.create({ name: field.params.modelName, parentModel: field.model }, data);
+                        MODEL.getOrCreate({ name: field.params.modelName, parentModel: field.model }, data);
 
                     model
                         .on('change', function(e, data) {

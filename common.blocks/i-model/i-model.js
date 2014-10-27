@@ -621,14 +621,7 @@
             if (!decl)
                 throw new Error('unknown model: "' + modelParams.name + '"');
 
-            // выставляем id из поля типа 'id' или из декларации
-            $.each(decl, function(name, field) {
-                if (field.type === 'id')
-                    modelParams.id = (data && data[name]);
-            });
-
-            if (typeof modelParams.id === 'undefined')
-                modelParams.id = $.identify();
+            if (!modelParams.id) modelParams.id = this._getModelId(modelParams, data);
 
             // создаем модель
             var model = new (constructorsCache[modelParams.name] || MODEL)(modelParams, data);
@@ -700,15 +693,49 @@
         /**
          * Возвращает созданный или создает экземпляр модели
          * @param {Object|String} modelParams @see get.modelParams
+         * @param {Object} [data] model data
          * @returns {BEM.MODEL|undefined}
          */
-        getOrCreate: function(modelParams) {
+        getOrCreate: function(modelParams, data) {
             if (typeof modelParams === 'string') modelParams = { name: modelParams };
-            var modelData = MODEL.modelsData[modelParams.name];
+            //id модели нам нужно знать уже на этом этапе, чтобы корректно извлечь данные из MODEL.modelsData
+            if (!modelParams.id) modelParams.id = this._getModelId(modelParams, data);
 
-            return MODEL.getOne(modelParams) || MODEL.create(
-                modelParams,
-                modelData && modelData[MODEL.buildPath(modelParams)] || {});
+            var modelDataHash =  MODEL.modelsData[modelParams.name],
+                modelData = $.extend(true, modelDataHash && modelDataHash[MODEL.buildPath(modelParams)] || {}, data || {}),
+                model = MODEL.getOne(modelParams);
+
+            if (model) {
+                return model.update(modelData);
+            }
+
+            return MODEL.create(modelParams, modelData);
+        },
+
+        /**
+         * Генерирует id для модели
+         * @param {String|Object} modelParams имя модели или параметры модели
+         * @param [data] {Object}данные, которыми будет проинициализирована модель
+         * @returns {String}
+         * @private
+         */
+        _getModelId: function(modelParams, data) {
+            if (typeof modelParams === 'string') modelParams = { name: modelParams };
+
+            var id,
+                decl = MODEL.decls[modelParams.name];
+
+            // выставляем id из поля типа 'id' или из декларации
+            $.each(decl, function(name, field) {
+                if (field.type === 'id') {
+                    id = (data && data[name]);
+                }
+            });
+
+            if (typeof id === 'undefined')
+                id = $.identify();
+
+            return id;
         },
 
         /**
