@@ -46,6 +46,10 @@ BEM.TEST.decl('i-model__field', function() {
             },
             f6: {
                 'default': { val: 1 }
+            },
+            f7: {
+                ignoreIfChanged: true,
+                type: 'string'
             }
         });
 
@@ -141,6 +145,17 @@ BEM.TEST.decl('i-model__field', function() {
             expect(model.isChanged('f6')).toBe(true);
         });
 
+        it('should ignore changes of field has ignoreIfChanged === true', function () {
+            var model = BEM.MODEL
+                .create('no-type-field', {
+                    f7: 'value'
+                })
+                .fix()
+                .update({f7: 'new value'});
+
+            expect(model.isChanged()).toBe(false);
+        });
+
         it('should update models', function() {
             var model = BEM.MODEL
                 .create('no-type-field')
@@ -161,7 +176,8 @@ BEM.TEST.decl('i-model__field', function() {
                 f3: { val: 'qwe3' },
                 f4: { val: 'qwe4' },
                 f5: { val: 'qwe5' },
-                f6: { val: 1 }
+                f6: { val: 1 },
+                f7: ''
             });
         });
 
@@ -195,7 +211,8 @@ BEM.TEST.decl('i-model__field', function() {
                     f3: { val: 'up3' },
                     f4: { val: 'up4' },
                     f5: { val: 'up5' },
-                    f6: { val: 1 }
+                    f6: { val: 1 },
+                    f7: ''
                 });
         });
 
