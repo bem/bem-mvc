@@ -32,14 +32,14 @@ _initFields(data)
 
 _calcDependsTo(name, opts)
 --------------------------
-Вычиляет заначения зависимых полей
+Вычисляет значения зависимых полей
 
 
 **Parameters**
 
 **name**:  *String*,  имя поля
 
-**opts**:  *Object*,  дополнительные парметры доступные в обработчиках событий
+**opts**:  *Object*,  дополнительные параметры доступные в обработчиках событий
 
 get(name, \[type\])
 -------------------
@@ -51,7 +51,7 @@ get(name, \[type\])
 **name**:  *String*,  
 
 
-**[type]**:  *String*,  формат предтавления значения. по умолчанию вызывается get, либо raw/formatted
+**[type]**:  *String*,  формат представления значения. по умолчанию вызывается get, либо raw/formatted
 
 set(name, value, \[opts\])
 --------------------------
@@ -64,7 +64,7 @@ set(name, value, \[opts\])
 
 **value**:  ***,  значение
 
-**[opts]**:  *Object*,  дополнительные парметры доступные в обработчиках событий change
+**[opts]**:  *Object*,  дополнительные параметры доступные в обработчиках событий change
 
 clear(\[name\], \[opts\])
 -------------------------
@@ -75,7 +75,7 @@ clear(\[name\], \[opts\])
 
 **[name]**:  *String*,  имя поля
 
-**[opts]**:  *Object*,  дополнительные парметры доступные в обработчиках событий change
+**[opts]**:  *Object*,  дополнительные параметры доступные в обработчиках событий change
 
 update(data, \[opts\])
 ----------------------
@@ -241,7 +241,7 @@ XXX: {
 {String} [type] тип поля
 {Boolean} [internal] внутреннее поле
 {*|Function} [default] дефолтное значение
-{*|Function} [value] начанольное значение
+{*|Function} [value] начальное значение
 {Object|Function} [validation] ф-ия конструктор объекта валидации или он сам
 {Function} [format] ф-ия форматирования
 {Function} [preprocess] ф-ия вызываемая до записи значения
@@ -303,7 +303,7 @@ create(modelParams, modelParams.name, \[modelParams.id\], \[modelParams.parentNa
 
 get(modelParams, modelParams.name, \[modelParams.id\], \[modelParams.path\], \[modelParams.parentName\], \[modelParams.parentId\], \[modelParams.parentPath\], \[modelParams.parentModel\], \[dropCache\])
 ----------------------------------------------------------------------------------------------------
-Возвращает экземляр или массив экземпляров моделей по имени и пути
+Возвращает экземпляр или массив экземпляров моделей по имени и пути
 
 
 **Parameters**
@@ -344,7 +344,7 @@ on(modelParams, \[field\], e, fn, \[ctx\])
 
 **Parameters**
 
-**modelParams**:  *String|Object*,  Имя модели или параметры описываеющие path модели
+**modelParams**:  *String|Object*,  Имя модели или параметры описывающие path модели
 
 **[field]**:  *String*,  имя поля
 
@@ -361,7 +361,7 @@ un(modelParams, \[field\], e, fn, \[ctx\])
 
 **Parameters**
 
-**modelParams**:  *String|Object*,  Имя модели или параметры описываеющие path модели
+**modelParams**:  *String|Object*,  Имя модели или параметры описывающие path модели
 
 **[field]**:  *String*,  имя поля
 
@@ -378,7 +378,7 @@ trigger(modelParams, \[field\], e, \[data\])
 
 **Parameters**
 
-**modelParams**:  *String|Object*,  Имя модели или параметры описываеющие path модели
+**modelParams**:  *String|Object*,  Имя модели или параметры описывающие path модели
 
 **[field]**:  *String*,  имя поля
 
@@ -431,7 +431,7 @@ destruct(modelParams)
 
 **Parameters**
 
-**modelParams**:  *BEM.MODEL|String|Object*,  Модель, имя модели или параметры описываеющие path модели
+**modelParams**:  *BEM.MODEL|String|Object*,  Модель, имя модели или параметры описывающие path модели
 
 buildPath(pathParts, pathParts.name, \[pathParts.id\], \[pathParts.parentName\], \[pathParts.parentId\], \[pathParts.parentPath\], \[pathParts.parentModel\], \[pathParts.childName\], \[pathParts.childId\], \[pathParts.childPath\], \[pathParts.childModel\])
 ----------------------------------------------------------------------------------------------------
@@ -448,7 +448,7 @@ buildPath(pathParts, pathParts.name, \[pathParts.id\], \[pathParts.parentName\],
 
 **[pathParts.id]**:  *String|Number*,  идентификатор модели
 
-**[pathParts.parentName]**:  *String*,  имя родитеской модели
+**[pathParts.parentName]**:  *String*,  имя родительской модели
 
 **[pathParts.parentId]**:  *String|Number*,  идентификатор родительской модели
 
@@ -477,7 +477,7 @@ _getPathRegexp(path)
 forEachModel(callback, modelParams, \[dropCache\])
 --------------------------------------------------
 Выполняет callback для каждой модели найденной по заданному пути. Если callback вернул false, то
-итерация остановливается
+итерация останавливается
 
 
 **Parameters**

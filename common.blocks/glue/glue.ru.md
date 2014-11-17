@@ -10,9 +10,9 @@ _initModel(\[modelParams\], \[modelData\])
 
 **Parameters**
 
-**[modelParams]**:  *Object*,  Парметры модели
+**[modelParams]**:  *Object*,  Параметры модели
 
-**[modelData]**:  *Object*,  Данные для инициализации модили
+**[modelData]**:  *Object*,  Данные для инициализации модели
 
 _initFields()
 -------------
