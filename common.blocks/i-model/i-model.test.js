@@ -755,5 +755,18 @@ BEM.TEST.decl('i-model', function() {
 
     });
 
+    describe('model with isChanged()', function () {
+        BEM.MODEL.decl('model-with-custom-isChanged', {
+        }, {
+            isChanged: function () { return true; }
+        });
+
+        it('should return value from custom isChanged()', function () {
+            var model = BEM.MODEL.create('model-with-custom-isChanged');
+
+            expect(model.isChanged()).toBe(true);
+        });
+    });
+
 
 });

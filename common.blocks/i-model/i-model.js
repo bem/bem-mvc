@@ -6,7 +6,8 @@
         MODELS_SEPARATOR = ',',
         ANY_ID = '*',
         modelsGroupsCache = {},
-        constructorsCache = {};
+        constructorsCache = {},
+        OVERRIDABLE_METHODS = ['isChanged'];
 
     /**
      * @namespace
@@ -544,7 +545,11 @@
             MODEL.decls[decl.model] = fields;
 
             staticProps && $.each(staticProps, function(name) {
-                if (name in MODEL.prototype) throw new Error('method "' + name + '" is protected');
+                if (OVERRIDABLE_METHODS.indexOf(name) > -1) {
+                    return;
+                } else if (name in MODEL.prototype) {
+                    throw new Error('method "' + name + '" is protected');
+                }
             });
             constructorsCache[decl.model] = $.inherit(constructorsCache[decl.baseModel] || MODEL, staticProps);
 
