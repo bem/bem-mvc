@@ -1,5 +1,5 @@
 ;(function(MODEL, $) {
-    MODEL.FIELD.types['models-list'] = $.inherit(MODEL.FIELD, {
+    MODEL.FIELD.types['models-list'] = $.inherit(MODEL.FIELD.types['inner-events-storage'], {
 
         /**
          * Инициализация поля
@@ -18,6 +18,19 @@
         },
 
         /**
+         *
+         * @param {String} event
+         * @param {Object} opts
+         * @returns {BEM.MODEL.FIELD}
+         * @private
+         */
+        _trigger: function (event, opts) {
+            var innerField = opts && opts.field;
+
+            return this.__base(event, $.extend({ innerField: innerField }, opts));
+        },
+
+        /**
          * Создает значение поля типа models-list, которое предоставляет методы для работы со списком
          * @param field контекст текущего поля
          * @returns {{
@@ -31,7 +44,8 @@
          * @private
          */
         _createValueObject: function(field) {
-            var list = {
+            var currentField = this,
+                list = {
 
                 /**
                  * Создает модель и инициализирует ее переданными данными
@@ -42,7 +56,9 @@
                 _createModel: function(data) {
                     var model = data instanceof MODEL ?
                         data :
-                        MODEL.create({ name: field.params.modelName, parentModel: field.model }, data);
+                        typeof data === 'string' ?
+                            MODEL.getOrCreate({ name: field.params.modelName, id: data, parentModel: field.model }) :
+                            MODEL.create({ name: field.params.modelName, parentModel: field.model }, data);
 
                     model
                         .on('change', function(e, data) {
@@ -69,11 +85,14 @@
                  */
                 add: function(itemData, opts) {
                     var model = list._createModel(itemData);
+                    var index = field._raw.length;
 
                     field._raw.push(model);
 
+                    currentField._bindFieldEventHandlers(model);
+
                     field
-                        .trigger('add', $.extend({}, opts, { model: model }))
+                        .trigger('add', $.extend({}, opts, { model: model, index: index }))
                         ._trigger('change', opts);
 
                     return model;
@@ -113,7 +132,11 @@
                         var model = list.getByIndex(index);
 
                         field._raw.splice(index, 1);
-                        field.trigger('remove', $.extend({}, opts, { model: model }));
+
+                        currentField._unBindFieldEventHandlers(model);
+
+                        field.trigger('remove', $.extend({}, opts, { model: model, index: index }));
+
                         opts.keepModel !== true && model.destruct();
 
                         field._trigger('change', opts);
@@ -229,6 +252,17 @@
         },
 
         /**
+         * Returns if some of inner models was changed
+         *
+         * @returns {Boolean}
+         */
+        isChanged: function() {
+            return this._value.some(function (model) {
+                return model.isChanged();
+            });
+        },
+
+        /**
          * Задать новое значение для поля
          * @param {Array} value
          * @param {Object} opts
@@ -255,6 +289,40 @@
             this._trigger(opts && opts.isInit ? 'init': 'change', opts);
 
             return this;
+        },
+
+        /**
+         * Повесить обработчик события на поле и на все вложенные модели
+         * @param {String} e
+         * @param {Function} fn
+         * @param {Object} ctx
+         */
+        on: function(e, fn, ctx) {
+            if (e !== 'change') {
+                this._pushEventHandler(e, fn, ctx);
+
+                this._raw.forEach(function(model) {
+                    model.on(e, fn, ctx);
+                });
+            }
+
+            this.__base.apply(this, arguments);
+        },
+
+        /**
+         * Снять обработчик события с поля и со всех вложенных моделей
+         * @param {String} e
+         * @param {Function} fn
+         * @param {Object} ctx
+         */
+        un: function(e, fn, ctx) {
+            this._raw.forEach(function(model) {
+                model.un(e, fn, ctx);
+            }, this);
+
+            this._popEventHandler(e, fn, ctx);
+
+            this.__base.apply(this, arguments);
         },
 
         /**

@@ -46,6 +46,9 @@ BEM.TEST.decl('i-model__field', function() {
             },
             f6: {
                 'default': { val: 1 }
+            },
+            f7: {
+                'default': function () { return 1; }
             }
         });
 
@@ -62,6 +65,10 @@ BEM.TEST.decl('i-model__field', function() {
 
         it('should have default value', function() {
             expect(BEM.MODEL.create('no-type-field').get('f1')).toEqual({ val: 'str1' });
+        });
+
+        it('should exec default if it\'s a function', function () {
+            expect(BEM.MODEL.create('no-type-field').get('f7')).toEqual(1);
         });
 
         it('should have init value from decl', function() {
@@ -161,7 +168,8 @@ BEM.TEST.decl('i-model__field', function() {
                 f3: { val: 'qwe3' },
                 f4: { val: 'qwe4' },
                 f5: { val: 'qwe5' },
-                f6: { val: 1 }
+                f6: { val: 1 },
+                f7: 1
             });
         });
 
@@ -195,7 +203,8 @@ BEM.TEST.decl('i-model__field', function() {
                     f3: { val: 'up3' },
                     f4: { val: 'up4' },
                     f5: { val: 'up5' },
-                    f6: { val: 1 }
+                    f6: { val: 1 },
+                    f7: 1
                 });
         });
 

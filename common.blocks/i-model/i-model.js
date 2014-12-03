@@ -543,14 +543,27 @@
             MODEL.models[decl.model] = {};
             MODEL.decls[decl.model] = fields;
 
-            staticProps && $.each(staticProps, function(name) {
-                if (name in MODEL.prototype) throw new Error('method "' + name + '" is protected');
-            });
+            MODEL.checkModelDecl(decl, fields, staticProps);
+
             constructorsCache[decl.model] = $.inherit(constructorsCache[decl.baseModel] || MODEL, staticProps);
 
             MODEL._buildDeps(fields, decl.model);
 
             return this;
+        },
+
+        /**
+         * Проверяет валидность декларации модели
+         * @static
+         * @protected
+         * @param {Object} decl
+         * @param {Object} fields
+         * @param {Object} staticProps
+         */
+        checkModelDecl: function (decl, fields, staticProps) {
+            staticProps && $.each(staticProps, function(name) {
+                if (name in MODEL.prototype) throw new Error('method "' + name + '" is protected');
+            });
         },
 
         /**
@@ -655,6 +668,7 @@
          */
         get: function(modelParams, dropCache) {
             if (typeof modelParams == 'string') modelParams = { name: modelParams };
+            modelParams = $.extend({}, modelParams);
 
             if (typeof modelParams.id === 'undefined') modelParams.id = ANY_ID;
 

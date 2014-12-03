@@ -58,6 +58,25 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             model.destruct();
         });
 
+        it('inner model with id should not create twice', function() {
+            BEM.MODEL.create(
+                {
+                    name: 'list-inner-model',
+                    id: 'innerId',
+                    parentName: 'model-list-type-field',
+                    parentId: 'id'
+                },
+                {
+                    id: 'innerId',
+                    f: 'innerString'
+                });
+            var model = BEM.MODEL.create({ name: 'model-list-type-field', id: 'id' }, {
+                list: ['innerId']
+            });
+
+            model.destruct();
+        });
+
         it('should create models at index', function () {
             var model = BEM.MODEL.create('model-list-type-field', {
                 list: [{ id: 1, f: 'f', n: 3 }]
@@ -120,6 +139,7 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
 
             runs(function() {
                 expect(data.option).toEqual('value');
+                expect(data.innerField).toEqual('f');
                 model.destruct();
             });
         });
@@ -141,6 +161,18 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
 
             model.destruct();
             expect(BEM.MODEL.get('list-inner-model').length).toEqual(0);
+        });
+
+        it('isChanged() should return true if one of inner models was changed', function () {
+            var model = BEM.MODEL.create('model-list-type-field', {
+                list: [{ id: 1, f: 'f1' }, { id: 2, f: 'f2' }]
+            });
+
+            expect(model.isChanged()).toEqual(false);
+            model.get('list').getByIndex(0).set('f', 'new-value');
+            expect(model.isChanged()).toEqual(true);
+
+            model.destruct();
         });
 
         it('should add models', function() {
@@ -262,6 +294,36 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             modelsList.clear({ keepModel: true });
 
             expect(destructHandler.calls.length).toBe(0);
+        });
+
+        it('should bubble events from inner models', function() {
+            var model = BEM.MODEL.create('model-list-type-field', {
+                    list: [
+                        { id: 1, f: 'f1' },
+                        { id: 2, f: 'f2' }
+                    ]
+                }),
+
+                onCustom = jasmine.createSpy('onCustom'),
+                onNewCustom = jasmine.createSpy('onNewCustom'),
+                onCustomDeactive = jasmine.createSpy('onCustomDeactive');
+
+            model.on('list', 'custom-event', onCustom);
+            model.get('list').getByIndex(0).trigger('custom-event');
+
+            model.on('list', 'new-custom-event', onNewCustom);
+            model.get('list').add({ id: 3, f: 'f3' }).trigger('new-custom-event');
+
+            model.on('list', 'deact-custom-event', onCustomDeactive);
+            model.un('list', 'deact-custom-event', onCustomDeactive);
+            model.get('list').getByIndex(0).trigger('deact-custom-event');
+            model.get('list').add({ id: 4, f: 'f4' }).trigger('deact-custom-event');
+
+            expect(onCustom.calls.length).toEqual(1);
+            expect(onNewCustom.calls.length).toEqual(1);
+            expect(onCustomDeactive).not.toHaveBeenCalled();
+
+            model.destruct();
         });
 
     });

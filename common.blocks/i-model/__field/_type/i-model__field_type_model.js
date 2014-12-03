@@ -1,5 +1,5 @@
 ;(function(MODEL, $) {
-    MODEL.FIELD.types.model = $.inherit(MODEL.FIELD, {
+    MODEL.FIELD.types.model = $.inherit(MODEL.FIELD.types['inner-events-storage'], {
 
         /**
          * Инициализация поля
@@ -7,7 +7,12 @@
          * @returns {MODEL.FIELD.types.model}
          */
         initData: function(data) {
-            this._value = MODEL.create({ name: this.params.modelName, parentModel: this.model }, data);
+            //если в data пришла строка - то это id дочерней модели
+            if (typeof data === 'string') {
+                this._value = MODEL.getOrCreate({ name: this.params.modelName, id: data, parentModel: this.model });
+            } else {
+                this._value = MODEL.create({ name: this.params.modelName, parentModel: this.model }, data);
+            }
 
             this._initEvents();
 
@@ -20,6 +25,7 @@
          */
         _initEvents: function() {
             this._value.on('change', this._onInnerModelChange, this);
+            this._bindFieldEventHandlers(this._value);
         },
 
         /**
@@ -28,6 +34,7 @@
          */
         _unBindEvents: function() {
             this._value.un('change', this._onInnerModelChange, this);
+            this._unBindFieldEventHandlers(this._value);
         },
 
         /**
@@ -56,6 +63,15 @@
             this._value.rollback();
 
             return this;
+        },
+
+        /**
+         * Returns if field was changed
+         *
+         * @return {Boolean}
+         */
+        isChanged: function() {
+            return this._value.isChanged();
         },
 
         /**
@@ -142,6 +158,36 @@
                     }
                 }
             });
+        },
+
+        /**
+         * Повесить обработчик события на поле и на внутреннюю модель
+         * @param {String} e
+         * @param {Function} fn
+         * @param {Object} [ctx]
+         */
+        on: function(e, fn, ctx) {
+            if (e !== 'change') {
+                this._pushEventHandler(e, fn, ctx);
+
+                this._value.on(e, fn, ctx);
+            }
+
+            return this.__base.apply(this, arguments);
+        },
+
+        /**
+         * Снять обработчик события с поля и с внутренней модели
+         * @param {String} e
+         * @param {Function} fn
+         * @param {Object} [ctx]
+         */
+        un: function(e, fn, ctx) {
+            this._value.un(e, fn, ctx);
+
+            this._popEventHandler(e, fn, ctx);
+
+            return this.__base.apply(this, arguments);
         },
 
         /**

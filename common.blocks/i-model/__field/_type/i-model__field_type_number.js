@@ -40,7 +40,20 @@
          * @private
          */
         _format: function(value) {
-            return (value || 0).toFixed(this._precision);
+            return isNaN(value) ?
+                typeof this.getDefault() !== 'undefined' ?  this._toFixed(this['default']) : '' :
+                this._toFixed(value);
+        },
+
+        /**
+         * Преобразует число оставляя заданное число десятичных знаков
+         * @param {Number} number
+         * @returns {String}
+         */
+        _toFixed: function(number) {
+            var multiplier = Math.pow(10, this._precision);
+
+            return (Math.round(number * multiplier) / multiplier).toFixed(this._precision);
         },
 
         /**

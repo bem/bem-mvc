@@ -6,6 +6,7 @@
             elem: 'field',
             mods: {
                 type: [
+                    'inner-events-storage',
                     'id',
                     'string',
                     'number',
