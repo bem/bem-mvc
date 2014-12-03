@@ -4,12 +4,24 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
         BEM.MODEL.decl('model-list-type-field', {
             list: {
                 type: 'models-list',
-                modelName: 'list-inner-model'
+                modelName: 'list-inner-model',
+                validation: {
+                    rules: {
+                        'deep': true
+                    }
+                }
             }
         });
         BEM.MODEL.decl('list-inner-model', {
             id: 'id',
-            f: 'string',
+            f: {
+                type: 'string',
+                validation: {
+                    rules: {
+                        required: true
+                    }
+                }
+            },
             n: 'number'
         });
 
@@ -30,6 +42,22 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             expect(BEM.MODEL.get('list-inner-model').length).toEqual(0);
         });
 
+        it('model should be validated with rule deep', function() {
+            var model = BEM.MODEL.create('model-list-type-field', {
+                list: [
+                    { id: 'id', n: 4 }
+                ]
+            });
+
+            expect(model.isValid()).not.toBe(true);
+
+            model.get('list').getByIndex(0).set('f', 'not empty');
+
+            expect(model.isValid()).toBe(true);
+
+            model.destruct();
+        });
+
         it('inner model with id should not create twice', function() {
             BEM.MODEL.create(
                 {
@@ -45,8 +73,6 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             var model = BEM.MODEL.create({ name: 'model-list-type-field', id: 'id' }, {
                 list: ['innerId']
             });
-
-            expect(model.get('list').getByIndex(0).get('f')).toEqual('innerString');
 
             model.destruct();
         });
