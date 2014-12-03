@@ -50,6 +50,18 @@ BEM.TEST.decl('i-model__field_type_model', function() {
             expect(BEM.MODEL.get('inner-model').length).toEqual(0);
         });
 
+        it('submodel with id shoud not create twice', function() {
+            BEM.MODEL.create({ name: 'inner-model', id: 'innerId', parentName: 'model-type-field', parentId: 'id' },
+                { innerF: 'inner1' });
+
+            var model = BEM.MODEL.create({ name: 'model-type-field', id: 'id' }, {
+                    f: 'innerId'
+                });
+
+            expect(model.get('f').get('innerF')).toEqual('inner1');
+            model.destruct();
+        });
+
         it('should set model as value', function() {
             var model = BEM.MODEL.create('model-type-field', {
                     f: {

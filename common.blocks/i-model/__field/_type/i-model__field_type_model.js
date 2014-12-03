@@ -7,7 +7,12 @@
          * @returns {MODEL.FIELD.types.model}
          */
         initData: function(data) {
-            this._value = MODEL.create({ name: this.params.modelName, parentModel: this.model }, data);
+            //если в data пришла строка - то это id дочерней модели
+            if (typeof data === 'string') {
+                this._value = MODEL.getOrCreate({ name: this.params.modelName, id: data, parentModel: this.model });
+            } else {
+                this._value = MODEL.create({ name: this.params.modelName, parentModel: this.model }, data);
+            }
 
             this._initEvents();
 
