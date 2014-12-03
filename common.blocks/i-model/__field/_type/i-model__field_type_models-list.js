@@ -56,7 +56,9 @@
                 _createModel: function(data) {
                     var model = data instanceof MODEL ?
                         data :
-                        MODEL.create({ name: field.params.modelName, parentModel: field.model }, data);
+                        typeof data === 'string' ?
+                            MODEL.getOrCreate({ name: field.params.modelName, id: data, parentModel: field.model }) :
+                            MODEL.create({ name: field.params.modelName, parentModel: field.model }, data);
 
                     model
                         .on('change', function(e, data) {

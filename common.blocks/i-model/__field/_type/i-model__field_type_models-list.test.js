@@ -30,6 +30,27 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             expect(BEM.MODEL.get('list-inner-model').length).toEqual(0);
         });
 
+        it('inner model with id should not create twice', function() {
+            BEM.MODEL.create(
+                {
+                    name: 'list-inner-model',
+                    id: 'innerId',
+                    parentName: 'model-list-type-field',
+                    parentId: 'id'
+                },
+                {
+                    id: 'innerId',
+                    f: 'innerString'
+                });
+            var model = BEM.MODEL.create({ name: 'model-list-type-field', id: 'id' }, {
+                list: ['innerId']
+            });
+
+            expect(model.get('list').getByIndex(0).get('f')).toEqual('innerString');
+
+            model.destruct();
+        });
+
         it('should create models at index', function () {
             var model = BEM.MODEL.create('model-list-type-field', {
                 list: [{ id: 1, f: 'f', n: 3 }]
