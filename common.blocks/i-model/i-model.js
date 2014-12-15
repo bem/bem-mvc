@@ -577,6 +577,7 @@
                 deps = {};
 
             function pushDeps(fields, toPushDeps) {
+                fields = Array.isArray(fields) ? fields : [fields];
                 fields.forEach(function(field) {
                     if (!fieldDecl[field])
                         throw Error('in model "' + modelName + '" depended field "' + field +'" is not declared');
