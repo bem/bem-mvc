@@ -5,13 +5,13 @@ bem-mvc library contains of `i-bem` blocks to enable you to realize MVC-pattern.
 **Due to active development of `bem-core` and `bem-components` libraries some functionalities may work incorrect!
 We work hard to stabilize it and welcome any efforts from you.**
 
-Models' requirements:
-*   Declarative style of models' description;
+Models requirements:
+*   Declarative style of models description;
 *   Access to created samples of models by names and id;
-*   Automated adjustment of fields' values to given types;
-*   Models' validation.
+*   Automated adjustment of fields values to given types;
+*   Models validation.
 
-Bindings' requirements:
+Bindings requirements:
 *   `i-bem` oriented;
 *   Inheritance of own functionality in used `i-bem` blocks;
 *   Bindings with controls from [bem-components](https://github.com/bem/bem-components).
@@ -22,7 +22,7 @@ Dependancies:
 
 ## Models
 
-To use model it is necessary to declare it by seting up a name and fields' description.
+To use model it is necessary to declare it by seting up a name and fields description.
 
 ```javascript
 BEM.MODEL.decl('model', {
@@ -38,7 +38,7 @@ BEM.MODEL.decl('model', {
 });
 ```
 
-While declaring it is possible as well to set up model's methods (redefinition of basic methods of a model will cause an error).
+While declaring it is possible as well to set up model methods (redefinition of basic methods of a model will cause an error).
 
 ```javascript
 BEM.MODEL.decl('model', {
@@ -66,9 +66,9 @@ Types of fields:
 *  `boolean`
 *  `model`
 *  `array`
-*  `models-list` – a list of same type's models
+*  `models-list` – a list of same type models
 
-To create a model it is necessary to declare model's name and to pass initialized parameters if needed.
+To create a model it is necessary to declare model name and to pass initialized parameters if needed.
 
 ```javascript
 var model = BEM.MODEL.create('model', {
@@ -84,13 +84,13 @@ var model = BEM.MODEL.create('model', {
 });
 ```
 
-In case of sample model's link absence it is possible to call it from an internal storage by name.
+In case of sample model link absence it is possible to call it from an internal storage by name.
 
 ```javascript
 var model = BEM.MODEL.get('model')[0];
 ```
 
-Now we can set models' fields:
+Now we can set models fields:
 
 ```javascript
 model
@@ -166,8 +166,8 @@ model.isValid();
 ## Bindings
 
 To bind a model with a DOM we use `glue` block. This block will "glue" model with DOM.
-To bind a model to any control it is necessary to mix to parent's block a `glue` block and
-to control — model-field element of `glue` block, and to give them model's parameters.
+To bind a model to any control it is necessary to mix to parent block a `glue` block and
+to control — model-field element of `glue` block, and to give them model parameters.
 
 BEMJSON is such cases will look like the following:
 
@@ -177,7 +177,7 @@ BEMJSON is such cases will look like the following:
     mix: [{
         block: 'glue',                   // mix in `glue` block
         js: {
-            modelName: 'model',            // set up a model's name
+            modelName: 'model',            // set up a model name
             modelData: {
                 name: 'Claudia Schiffer',  // and data
                 weight: 75,
@@ -217,12 +217,12 @@ Bindings types (model-field modifiers):
 *  select – bind to `select` block;
 *  checkbox – bind to `checkbox` block;
 *  inline – field value paste into html;
-*  mod – block's modifier change.
+*  mod – block modifier change.
 
-## Models' aggregation
+## Models aggregation
 
 Unfortunately, not always setting up models with a help of `glue` block can be handy.
-If model's data is generated during templating you can use `model` block.
+If model data is generated during templating you can use `model` block.
 
 ```javascript
 {
@@ -267,7 +267,7 @@ To avoid clogging of DOM by auxiliaries we can wrap any content in `model-aggreg
 }
 ```
 
-As a result all `model` blocks inside the aggregator will be bild into one, and all models will be initialized before other blocks' initialization.
+As a result all `model` blocks inside the aggregator will be bild into one, and all models will be initialized before other blocks initialization.
 
 ## Testing
 
