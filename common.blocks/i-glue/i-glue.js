@@ -94,7 +94,11 @@ BEM.DOM.decl('i-glue', {
      * @returns {BEM|Array}
      */
     getFieldBlock: function(name) {
-        return this._fields[name];
+        var field = this._fields[name];
+        if (!field) {
+            return;
+        }
+        return field.length === 1 ? field[0] : field;
     },
 
     /**
