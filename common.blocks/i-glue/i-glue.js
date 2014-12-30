@@ -80,7 +80,8 @@ BEM.DOM.decl('i-glue', {
             var type = fieldParams.type,
                 block = new BEM.DOM.blocks['i-glue-field' + (type ? '_type_' + type : '')](elem, fieldParams, true);
 
-            this._fields[fieldParams.name] = block;
+            this._fields[fieldParams.name] = this._fields[fieldParams.name] || [];
+            this._fields[fieldParams.name].push(block);
             block.init(this.model);
         }, this);
 
@@ -88,12 +89,16 @@ BEM.DOM.decl('i-glue', {
     },
 
     /**
-     * Возвращает BEM-блок по имени поля из модели
+     * Возвращает BEM-блок либо массив BEM-блоков по имени поля из модели
      * @param name Имя поля
-     * @returns {BEM}
+     * @returns {BEM|Array}
      */
     getFieldBlock: function(name) {
-        return this._fields[name];
+        var field = this._fields[name];
+        if (!field) {
+            return;
+        }
+        return field.length === 1 ? field[0] : field;
     },
 
     /**
@@ -141,7 +146,9 @@ BEM.DOM.decl('i-glue', {
      */
     destruct: function(keepDOM) {
         this._fields && Object.keys(this._fields).forEach(function(name) {
-            this._fields[name].destruct(keepDOM);
+            this._fields[name].forEach(function (field) {
+                field.destruct(keepDOM);
+            });
         }, this);
 
         this.__base.apply(this, arguments);
