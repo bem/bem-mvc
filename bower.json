@@ -16,6 +16,6 @@
   ],
   "dependencies": {
     "bem-components": "git://github.com/bem/bem-components.git#v2",
-    "bem-pr": "git://github.com/narqo/bem-pr.git#v0.4"
+    "bem-pr": "~0.4.0"
   }
 }
