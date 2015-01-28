@@ -253,6 +253,12 @@
          * @returns {Object}
          */
         toJSON: function() {
+            var fieldDecl = this.model.fieldsDecl[this.name];
+
+            if (fieldDecl.calculate && !fieldDecl.dependsFrom) {
+                return fieldDecl.calculate.call(this.model);
+            }
+
             return this.get();
         },
 

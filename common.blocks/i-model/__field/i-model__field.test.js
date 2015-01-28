@@ -49,6 +49,11 @@ BEM.TEST.decl('i-model__field', function() {
             },
             f7: {
                 'default': function () { return 1; }
+            },
+            f8: {
+                calculate: function () {
+                    return true;
+                }
             }
         });
 
@@ -148,6 +153,12 @@ BEM.TEST.decl('i-model__field', function() {
             expect(model.isChanged('f6')).toBe(true);
         });
 
+        it('should serialize calculable fields without dependencies', function () {
+            var model = BEM.MODEL.create('no-type-field');
+
+            expect(model.toJSON().f8).toBe(true);
+        });
+
         it('should update models', function() {
             var model = BEM.MODEL
                 .create('no-type-field')
@@ -169,7 +180,8 @@ BEM.TEST.decl('i-model__field', function() {
                 f4: { val: 'qwe4' },
                 f5: { val: 'qwe5' },
                 f6: { val: 1 },
-                f7: 1
+                f7: 1,
+                f8: true
             });
         });
 
@@ -204,7 +216,8 @@ BEM.TEST.decl('i-model__field', function() {
                     f4: { val: 'up4' },
                     f5: { val: 'up5' },
                     f6: { val: 1 },
-                    f7: 1
+                    f7: 1,
+                    f8: true
                 });
         });
 
