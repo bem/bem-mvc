@@ -248,6 +248,10 @@
                 return model.toJSON();
             }, this);
 
+            this._raw.forEach(function (model) {
+                model.fix();
+            });
+
             return this;
         },
 
