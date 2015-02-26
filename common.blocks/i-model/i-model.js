@@ -96,7 +96,7 @@
                 var fieldDecl = _this.fieldsDecl[name];
 
                 data && !fieldDecl.calculate &&
-                    field.initData(data[name] != undefined ? data[name] : fieldDecl.value);
+                    field.initData(typeof data[name] !== 'undefined' ? data[name] : fieldDecl.value);
             });
 
             this.trigger('init');
