@@ -120,7 +120,7 @@ BEM.MODEL.decl('model-with-validation', {
         type: 'number',
         validation: {             // задать функцию валидации
             validate: function(value) {
-                if (value < 170) return false; 
+                return value >= 170; 
             }
         }
     },
@@ -131,10 +131,10 @@ BEM.MODEL.decl('model-with-validation', {
                 required: true,      // стандартное
                 toFat: {             // и кастомное
                     needToValidate: function() {        // проверить нужно ли выполнять валидацию
-                        if (this.get('height') > 170) return true;
+                        return this.get('height') > 170;
                     },
                     validate: function(value) {
-                        if (value > 90) return false;
+                        return value <= 90;
                     }
                 }
             }
