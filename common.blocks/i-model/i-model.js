@@ -419,7 +419,7 @@
          * @private
          */
         _fireChange: function(opts) {
-            this.trigger('change', opts);
+            this.trigger('change', $.extend({}, opts, { changedFields: this.changed }));
             this.changed = [];
         },
 
