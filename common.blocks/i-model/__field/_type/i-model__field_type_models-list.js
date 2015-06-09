@@ -261,9 +261,10 @@
          * @returns {Boolean}
          */
         isChanged: function() {
-            return this._value.some(function (model) {
-                return model.isChanged();
-            });
+            return this._value.length() !== this._fixedValue.length || this._value.some(function (model, i) {
+                return model.isChanged() ||
+                    JSON.stringify(model.toJSON()) !== JSON.stringify(this._fixedValue[i] || '');
+            }, this);
         },
 
         /**

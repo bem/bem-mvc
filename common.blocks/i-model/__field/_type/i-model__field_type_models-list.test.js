@@ -329,6 +329,32 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             model.destruct();
         });
 
-    });
+        describe('.isChanged', function() {
 
+            it('should not be changed after create', function() {
+                var model = BEM.MODEL.create('model-list-type-field');
+
+                expect(model.isChanged()).toBe(false);
+                model.destruct();
+            });
+
+            it('should be changed after update', function() {
+                var model = BEM.MODEL.create('model-list-type-field');
+
+                model.update({ list: [{ id: 1, f: 'f1', n: 42 }] });
+
+                expect(model.isChanged()).toBe(true);
+                model.destruct();
+            });
+
+            it('should not be changed after update with same values', function() {
+                var model = BEM.MODEL.create('model-list-type-field', { list: [{ id: 1, f: 'f1', n: 42 }] });
+
+                model.update({ list: [{ id: 1, f: 'f1', n: 42 }] });
+
+                expect(model.isChanged()).toBe(false);
+                model.destruct();
+            });
+        });
+    });
 });
