@@ -335,6 +335,7 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
                 var model = BEM.MODEL.create('model-list-type-field');
 
                 expect(model.isChanged()).toBe(false);
+
                 model.destruct();
             });
 
@@ -342,8 +343,12 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
                 var model = BEM.MODEL.create('model-list-type-field');
 
                 model.update({ list: [{ id: 1, f: 'f1', n: 42 }] });
-
                 expect(model.isChanged()).toBe(true);
+
+                model.fix();
+                model.update({ list: [{ id: 1, f: 'f2', n: 42 }] });
+                expect(model.isChanged()).toBe(true);
+
                 model.destruct();
             });
 
@@ -351,8 +356,20 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
                 var model = BEM.MODEL.create('model-list-type-field', { list: [{ id: 1, f: 'f1', n: 42 }] });
 
                 model.update({ list: [{ id: 1, f: 'f1', n: 42 }] });
-
                 expect(model.isChanged()).toBe(false);
+
+                model.get('list').getByIndex(0).set('f', 'f1');
+                expect(model.isChanged()).toBe(false);
+
+                model.destruct();
+            });
+
+            it('should not be changed after update with same values, with different order of values', function() {
+                var model = BEM.MODEL.create('model-list-type-field', { list: [{ id: 1, f: 'f1', n: NaN }] });
+
+                model.update({ list: [{ id: 1, n: NaN, f: 'f1' }] });
+                expect(model.isChanged()).toBe(false);
+
                 model.destruct();
             });
         });

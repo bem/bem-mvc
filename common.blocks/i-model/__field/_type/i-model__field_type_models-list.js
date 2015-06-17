@@ -1,4 +1,36 @@
 ;(function(MODEL, $) {
+    /**
+     * Сравнивает два переданных значения
+     * Если значения объекты рекурсивно сравнивет поля объектов
+     * Для объектов порядок объявления полей не имеет значения
+     * Н: isEqual({ a:1, b: 2 }, { b: 2, a:1 }) -> true
+     *
+     * @param {Object, String, Number, Boolean, null, undefined} leftVal
+     * @param {Object, String, Number, Boolean, null, undefined} rightVal
+     * @returns {Boolean} если значения равны вернет true
+     */
+    var isEqual = function(leftVal, rightVal) {
+        var leftValKeys,
+            rightValKeys;
+
+        if (leftVal === rightVal) return true;
+
+        if (isNaN(leftVal) && isNaN(rightVal) && $.type(leftVal) === 'number' && $.type(rightVal) === 'number') {
+             return true;
+        }
+
+        if (!($.type(leftVal) == 'object' && $.type(rightVal) == 'object'))  return false;
+
+        leftValKeys = Object.keys(leftVal);
+        rightValKeys = Object.keys(rightVal);
+
+        if (leftValKeys.length !== rightValKeys.length) return false;
+
+        return leftValKeys.every(function(key) {
+            return isEqual(leftVal[key], rightVal[key]);
+        });
+    };
+
     MODEL.FIELD.types['models-list'] = $.inherit(MODEL.FIELD.types['inner-events-storage'], {
 
         /**
@@ -262,8 +294,7 @@
          */
         isChanged: function() {
             return this._value.length() !== this._fixedValue.length || this._value.some(function (model, i) {
-                return model.isChanged() ||
-                    JSON.stringify(model.toJSON()) !== JSON.stringify(this._fixedValue[i] || '');
+                return model.isChanged() || !isEqual(model.toJSON(), this._fixedValue[i]);
             }, this);
         },
 
