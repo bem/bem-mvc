@@ -755,5 +755,115 @@ BEM.TEST.decl('i-model', function() {
 
     });
 
+    describe('.isEqual', function() {
+        BEM.MODEL.decl('model-for-compare', {
+            f1: 'string',
+            f2: 'string',
+            f3: 'number',
+            f4: 'array',
+            f5: 'boolean',
+            f6: { type: 'model', modelName: 'inner-model-for-compare' }
+        });
 
+        BEM.MODEL.decl('inner-model-for-compare', {
+            innerF: { type: 'string' },
+            innerModelLev2: { type: 'model', modelName: 'inner-model-second-lev' }
+        });
+
+        BEM.MODEL.decl('inner-model-second-lev', {
+            innerFLev2: { type: 'string' }
+        });
+
+        it('model should be equal to self', function() {
+            var model = BEM.MODEL.create('model-for-compare', {
+                f1: 'f1',
+                f2: 'f2',
+                f3: 3,
+                f4: [1, 2, 3],
+                f5: false,
+                f6: {
+                    innerF: 'str',
+                    innerModelLev2: { innerFLev2: 'innerFLev2' }
+                }
+            });
+
+            expect(model.isEqual(model)).toBe(true);
+
+            model.destruct();
+        });
+
+        it('model should be equal to another model with same values ', function() {
+            var model1 = BEM.MODEL.create('model-for-compare', { f1: 'f1' }),
+                model2 = BEM.MODEL.create('model-for-compare', { f1: 'f1' });
+
+            expect(model1.isEqual(model2)).toBe(true);
+
+            model1.destruct();
+            model2.destruct();
+        });
+
+        it('model should be equal to plain object with same values', function() {
+            var model = BEM.MODEL.create('model-for-compare', {
+                f1: 'f1',
+                f2: 'f2',
+                f3: 3,
+                f4: [1, 2, 3],
+                f5: false,
+                f6: {
+                    innerF: 'str',
+                    innerModelLev2: { innerFLev2: 'innerFLev2' }
+                }
+            });
+
+            expect(model.isEqual({
+                f1: 'f1',
+                f2: 'f2',
+                f3: 3,
+                f4: [1, 2, 3],
+                f5: false,
+                f6: {
+                    innerF: 'str',
+                    innerModelLev2: {
+                        innerFLev2: 'innerFLev2'
+                    }
+                }
+            })).toBe(true);
+
+            model.destruct();
+
+            model = BEM.MODEL.create('model-for-compare', { f1: 'f1'});
+            expect(model.isEqual({
+                f1: 'f1',
+                f2: undefined,
+                f3: undefined,
+                f4: [],
+                f5: undefined,
+                f6: {
+                    innerF: undefined,
+                    innerModelLev2: { innerFLev2: undefined }
+                }
+            })).toBe(true);
+
+            model.destruct();
+        });
+
+        it('model should not be equal to plain object without keys that has been declared in model,' +
+            ' even its values are "undefined"', function() {
+            var model = BEM.MODEL.create('model-for-compare', { f1: 'f1' });
+
+            expect(model.isEqual({ f1: 'f1' })).toBe(false);
+
+            model.destruct();
+        });
+
+        it('model should not be equal to another model with different values ', function() {
+            var model1 = BEM.MODEL.create('model-for-compare', { f1: 'f1' }),
+                model2 = BEM.MODEL.create('model-for-compare');
+
+            expect(model1.isEqual(model2)).toBe(false);
+
+            model1.destruct();
+            model2.destruct();
+        });
+    });
 });

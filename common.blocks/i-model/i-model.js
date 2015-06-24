@@ -473,6 +473,26 @@
             this.trigger('validated', res);
 
             return res;
+        },
+
+        /**
+         * Сравнивает значение модели с переданным значением
+         * @param {BEM.MODEL|Object} val модель или хеш
+         * @returns {boolean}
+         */
+        isEqual: function(val) {
+
+            if (!val) return false;
+
+            var isComparingValueModel = val instanceof BEM.MODEL,
+                selfFieldNames = Object.keys(this.fields),
+                fieldNamesToCompare = Object.keys(isComparingValueModel ? val.fields : val);
+
+            if (selfFieldNames.length != fieldNamesToCompare.length) return false;
+
+            return !selfFieldNames.some(function(fieldName) {
+                return !this.fields[fieldName].isEqual(isComparingValueModel ? val.get(fieldName) : val[fieldName]);
+            }, this);
         }
 
     }, /** @lends BEM.MODEL */ {

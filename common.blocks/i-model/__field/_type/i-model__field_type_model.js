@@ -197,7 +197,15 @@
             this._unBindEvents();
 
             this.params.destruct && this._value.destruct();
-        }
+        },
 
+        /**
+         * Сравнивает значение поля с переданным значением
+         * @param {BEM.MODEL|Object} val модель или хеш
+         * @returns {boolean}
+         */
+        isEqual: function(val) {
+            return this._value.isEqual(val);
+        }
     });
 })(BEM.MODEL, jQuery);
