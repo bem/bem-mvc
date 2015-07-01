@@ -41,7 +41,7 @@
          */
         _format: function(value) {
             return isNaN(value) ?
-                typeof this.getDefault() !== 'undefined' ?  this._toFixed(this['default']) : '' :
+                typeof this.getDefault() !== 'undefined' ?  this._toFixed(this._default) : '' :
                 this._toFixed(value);
         },
 
