@@ -261,6 +261,22 @@ BEM.TEST.decl('i-model__field_type_model', function() {
             expect(onNewCustom).toHaveBeenCalled();
         });
 
+        describe('.isEqual method', function() {
+            it('should call .isEqual method of self value and return its result', function() {
+                var model = BEM.MODEL.create('model-type-field', { f: { innerF: 'str' } }),
+                    innerField = model.get('f');
+
+                spyOn(innerField, 'isEqual');
+
+                model.fields.f.isEqual();
+                expect(innerField.isEqual).toHaveBeenCalled();
+
+                expect(model.fields.f.isEqual({ innerF: 'str' })).toEqual(innerField.isEqual('str'));
+                expect(model.fields.f.isEqual({ innerF: 'str1' })).toEqual(innerField.isEqual('str1'));
+
+                model.destruct();
+            });
+        });
     });
 
 });

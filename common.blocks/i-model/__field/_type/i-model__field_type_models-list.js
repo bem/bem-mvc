@@ -261,8 +261,27 @@
          * @returns {Boolean}
          */
         isChanged: function() {
-            return this._value.some(function (model) {
-                return model.isChanged();
+            return this._value.length() !== this.getFixedValue().length || this._value.some(function (model, i) {
+                return model.isChanged() || !model.isEqual(this.getFixedValue()[i]);
+            }, this);
+        },
+
+        /**
+         * Сравнивает значение поля с переданным значением
+         * @param {MODEL.FIELD.types['models-list']|Array} val поле типа models-list или массив
+         * @returns {boolean}
+         */
+        isEqual: function(val) {
+            if (!val) return false;
+
+            var isModelList = val instanceof MODEL.FIELD.types['models-list'],
+                length;
+
+            isModelList && (val = val.get());
+            length = isModelList ? val.length() : val.length;
+
+            return this._value.length() == length && !this._value.some(function(item, i) {
+                return !item.isEqual(isModelList ? val.getByIndex(i) : val[i]);
             });
         },
 

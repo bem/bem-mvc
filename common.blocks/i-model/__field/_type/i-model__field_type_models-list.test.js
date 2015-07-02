@@ -166,18 +166,6 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             expect(BEM.MODEL.get('list-inner-model').length).toEqual(0);
         });
 
-        it('isChanged() should return true if one of inner models was changed', function () {
-            var model = BEM.MODEL.create('model-list-type-field', {
-                list: [{ id: 1, f: 'f1' }, { id: 2, f: 'f2' }]
-            });
-
-            expect(model.isChanged()).toEqual(false);
-            model.get('list').getByIndex(0).set('f', 'new-value');
-            expect(model.isChanged()).toEqual(true);
-
-            model.destruct();
-        });
-
         it('should add models', function() {
             var model = BEM.MODEL.create('model-list-type-field', {
                     list: [{ id: 1, f: 'f1' }, { id: 2, f: 'f2' }]
@@ -329,6 +317,111 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             model.destruct();
         });
 
-    });
+        describe('.isChanged', function() {
 
+            it('should not be changed after create', function() {
+                var model = BEM.MODEL.create('model-list-type-field');
+
+                expect(model.isChanged()).toBe(false);
+
+                model.destruct();
+            });
+
+            it('should be changed after update', function() {
+                var model = BEM.MODEL.create('model-list-type-field');
+
+                model.update({ list: [{ id: 1, f: 'f1', n: 42 }] });
+                expect(model.isChanged()).toBe(true);
+
+                model.fix();
+                model.update({ list: [{ id: 1, f: 'f2', n: 42 }] });
+                expect(model.isChanged()).toBe(true);
+
+                model.destruct();
+            });
+
+            it('should not be changed after update with same values', function() {
+                var model = BEM.MODEL.create('model-list-type-field', { list: [{ id: 1, f: 'f1', n: 42 }] });
+
+                model.update({ list: [{ id: 1, f: 'f1', n: 42 }] });
+                expect(model.isChanged()).toBe(false);
+
+                model.get('list').getByIndex(0).set('f', 'f1');
+                expect(model.isChanged()).toBe(false);
+
+                model.destruct();
+            });
+
+            it('should not be changed after update with same values, with different order of values', function() {
+                var model = BEM.MODEL.create('model-list-type-field', { list: [{ id: 1, f: 'f1', n: NaN }] });
+
+                model.update({ list: [{ id: 1, n: NaN, f: 'f1' }] });
+                expect(model.isChanged()).toBe(false);
+
+                model.destruct();
+            });
+
+            it('should be changed if one of inner models was changed', function () {
+                var model = BEM.MODEL.create('model-list-type-field', {
+                    list: [{ id: 1, f: 'f1' }, { id: 2, f: 'f2' }]
+                });
+
+                expect(model.isChanged()).toEqual(false);
+                model.get('list').getByIndex(0).set('f', 'new-value');
+                expect(model.isChanged()).toEqual(true);
+
+                model.destruct();
+            });
+        });
+
+        describe('.isEqual', function() {
+            it('should be equal to array with same values', function() {
+                var model = BEM.MODEL.create('model-list-type-field', {
+                    list: [{ id: 1, f: 'f1' }, { id: 2, f: 'f2' }]
+                });
+
+                expect(model.fields.list.isEqual([{ id: 1, f: 'f1' }, { id: 2, f: 'f2' }])).toBe(false);
+
+                model.destruct();
+            });
+
+            it('should be equal to filed_type_model-list with same values', function() {
+                var model1 = BEM.MODEL.create('model-list-type-field', {
+                        list: [{ id: 1, f: 'f1' }, { id: 2, f: 'f2' }]
+                    }),
+                    model2 = BEM.MODEL.create('model-list-type-field', {
+                        list: [{ id: 1, f: 'f1' }, { id: 2, f: 'f2' }]
+                    });
+
+                expect(model1.fields.list.isEqual(model2.fields.list)).toBe(true);
+
+                model1.destruct();
+                model2.destruct();
+            });
+
+            it('should not be equal to array with diffrent values', function() {
+                var model = BEM.MODEL.create('model-list-type-field', {
+                        list: [{ id: 1, f: 'f1' }, { id: 2, f: 'f2' }]
+                    });
+
+                expect(model.fields.list.isEqual([{ id: 11, f: 'f11' }, { id: 22, f: 'f22' }])).toBe(false);
+
+                model.destruct();
+            });
+
+            it('should not be equal to filed_type_model-list with different values', function() {
+                var model1 = BEM.MODEL.create('model-list-type-field', {
+                        list: [{ id: 1, f: 'f1' }, { id: 2, f: 'f2' }]
+                    }),
+                    model2 = BEM.MODEL.create('model-list-type-field', {
+                        list: [{ id: 11, f: 'f11' }, { id: 22, f: 'f22' }]
+                    });
+
+                expect(model1.fields.list.isEqual(model2.fields.list)).toBe(false);
+
+                model1.destruct();
+                model2.destruct();
+            });
+        });
+    });
 });
