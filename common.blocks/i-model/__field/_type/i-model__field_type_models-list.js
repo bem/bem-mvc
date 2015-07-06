@@ -230,8 +230,15 @@
             });
 
             MODEL.on({ name: field.params.modelName, parentModel: field.model }, 'create', function(e, data) {
+                var model = data.model;
+
                 setTimeout(function() {
-                    if (data.model && list._getIndex(data.model.id) === undefined)
+                    var isModelDestructed = !MODEL.models[model.name][model.path()];
+                    if (isModelDestructed) {
+                        return;
+                    }
+
+                    if (model && list._getIndex(model.id) === undefined)
                         list.add(data.model);
                 }, 0);
             });
