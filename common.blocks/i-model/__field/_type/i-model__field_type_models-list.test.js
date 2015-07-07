@@ -317,6 +317,28 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             model.destruct();
         });
 
+        it('should not restore model after remove', function() {
+            var model = BEM.MODEL.create('model-list-type-field', { list: [{ f: 'str', n: 1 }] });
+
+            model.get('list').remove(model.get('list').getByIndex(0).id);
+            expect(model.get('list').length()).toEqual(0);
+
+            var flag = 1;
+            runs(function() {
+                setTimeout(function() {
+                    flag = 1;
+                    expect(model.get('list').length()).toEqual(0);
+
+                    model.destruct();
+                }, 0);
+
+            });
+
+            waitsFor(function() {
+                return flag;
+            });
+        });
+
         describe('.isChanged', function() {
 
             it('should not be changed after create', function() {
