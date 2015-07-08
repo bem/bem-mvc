@@ -45,6 +45,8 @@
          */
         _createValueObject: function(field) {
             var currentField = this,
+                // флаг для предотвращения повторного добавления модели в список
+                isAdding = false,
                 list = {
 
                 /**
@@ -54,6 +56,8 @@
                  * @private
                  */
                 _createModel: function(data) {
+                    isAdding = true; // устанавливаем флаг для обработчика на событие create
+
                     var model = data instanceof MODEL ?
                         data :
                         typeof data === 'string' ?
@@ -73,6 +77,8 @@
                         .on('destruct', function(e, data) {
                             list.remove(data.model.id);
                         });
+
+                    isAdding = false;
 
                     return model;
                 },
@@ -230,10 +236,8 @@
             });
 
             MODEL.on({ name: field.params.modelName, parentModel: field.model }, 'create', function(e, data) {
-                setTimeout(function() {
-                    if (data.model && list._getIndex(data.model.id) === undefined)
-                        list.add(data.model);
-                }, 0);
+                if (!isAdding && data.model && list._getIndex(data.model.id) === undefined)
+                    list.add(data.model);
             });
 
             return list;
