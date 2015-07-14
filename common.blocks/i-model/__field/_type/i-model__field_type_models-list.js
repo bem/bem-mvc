@@ -244,13 +244,13 @@
          * @returns {MODEL.FIELD}
          */
         fixData: function() {
-            this._fixedValue = this._raw.map(function(model) {
-                return model.toJSON();
-            }, this);
-
             this._raw.forEach(function (model) {
                 model.fix();
             });
+
+            this._fixedValue = this._raw.map(function(model) {
+                return model.getFixedValue();
+            }, this);
 
             return this;
         },

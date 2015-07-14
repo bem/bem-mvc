@@ -327,6 +327,29 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
                 model.destruct();
             });
 
+            it('should not be changed after create when inner models have internal fields', function() {
+                BEM.MODEL.decl('list-with-internal-field', {
+                    list: {
+                        type: 'models-list',
+                        modelName: 'model-with-internal-field'
+                    }
+                });
+
+                BEM.MODEL.decl('model-with-internal-field', {
+                    modelId: {
+                        type: 'id',
+                        internal: true
+                    },
+                    field: 'string'
+                });
+
+                var model = BEM.MODEL.create('list-with-internal-field', { list: [{ modelId: 1, field: 'f' }] });
+
+                expect(model.isChanged()).toBe(false);
+
+                model.destruct();
+            });
+
             it('should be changed after update', function() {
                 var model = BEM.MODEL.create('model-list-type-field');
 
@@ -423,5 +446,22 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
                 model2.destruct();
             });
         });
+
+        describe('.getFixedValue', function() {
+            it('should return array with fixed values of each model of list', function() {
+
+                var model = BEM.MODEL.create('model-list-type-field', {
+                    list: [{ id: 1, f: 'f1' }, { id: 2, f: 'f2' }]
+                });
+
+                expect(model.fields.list.getFixedValue())
+                    .toEqual([
+                        model.get('list').getByIndex(0).getFixedValue(),
+                        model.get('list').getByIndex(1).getFixedValue()
+                    ]);
+
+                model.destruct()
+            })
+        })
     });
 });
