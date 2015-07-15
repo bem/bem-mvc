@@ -206,6 +206,14 @@
          */
         isEqual: function(val) {
             return this._value.isEqual(val);
+        },
+
+        /**
+         * Возвращает фиксированное значение модели
+         * @returns {Object}
+         */
+        getFixedValue: function() {
+            return this._value.getFixedValue();
         }
     });
 })(BEM.MODEL, jQuery);

@@ -866,4 +866,45 @@ BEM.TEST.decl('i-model', function() {
             model2.destruct();
         });
     });
+
+    describe('.getFixedValue', function() {
+        it('after create should return hash which is equal to hash that have been passed to create method', function() {
+            var initValues = {
+                    f1: 'f1',
+                    f2: 'f2',
+                    f3: 3,
+                    f4: [1, 2, 3],
+                    f5: false,
+                    f6: {
+                        innerF: 'str',
+                        innerModelLev2: { innerFLev2: 'innerFLev2' }
+                    }
+                },
+                model = BEM.MODEL.create('model-for-compare', initValues);
+
+            expect(model.getFixedValue()).toEqual(initValues);
+
+            model.destruct();
+        });
+
+        it('values of fields of returned hash should be equal to fixed values of model fields', function() {
+            var initValues = {
+                    f6: {
+                        innerF: 'str',
+                        innerModelLev2: { innerFLev2: 'innerFLev2' }
+                    }
+                },
+                model = BEM.MODEL.create('model-for-compare', initValues),
+                innerFChangedValue = 'str2',
+                innerFLev2ChangedValue = 'innerFLev2ChangedValue';
+
+            model.get('f6').set('innerF', innerFChangedValue);
+            model.get('f6').get('innerModelLev2').set('innerFLev2', innerFLev2ChangedValue);
+            model.fix();
+
+            expect(model.getFixedValue().f6).toEqual(model.get('f6').getFixedValue());
+
+            model.destruct();
+        });
+    });
 });

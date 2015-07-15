@@ -277,6 +277,16 @@ BEM.TEST.decl('i-model__field_type_model', function() {
                 model.destruct();
             });
         });
-    });
 
+        describe('.getFixedValue', function() {
+            it('should be equal to fixed data of self model', function() {
+                var model = BEM.MODEL.create('model-type-field', { f: { innerF: 'str' } }),
+                    fieldModel = model.get('f');
+
+                expect(model.fields.f.getFixedValue()).toEqual(fieldModel.getFixedValue());
+
+                model.destruct();
+            });
+        });
+    });
 });

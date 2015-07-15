@@ -324,6 +324,20 @@
         },
 
         /**
+         * Возвращает объект с фиксированными значениями полей
+         * @returns {Object}
+         */
+        getFixedValue: function() {
+            var res = {};
+
+            $.each(this.fields, function(fieldName, field) {
+                res[fieldName] = field.getFixedValue();
+            });
+
+            return res;
+        },
+
+        /**
          * Назначает обработчик события на модель или поле модели
          * @param {String} [field] имя поля
          * @param {String} e имя события
