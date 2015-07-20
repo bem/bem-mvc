@@ -395,9 +395,13 @@
                 deep: {
                     value: true,
                     validate: function(curValue, ruleValue, name) {
-                        return field._value.every(function(model) {
-                            return model.isValid() == ruleValue;
-                        })
+                        var isValid = true;
+
+                        field._value.forEach(function(model) {
+                            isValid &= model.isValid() == ruleValue;
+                        });
+
+                        return isValid;
                     }
                 }
             });

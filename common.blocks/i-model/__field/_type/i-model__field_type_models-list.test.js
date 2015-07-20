@@ -58,6 +58,27 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             model.destruct();
         });
 
+        it('model should validate all inner models', function() {
+            var model = BEM.MODEL.create('model-list-type-field', {
+                list: [
+                    { id: 'id', n: 4 },
+                    { id: 'id', n: 3 }
+                ]
+            });
+
+            var spy0 = jasmine.createSpy('model-0'),
+                spy1 = jasmine.createSpy('model-1');
+
+            model.get('list').getByIndex(0).on('error', spy0);
+            model.get('list').getByIndex(1).on('error', spy1);
+
+            model.validate();
+
+            expect(spy0).toHaveBeenCalled();
+            expect(spy1).toHaveBeenCalled();
+
+            model.destruct();
+        });
 
         it('inner model with id should not create twice', function() {
             BEM.MODEL.create(
