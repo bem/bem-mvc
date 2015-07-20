@@ -642,7 +642,16 @@
             fieldNames.forEach(function(fieldName) {
                 if (deps[fieldName])
                     fieldDecl[fieldName].dependsTo = deps[fieldName].sort(function(a, b) {
-                        return deps[b] ? (deps[b].indexOf(a) != -1 ? 1 : -1) : 0;
+                        var bDeps = deps[b] || [];
+                        var aDeps = deps[a] || [];
+
+                        if (bDeps.indexOf(a) > -1) {
+                            return 1;
+                        } else if (aDeps.indexOf(b) > -1) {
+                            return -1;
+                        } else {
+                            return 0;
+                        }
                     });
             });
 
