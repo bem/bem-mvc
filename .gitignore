@@ -7,4 +7,5 @@ node_modules
 .bem/cache
 desktop.bundles/*/*.*
 !desktop.bundles/*/*.bemjson.js
+!desktop.bundles/tests/jquery-1.8.3.js
 !desktop.bundles/.bem/*

@@ -11,7 +11,7 @@
             block: 'i-bem',
             elem: 'test'
         },
-        { block: 'i-jquery', mods: { version: '1.8.3' } },
+        { elem: 'js', url: 'jquery-1.8.3.js' },
         { elem: 'js', url: '_tests.js' },
         { elem: 'js', url: '_tests.test.js' }
     ]
