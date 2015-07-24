@@ -1,5 +1,8 @@
-;(function(MODEL, $) {
-    MODEL.FIELD.types.array = $.inherit(MODEL.FIELD, {
+;(function(BEM) {
+    var MODEL = BEM.MODEL,
+        objects = MODEL._utils.objects;
+
+    MODEL.FIELD.decl('array', {
 
         /**
          * Определяем дефолтные значения для поля
@@ -114,7 +117,7 @@
          * @returns {Boolean}
          */
         checkEmpty: function(value) {
-            return $.isEmptyObject(value) || value.length == 0;
+            return objects.isEmpty(value) || value.length == 0;
         },
 
         /**
@@ -154,4 +157,4 @@
         }
 
     });
-})(BEM.MODEL, jQuery);
+})(BEM);

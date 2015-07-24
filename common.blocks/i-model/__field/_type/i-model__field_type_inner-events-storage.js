@@ -1,8 +1,11 @@
-;(function(MODEL, $) {
+;(function(BEM) {
+    var MODEL = BEM.MODEL,
+        objects = MODEL._utils.objects;
+
     /**
      * Реализация внутреннего хранилища обработчиков событий
      */
-    MODEL.FIELD.types['inner-events-storage'] = $.inherit(MODEL.FIELD, {
+    MODEL.FIELD.decl('inner-events-storage', {
 
         /**
          * @class Конструктор поля модели
@@ -61,7 +64,7 @@
          * @private
          */
         _bindFieldEventHandlers: function(model) {
-            $.each(this._eventHandlers, function(e, events) {
+            objects.each(this._eventHandlers, function(events, e) {
                 events && events.forEach(function(event) {
                     model.on(e, event.fn, event.ctx);
                 });
@@ -74,7 +77,7 @@
          * @private
          */
         _unBindFieldEventHandlers: function(model) {
-            $.each(this._eventHandlers, function(e, events) {
+            objects.each(this._eventHandlers, function(events, e) {
                 events && events.forEach(function(event) {
                     model.un(e, event.fn, event.ctx);
                 });
@@ -82,4 +85,4 @@
         }
 
     });
-})(BEM.MODEL, jQuery);
+})(BEM);

@@ -1,5 +1,7 @@
-;(function(MODEL, $) {
-    MODEL.FIELD.types.boolean = $.inherit(MODEL.FIELD, {
+;(function(BEM) {
+    var MODEL = BEM.MODEL;
+
+    MODEL.FIELD.decl('boolean', {
 
         /**
          * Перед записью приводит значение к boolean
@@ -23,4 +25,4 @@
             return (0 + value).toString();
         }
     });
-})(BEM.MODEL, jQuery);
+})(BEM);

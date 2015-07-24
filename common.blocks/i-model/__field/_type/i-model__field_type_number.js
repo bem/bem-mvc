@@ -1,5 +1,8 @@
-;(function(MODEL, $) {
-    MODEL.FIELD.types.number = $.inherit(MODEL.FIELD, {
+;(function(BEM) {
+    var MODEL = BEM.MODEL,
+        objects = MODEL._utils.objects;
+
+    MODEL.FIELD.decl('number', {
 
         /**
          * Перед записью приводит значение к числу
@@ -61,7 +64,7 @@
          * @private
          */
         _getValidationRules: function() {
-            return $.extend(this._commonRules(), {
+            return objects.extend(this._commonRules(), {
                 max: {
                     value: Infinity,
                     validate: function(curValue, ruleValue, name) {
@@ -98,4 +101,4 @@
 
     });
 
-})(BEM.MODEL, jQuery);
+})(BEM);

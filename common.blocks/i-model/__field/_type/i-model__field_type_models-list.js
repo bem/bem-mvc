@@ -1,5 +1,8 @@
-;(function(MODEL, $) {
-    MODEL.FIELD.types['models-list'] = $.inherit(MODEL.FIELD.types['inner-events-storage'], {
+;(function(BEM) {
+    var MODEL = BEM.MODEL,
+        objects = MODEL._utils.objects;
+
+    MODEL.FIELD.decl({ field: 'models-list', baseField: 'inner-events-storage' }, {
 
         /**
          * Инициализация поля
@@ -27,7 +30,7 @@
         _trigger: function (event, opts) {
             var innerField = opts && opts.field;
 
-            return this.__base(event, $.extend({ innerField: innerField }, opts));
+            return this.__base(event, objects.extend({ innerField: innerField }, opts));
         },
 
         /**
@@ -68,7 +71,7 @@
                         .on('change', function(e, data) {
                             field._trigger(
                                 'change',
-                                $.extend({
+                                objects.extend({
                                     // @deprecated use model instead
                                     data: model,
                                     model: model
@@ -98,7 +101,7 @@
                     currentField._bindFieldEventHandlers(model);
 
                     field
-                        .trigger('add', $.extend({}, opts, { model: model, index: index }))
+                        .trigger('add', objects.extend({}, opts, { model: model, index: index }))
                         ._trigger('change', opts);
 
                     return model;
@@ -118,7 +121,7 @@
                     field._raw.splice(index, 0, model);
 
                     field
-                        .trigger('add', $.extend({}, opts, { model: model, index: index }))
+                        .trigger('add', objects.extend({}, opts, { model: model, index: index }))
                         ._trigger('change', opts);
 
                     return model;
@@ -141,7 +144,7 @@
 
                         currentField._unBindFieldEventHandlers(model);
 
-                        field.trigger('remove', $.extend({}, opts, { model: model, index: index }));
+                        field.trigger('remove', objects.extend({}, opts, { model: model, index: index }));
 
                         opts.keepModel !== true && model.destruct();
 
@@ -207,7 +210,7 @@
                  * @returns {Array} Массив моделей
                  */
                 where: function(attrs) {
-                    if ($.isEmptyObject(attrs) || !attrs) {
+                    if (objects.isEmpty(attrs) || !attrs) {
                         return [];
                     }
                     return list.filter(function(model) {
@@ -390,7 +393,7 @@
         _getValidationRules: function() {
             var field = this;
 
-            return $.extend(this._commonRules(), {
+            return objects.extend(this._commonRules(), {
                 /**
                  * валидация каждой из вложенных моделей
                  */
@@ -409,4 +412,4 @@
             });
         }
     });
-})(BEM.MODEL, jQuery);
+})(BEM);

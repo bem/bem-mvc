@@ -1,5 +1,8 @@
-;(function(MODEL, $) {
-    MODEL.FIELD.types.string = $.inherit(MODEL.FIELD, {
+;(function(BEM) {
+    var MODEL = BEM.MODEL,
+        objects = MODEL._utils.objects;
+
+    MODEL.FIELD.decl('string', {
 
         /**
          * Значение по умолчанию пустая строка
@@ -18,11 +21,11 @@
                 }
             };
 
-            return $.extend(this._commonRules(), {
+            return objects.extend(this._commonRules(), {
                 maxlength: maxLength,
                 maxLength: maxLength
             })
         }
 
     });
-})(BEM.MODEL, jQuery);
+})(BEM);

@@ -2,6 +2,8 @@
     mustDeps: [
     ],
     shouldDeps: [
+        { elem: 'utils' },
+        { elem: 'core' },
         {
             elem: 'field',
             mods: {
