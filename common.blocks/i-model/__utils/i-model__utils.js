@@ -1,4 +1,4 @@
-;(function($, BEM) {
+;(function(BEM, $) {
     BEM.MODEL._utils = {
         objects: getObjects(),
         functions: getFunctions(),
@@ -52,4 +52,4 @@
             isFunction: $.isFunction
         }
     }
-})(jQuery, BEM);
+})(BEM, jQuery);
