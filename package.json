@@ -14,7 +14,7 @@
     "bem-environ": "1.0.x"
   },
   "scripts": {
-    "install": "./node_modules/.bin/bem make desktop.bundles/universal/_universal.js"
+    "postinstall": "./node_modules/.bin/bem make desktop.bundles/universal/_universal.js"
   },
   "devDependencies": {},
   "private": true
