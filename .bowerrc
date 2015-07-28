@@ -1,0 +1,5 @@
+{
+    "scripts": {
+        "postinstall": "./node_modules/.bin/bem make desktop.bundles/universal/_universal.js"
+    }
+}
