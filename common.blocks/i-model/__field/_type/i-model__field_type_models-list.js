@@ -265,7 +265,9 @@
          * @returns {Boolean}
          */
         isChanged: function() {
-            return this._value.length() !== this.getFixedValue().length || this._value.some(function (model, i) {
+            var fixedValue = this.getFixedValue();
+
+            return (fixedValue !== undefined && this._value.length() !== fixedValue.length) || this._value.some(function (model, i) {
                 return model.isChanged() || !model.isEqual(this.getFixedValue()[i]);
             }, this);
         },
