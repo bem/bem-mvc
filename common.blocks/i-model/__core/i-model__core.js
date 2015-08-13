@@ -694,8 +694,9 @@
                 nameFieldTypeId,
                 modelIdFromData;
 
-            if (!decl)
+            if (!decl) {
                 throw new Error('unknown model: "' + modelParams.name + '"');
+            }
 
             // выставляем id из поля типа 'id' или из декларации
             objects.each(decl, function(field, name) {
@@ -714,8 +715,6 @@
                 data = data || {};
                 data[nameFieldTypeId] = modelParams.id;
             }
-
-            // создаем модель
 
             var modelConstructor = constructorsCache[modelParams.name] || MODEL,
                 model = new modelConstructor(modelParams, data);

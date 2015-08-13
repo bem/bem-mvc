@@ -1,7 +1,13 @@
-var expect = require('chai').expect;
+var chai = require('chai'),
+    expect = chai.expect,
+    sinon = require('sinon'),
 
-var universalBundle = require('fs').readFileSync('./desktop.bundles/universal/_universal.js').toString();
-var createModels = new Function('BEM', universalBundle);
+    sinonChai = require("sinon-chai"),
+
+    universalBundle = require('fs').readFileSync('./desktop.bundles/universal/_universal.js').toString(),
+    createModels = new Function('BEM', universalBundle);
+
+chai.use(sinonChai);
 
 describe('i-model', function() {
     beforeEach(function() {
@@ -75,7 +81,59 @@ describe('i-model', function() {
         });
 
         describe('.create', function() {
+            describe('@param model', function() {
+                beforeEach(function() {
+                    BEM.MODEL.decl('model', {});
+                });
 
+                it('by string', function() {
+                    expect(BEM.MODEL.create('model')).to.be.a('object');
+                });
+
+                it('by object', function() {
+                    expect(BEM.MODEL.create({ name: 'model' })).to.be.a('object');
+                });
+
+                it('should set model id from params', function() {
+                    var model = BEM.MODEL.create({ name: 'model', id: 'myid' });
+
+                    expect(model.id).to.equal('myid');
+                });
+
+                it('should generate id', function() {
+                    var model = BEM.MODEL.create({ name: 'model' });
+
+                    expect(model.id).to.be.a('string');
+                });
+
+                it('should throw if model is not declared', function() {
+                    expect(function() {
+                        BEM.MODEL.create('new-model');
+                    }).to.Throw();
+                });
+
+                it('should trigger create event', function() {
+                    var createSpy = sinon.spy();
+
+                    BEM.MODEL.on('model', 'create', createSpy);
+
+                    BEM.MODEL.create('model');
+
+                    expect(createSpy).calledWith();
+                });
+            });
+
+            describe('@param data', function() {
+                it('should init model with data object', function() {
+                    BEM.MODEL.decl('model', {
+                        field: ''
+                    });
+
+                    var model = BEM.MODEL.create('model', { field: 1 });
+
+                    expect(model.get('field')).to.equal(1);
+                });
+            });
         });
 
         describe('.get', function() {
