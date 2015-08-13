@@ -1,4 +1,4 @@
-;(function(BEM, $) {
+(function(BEM, $) {
 
     BEM.DOM.decl('i-model', {
         onSetMod: {

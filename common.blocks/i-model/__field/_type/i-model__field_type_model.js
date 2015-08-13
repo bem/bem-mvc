@@ -1,4 +1,4 @@
-;(function(BEM) {
+(function(BEM) {
     var MODEL = BEM.MODEL,
         objects = MODEL._utils.objects;
 
@@ -6,7 +6,7 @@
 
         /**
          * Инициализация поля
-         * @param data
+         * @param {Object} data
          * @returns {MODEL.FIELD.types.model}
          */
         initData: function(data) {

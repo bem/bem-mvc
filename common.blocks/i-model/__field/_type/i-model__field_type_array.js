@@ -1,4 +1,4 @@
-;(function(BEM) {
+(function(BEM) {
     var MODEL = BEM.MODEL,
         objects = MODEL._utils.objects;
 
@@ -113,7 +113,7 @@
 
         /**
          * Проверяет что значение не пустое
-         * @param value
+         * @param {*} value
          * @returns {Boolean}
          */
         checkEmpty: function(value) {
@@ -141,12 +141,12 @@
 
         /**
          * Проверяет, что занчение поля равно переданному значению по содержимому
-         * @param value
+         * @param {*} value
          */
         isEqual: function(value) {
-            var val = this._raw;
+            var val = this._raw,
 
-            var res = val &&
+                res = val &&
                 Array.isArray(value) &&
                 value.length === val.length &&
                 Array.prototype.every.call(value, function(item, i) {

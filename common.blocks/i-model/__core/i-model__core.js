@@ -1,4 +1,4 @@
-;(function(BEM) {
+(function(BEM) {
     var utils = BEM.MODEL._utils,
         inherit = utils.inherit,
         observable = utils.observable,
@@ -14,13 +14,13 @@
         MODELS_SEPARATOR = ',',
         ANY_ID = '*',
         modelsGroupsCache = {},
-        constructorsCache = {};
+        constructorsCache = {},
 
-    /**
+        /**
      * @namespace
      * @name BEM.MODEL
      */
-    var MODEL = BEM.MODEL = inherit(observable, {
+        MODEL = BEM.MODEL = inherit(observable, {
 
         /**
          * Минимальное время между событиями на модели
@@ -401,7 +401,7 @@
          * Тригерит обработчик события на модели или поле модели
          * @param {String} [field] имя поля
          * @param {String} e имя события
-         * @param [data] данные доступные в обработчике события
+         * @param {*} [data] данные доступные в обработчике события
          * @returns {BEM.MODEL}
          */
         trigger: function(field, e, data) {
@@ -492,10 +492,11 @@
                 });
             }
 
-            if (!res.errors)
+            if (!res.errors) {
                 res.valid = true;
-            else
+            } else {
                 this.trigger('error', res);
+            }
 
             this.trigger('validated', res);
 
@@ -547,14 +548,10 @@
 
         /**
          * Декларирует описание модели
-         * @static
-         * @protected
-         * @param {String|Object} decl
-         * @param {String} decl.model|decl.name
-         * @param {String} [decl.baseModel]
-         * @param {{
-         *     XXX: {String|Number},
-         *     XXX: {
+         * поле fields описывается следущим видом:
+         * {
+         *     field1: 'string',
+         *     field2: {
          *         {String} [type] тип поля
          *         {Boolean} [internal] внутреннее поле
          *         {*|Function} [default] дефолтное значение
@@ -565,7 +562,14 @@
          *         {Function} [calculate] ф-ия вычисления значения, вызывается, если изменилось одно из связанных полей
          *         {String|Array} [dependsFrom] массив от которых зависит значение поля
          *     }
-         * }} fields где ключ имя поля, значение строка с типом или объект вида
+         * }
+         *
+         * @static
+         * @protected
+         * @param {String|Object} decl
+         * @param {String} decl.model|decl.name
+         * @param {String} [decl.baseModel]
+         * @param {Object} fields где ключ имя поля, значение строка с типом или объект вида
          * @param {Object} staticProps Статические методы и поля
          */
         decl: function(decl, fields, staticProps) {
@@ -607,7 +611,7 @@
          * @param {Object} fields
          * @param {Object} staticProps
          */
-        checkModelDecl: function (decl, fields, staticProps) {
+        checkModelDecl: function(decl, fields, staticProps) {
             staticProps && objects.each(staticProps, function(prop, name) {
                 if (name in MODEL.prototype) throw new Error('method "' + name + '" is protected');
             });
@@ -712,7 +716,9 @@
             }
 
             // создаем модель
-            var model = new (constructorsCache[modelParams.name] || MODEL)(modelParams, data);
+
+            var modelConstructor = constructorsCache[modelParams.name] || MODEL,
+                model = new modelConstructor(modelParams, data);
 
             MODEL._addModel(model);
             model.trigger('create', { model: model });

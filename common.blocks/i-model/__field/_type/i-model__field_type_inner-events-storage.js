@@ -1,4 +1,4 @@
-;(function(BEM) {
+(function(BEM) {
     var MODEL = BEM.MODEL,
         objects = MODEL._utils.objects;
 

@@ -9,7 +9,7 @@ BEM.DOM.decl('i-glue-field', {
     /**
      * Инициализирует блок i-glue-field
      * @protected
-     * @param model
+     * @param {BEM.MODEL} model
      */
     init: function(model) {
         this.model = model;
@@ -38,8 +38,8 @@ BEM.DOM.decl('i-glue-field', {
 
     /**
      * Выполнить действие по изменению поля модели
-     * @param e
-     * @param data
+     * @param {String} e
+     * @param {*} data
      */
     onFieldChange: function(e, data) {},
 

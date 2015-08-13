@@ -1,0 +1,29 @@
+{
+  "undef": true,
+  "globals": {
+    "BEM": false,
+    "$": false,
+    "MODEL": false,
+    "jQuery": false
+  },
+
+  "indent": 4,
+  "noempty": true,
+  "trailing": true,
+  "maxlen": 1000,
+
+  "camelcase": false,
+  "eqeqeq":false,
+
+  "expr": true,
+  "asi": true,
+  "lastsemic": true,
+  "sub": true,
+  "eqnull": true,
+
+  "-W041": false,
+  "-W017": false,
+  "-W084": false,
+  "-W093": false,
+  "-W092": false
+}

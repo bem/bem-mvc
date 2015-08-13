@@ -1,4 +1,4 @@
-;(function(BEM) {
+(function(BEM) {
     var MODEL = BEM.MODEL,
         utils =  BEM.MODEL._utils,
         inherit = utils.inherit,
@@ -125,10 +125,11 @@
             this._value = (this.params.preprocess || this._preprocess).call(this, this._raw);
             this._formatted = (this.params.format || this._format).call(this, this._value, this.params.formatOptions || {});
 
-            if (opts)
+            if (opts) {
                 opts.value = this._value;
-            else
+            } else {
                 opts = { value: this._value };
+            }
 
             this._trigger(opts && opts.isInit ? 'init' : 'change', opts);
             
@@ -386,8 +387,8 @@
 
         /**
          * Декларирует новый тип поля
-         * @param type
-         * @param fieldDecl
+         * @param {String} type
+         * @param {Object} fieldDecl
          * @returns {*}
          */
         decl: function(type, fieldDecl) {
@@ -409,7 +410,9 @@
             if (typeof params == 'string') params = { type: params };
             params.name = name;
 
-            return new (MODEL.FIELD.types[params.type] || MODEL.FIELD)(params, model);
+            var fieldConstructor = MODEL.FIELD.types[params.type] || MODEL.FIELD;
+
+            return new fieldConstructor(params, model);
         }
 
     });

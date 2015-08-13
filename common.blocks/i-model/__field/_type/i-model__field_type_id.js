@@ -1,4 +1,4 @@
-;(function(BEM) {
+(function(BEM) {
     var MODEL = BEM.MODEL;
 
     MODEL.FIELD.decl('id', {

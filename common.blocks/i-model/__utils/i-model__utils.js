@@ -1,3 +1,4 @@
+/* jshint ignore:start */
 ;(function(BEM, $) {
     BEM.MODEL._utils = {
         objects: getObjects(),
@@ -53,3 +54,4 @@
         }
     }
 })(BEM, jQuery);
+/* jshint ignore:end */

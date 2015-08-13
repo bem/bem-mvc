@@ -1,4 +1,4 @@
-;(function(BEM) {
+(function(BEM) {
     var MODEL = BEM.MODEL,
         objects = MODEL._utils.objects;
 
@@ -6,7 +6,7 @@
 
         /**
          * Перед записью приводит значение к числу
-         * @param value
+         * @param {*} value
          * @returns {Number}
          * @private
          */
@@ -14,7 +14,7 @@
             if (this.checkEmpty(value)) return;
 
             // перед преобразованием, необходимо часто вводимые символы на точку
-            value = (new Number(value.toString().replace(/[//,.юЮбБ<>]/gi, '.'))).valueOf();
+            value = (Number(value.toString().replace(/[//,.юЮбБ<>]/gi, '.'))).valueOf();
             //Если было введено не число, то preprocess вернет NaN
             return value;
         },

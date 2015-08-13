@@ -1,4 +1,4 @@
-;(function(BEM) {
+(function(BEM) {
     var MODEL = BEM.MODEL,
         objects = MODEL._utils.objects;
 
@@ -27,7 +27,7 @@
          * @returns {BEM.MODEL.FIELD}
          * @private
          */
-        _trigger: function (event, opts) {
+        _trigger: function(event, opts) {
             var innerField = opts && opts.field;
 
             return this.__base(event, objects.extend({ innerField: innerField }, opts));
@@ -35,7 +35,7 @@
 
         /**
          * Создает значение поля типа models-list, которое предоставляет методы для работы со списком
-         * @param field контекст текущего поля
+         * @param {Object} field контекст текущего поля
          * @returns {{
          *   _createModel: Function,
          *   add: Function,
@@ -54,7 +54,7 @@
 
                 /**
                  * Создает модель и инициализирует ее переданными данными
-                 * @param data
+                 * @param {Object} data
                  * @returns {*}
                  * @private
                  */
@@ -88,13 +88,13 @@
 
                 /**
                  * Добавляет модель в список
-                 * @param itemData
-                 * @param opts
+                 * @param {Object} itemData
+                 * @param {Object} opts
                  * @returns {*}
                  */
                 add: function(itemData, opts) {
-                    var model = list._createModel(itemData);
-                    var index = field._raw.length;
+                    var model = list._createModel(itemData),
+                        index = field._raw.length;
 
                     field._raw.push(model);
 
@@ -110,9 +110,9 @@
                 /**
                  * Добавляет модель в список по индексу
                  *
-                 * @param  index
-                 * @param  itemData
-                 * @param  opts
+                 * @param {Number} index
+                 * @param {Object} itemData
+                 * @param {Object} opts
                  * @return {*}
                  */
                 addByIndex: function(index, itemData, opts) {
@@ -154,7 +154,7 @@
 
                 /**
                  * Очищает список
-                 * @param opts
+                 * @param {Object} opts
                  */
                 clear: function(opts) {
                     var tmp = field._raw.slice();
@@ -169,7 +169,7 @@
 
                 /**
                  * Возвращает модель из списка по id
-                 * @param id
+                 * @param {String|Number} id
                  * @returns {BEM.MODEL}
                  */
                 getById: function(id) {
@@ -178,7 +178,7 @@
 
                 /**
                  * Возвращает порядковый номер модели по id
-                 * @param id
+                 * @param {Number} id
                  * @returns {Number}
                  * @private
                  */
@@ -197,7 +197,7 @@
 
                 /**
                  * Возвращает модель из списка по индексу
-                 * @param i
+                 * @param {Number} i
                  * @returns {BEM.MODEL}
                  */
                 getByIndex: function(i) {
@@ -251,7 +251,11 @@
          * @returns {MODEL.FIELD}
          */
         fixData: function() {
-            this._raw.forEach(function (model) {
+            this._fixedValue = this._raw.map(function(model) {
+                return model.toJSON();
+            }, this);
+
+            this._raw.forEach(function(model) {
                 model.fix();
             });
 
@@ -270,7 +274,7 @@
         isChanged: function() {
             var fixedValue = this.getFixedValue();
 
-            return (fixedValue !== undefined && this._value.length() !== fixedValue.length) || this._value.some(function (model, i) {
+            return (fixedValue !== undefined && this._value.length() !== fixedValue.length) || this._value.some(function(model, i) {
                 return model.isChanged() || !model.isEqual(this.getFixedValue()[i]);
             }, this);
         },
