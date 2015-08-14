@@ -137,7 +137,59 @@ describe('i-model', function() {
         });
 
         describe('.get', function() {
+            it('should return model if param is string', function() {
+                BEM.MODEL.decl('model', {});
 
+                var model = BEM.MODEL.create('model');
+
+                expect(BEM.MODEL.get('model')[0]).to.equal(model);
+            });
+
+            it('should return model if param is object', function() {
+                BEM.MODEL.decl('model', {});
+
+                var model = BEM.MODEL.create({ name: 'model' });
+
+                expect(BEM.MODEL.get('model')[0]).to.equal(model);
+            });
+
+            it('should return model by name and id', function() {
+                BEM.MODEL.decl('model', {});
+
+                var model = BEM.MODEL.create({ name: 'model', id: 'myid' });
+
+                expect(BEM.MODEL.get({ name: 'model', id: 'myid' })[0]).to.equal(model);
+            });
+
+            it('should throw if model is not declared', function() {
+                expect(function() {
+                    BEM.MODEL.get('new-model');
+                }).to.Throw();
+            });
+
+            it('should return model by parentModel', function() {
+                //todo
+            });
+
+            it('should return model by path', function() {
+                //todo
+            });
+
+            it('should drop cache', function() {
+                //todo
+            });
+        });
+
+        describe('.getOne', function() {
+            it('should return one (last) model', function() {
+                BEM.MODEL.decl('model', {});
+
+                BEM.MODEL.create({ name: 'model' });
+
+                var model = BEM.MODEL.create({ name: 'model' });
+
+                expect(BEM.MODEL.getOne('model')).to.equal(model);
+            });
         });
 
         describe('.getOrCreate', function() {
