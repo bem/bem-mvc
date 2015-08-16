@@ -354,7 +354,7 @@
                 e = field;
                 field = undefined;
             }
-            
+
             !field ?
                 this.__base(e, data, fn, ctx) :
                 field.split(' ').forEach(function(name) {
@@ -463,6 +463,11 @@
                 validateRes;
 
             if (name) {
+                // событие validated тригерится даже при валидации отдельных полей
+                // нужно дать понять обработчикам, что происходит валидация конкретного
+                // поля, а не всей модели
+                res.field = name;
+
                 validateRes = this.fields[name].validate();
                 if (validateRes !== true) {
                     res.errorFields = [name];
