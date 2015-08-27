@@ -129,9 +129,9 @@ describe('i-model', function() {
                         field: ''
                     });
 
-                    var model = BEM.MODEL.create('model', { field: 1 });
+                    var model = BEM.MODEL.create('model', { field: 'val' });
 
-                    expect(model.get('field')).to.equal(1);
+                    expect(model.get('field')).to.equal('val');
                 });
             });
         });
@@ -193,7 +193,17 @@ describe('i-model', function() {
         });
 
         describe('.getOrCreate', function() {
+            it('should return existing model', function() {
+                //todo
+            });
 
+            it('should return created model', function() {
+                //todo
+            });
+
+            it('should return created model with data from storage', function() {
+                //todo
+            });
         });
 
         describe('.on', function() {
@@ -218,6 +228,385 @@ describe('i-model', function() {
 
         describe('.forEachModel', function() {
 
+        });
+    });
+
+    describe('BEM.MODEL instance', function() {
+        describe('.path', function() {
+            it('should return model\'s path', function() {
+                BEM.MODEL.decl('model', {});
+
+                expect(BEM.MODEL.create({ name: 'model', id: '1' }).path()).to.equal('model:1');
+            });
+        });
+
+        describe('.get', function() {
+            it('should return field\'s value', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                expect(BEM.MODEL.create('model', { field: 'val' }).get('field')).to.equal('val');
+            });
+
+            // todo cases
+        });
+
+        describe('.set', function() {
+            it('should set field\'s value', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                var model = BEM.MODEL.create('model');
+
+                model.set('field', 'val');
+
+                expect(model.get('field')).to.equal('val');
+            });
+
+            // todo cases
+        });
+
+        describe('.clear', function() {
+            it('should clear all fields', function() {
+                BEM.MODEL.decl('model', { field1: '', field2: '' });
+
+                var model = BEM.MODEL.create('model', { field1: 'val1', field2: 'val2' });
+
+                model.clear();
+
+                expect(model.toJSON()).to.eql({ field1: undefined, field2: undefined });
+            });
+
+            // todo cases
+        });
+
+        describe('.update', function() {
+            it('should update model\'s fields', function() {
+                BEM.MODEL.decl('model', { field1: '', field2: '' });
+
+                var model = BEM.MODEL.create('model');
+
+                model.update({ field1: 'val1', field2: 'val2' });
+
+                expect(model.toJSON()).to.eql({ field1: 'val1', field2: 'val2' });
+            });
+
+            // todo cases
+        });
+
+        describe('.hasField', function() {
+            it('should return true if filed is declared', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                expect(BEM.MODEL.create('model').hasField('field')).to.equal(true);
+            });
+
+            it('should return false if filed is not declared', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                expect(BEM.MODEL.create('model').hasField('wrongField')).to.equal(false);
+            });
+        });
+
+        describe('.isEmpty', function() {
+            it('should return true if model is empty', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                expect(BEM.MODEL.create('model').isEmpty()).to.equal(true);
+            });
+
+            it('should return false if model is not empty', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                expect(BEM.MODEL.create('model', { field: 0 }).isEmpty()).to.equal(false);
+            });
+
+            it('should return true if field is empty', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                expect(BEM.MODEL.create('model').isEmpty('field')).to.equal(true);
+            });
+
+            it('should return false if field is not empty', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                expect(BEM.MODEL.create('model', { field: 0 }).isEmpty('field')).to.equal(false);
+            });
+        });
+
+        describe('.isChanged', function() {
+            it('should return true if model is changed', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                var model = BEM.MODEL.create('model');
+
+                model.set('field', 'val');
+
+                expect(model.isChanged()).to.equal(true);
+            });
+
+            it('should return false if model is not changed', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                var model = BEM.MODEL.create('model');
+
+                expect(model.isChanged()).to.equal(false);
+            });
+
+            it('should return true if field is changed', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                var model = BEM.MODEL.create('model');
+
+                model.set('field', 'val');
+
+                expect(model.isChanged('field')).to.equal(true);
+            });
+
+            it('should return false if field is not changed', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                var model = BEM.MODEL.create('model');
+
+                expect(model.isChanged('field')).to.equal(false);
+            });
+        });
+
+        describe('.getType', function() {
+            it('should return field\'s type', function() {
+                BEM.MODEL.decl('model', { field: 'field_type' });
+
+                expect(BEM.MODEL.create('model').getType('field')).to.equal('field_type');
+            });
+        });
+
+        describe('.fix', function() {
+            it('should fix model\'s fields', function() {
+                BEM.MODEL.decl('model', { field: 'field_type' });
+
+                var model = BEM.MODEL.create('model');
+
+                model.set('field', 'val');
+                model.fix();
+
+                expect(model.isChanged()).to.equal(false);
+            });
+
+            it('should trigger fix event', function() {
+                BEM.MODEL.decl('model', { field: 'field_type' });
+
+                var fixSpy = sinon.spy(),
+                    model = BEM.MODEL.create('model');
+
+                model.on('fix', fixSpy);
+
+                model.set('field', 'val');
+                model.fix();
+
+                expect(fixSpy).calledWith();
+            });
+        });
+
+        describe('.rollback', function() {
+            it('should rollback model\'s fields to fixed state', function() {
+                BEM.MODEL.decl('model', { field: 'field_type' });
+
+                var model = BEM.MODEL.create('model', { field: 'init val' });
+
+                model.fix();
+
+                model.set('field', 'new val');
+                model.rollback();
+
+                expect(model.get('field')).to.equal('init val');
+            });
+
+            it('should trigger rollback event', function() {
+                BEM.MODEL.decl('model', { field: 'field_type' });
+
+                var rollbackSpy = sinon.spy(),
+                    model = BEM.MODEL.create('model', { field: 'init val' });
+
+                model.on('rollback', rollbackSpy);
+
+                model.fix();
+
+                model.set('field', 'new val');
+                model.rollback();
+
+                expect(rollbackSpy).calledWith();
+            });
+        });
+
+        describe('.toJSON', function() {
+            it('should return object width model data', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                expect(BEM.MODEL.create('model', { field: 'val' }).toJSON()).to.eql({ field: 'val' });
+            });
+
+            it('should return object without internal fields', function() {
+                BEM.MODEL.decl('model', { field1: { type: '', internal: true }, field2: '' });
+
+                expect(BEM.MODEL.create('model', { field1: 'val1', field2: 'val2' }).toJSON()).to.eql({ field2: 'val2' });
+            });
+        });
+
+        describe('.getFixedValue', function() {
+            it('should return fixed state', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                var model = BEM.MODEL.create('model');
+
+                model
+                    .set('field', 'fix val')
+                    .fix();
+
+                expect(model.getFixedValue()).to.eql({ field: 'fix val' });
+            });
+        });
+
+        describe('.on', function() {
+            it('should exec callback on event on model', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                var onEventSpy = sinon.spy(),
+                    model = BEM.MODEL.create('model');
+
+                model.on('event', onEventSpy);
+
+                model.trigger('event');
+
+                expect(onEventSpy).calledWith();
+            });
+
+            it('should exec callback on event on field', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                var onEventSpy = sinon.spy(),
+                    model = BEM.MODEL.create('model');
+
+                model.on('field', 'event', onEventSpy);
+
+                model.trigger('field', 'event');
+
+                expect(onEventSpy).calledWith();
+            });
+
+            // todo cases
+        });
+
+        describe('.un', function() {
+            it('should unsubscribe callback from event', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                var onEventSpy = sinon.spy(),
+                    model = BEM.MODEL.create('model');
+
+                model.on('event', onEventSpy);
+                model.un('event', onEventSpy);
+
+                model.trigger('event');
+
+                expect(onEventSpy).not.calledWith();
+            });
+
+            // todo cases
+        });
+
+        describe('.trigger', function() {
+            it('should trigger event on model', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                var onEventSpy = sinon.spy(),
+                    model = BEM.MODEL.create('model');
+
+                model.on('event', onEventSpy);
+
+                model.trigger('event');
+
+                expect(onEventSpy).calledWith();
+            });
+
+            // todo cases
+        });
+
+        describe('.destruct', function() {
+            it('should remove model from storage', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                var model = BEM.MODEL.create('model');
+
+                model.destruct();
+
+                expect(BEM.MODEL.getOne('model')).to.equal(undefined);
+            });
+        });
+
+        describe('.isValid', function() {
+            it('should return true if model is valid', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                var model = BEM.MODEL.create('model');
+
+                expect(model.isValid()).to.equal(true);
+            });
+
+            it('should return false if model is invalid', function() {
+                BEM.MODEL.decl('model', {
+                    field: {
+                        type: '',
+                        validation: {
+                            validate: function() {
+                                return false;
+                            }
+                        }
+                    }
+                });
+
+                var model = BEM.MODEL.create('model');
+
+                expect(model.isValid()).to.equal(false);
+            });
+        });
+
+        describe('.validate', function() {
+            it('should return information about invalid field', function() {
+                BEM.MODEL.decl('model', {
+                    field: {
+                        type: '',
+                        validation: {
+                            validate: function() {
+                                return false;
+                            }
+                        }
+                    }
+                });
+
+                var model = BEM.MODEL.create('model');
+
+                expect(model.validate().errorFields).to.eql(['field']);
+            });
+
+            // todo cases
+        });
+
+        describe('.isEqual', function() {
+            it('should return true if data is equal to model', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                var model = BEM.MODEL.create('model', { field: 'val' });
+
+                expect(model.isEqual({ field: 'val' })).to.equal(true);
+            });
+
+            it('should return false if data is not equal to model', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                var model = BEM.MODEL.create('model', { field: 'val' });
+
+                expect(model.isEqual({ field: 'wrong val' })).to.equal(false);
+            });
+
+            // todo cases
         });
     });
 });
