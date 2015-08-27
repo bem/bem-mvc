@@ -23,7 +23,7 @@
   },
   "scripts": {
     "postinstall": "./node_modules/.bin/bem make desktop.bundles/universal/_universal.js",
-    "test": "npm run postinstall  && ./node_modules/.bin/mocha ./tests/specs/**/**/*.spec.js",
+    "test": "./node_modules/.bin/mocha ./tests/specs/**/**/*.spec.js",
     "lint": "./node_modules/.bin/jshint ./common.blocks || ./node_modules/jscs/bin/jscs ./common.blocks"
   },
   "private": true
