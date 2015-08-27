@@ -338,7 +338,7 @@
         getFixedValue: function() {
             var res = {};
 
-            $.each(this.fields, function(fieldName, field) {
+            objects.each(this.fields, function(field, fieldName) {
                 res[fieldName] = field.getFixedValue();
             });
 
