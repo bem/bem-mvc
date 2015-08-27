@@ -17,9 +17,9 @@
         constructorsCache = {},
 
         /**
-     * @namespace
-     * @name BEM.MODEL
-     */
+         * @namespace
+         * @name BEM.MODEL
+         */
         MODEL = BEM.MODEL = inherit(observable, {
 
         /**
