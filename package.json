@@ -25,7 +25,7 @@
     "postinstall": "./node_modules/.bin/bem make desktop.bundles/universal/_universal.js",
     "test": "./node_modules/.bin/mocha ./tests/specs/**/**/*.spec.js ./tests/specs/**/**/**/*.spec.js ./tests/specs/**/**/**/**/*.spec.js",
     "build+test": "npm run postinstall && npm run test",
-    "lint": "./node_modules/.bin/jshint ./common.blocks || ./node_modules/jscs/bin/jscs ./common.blocks"
+    "lint": "./node_modules/.bin/jshint ./common.blocks; ./node_modules/jscs/bin/jscs ./common.blocks"
   },
   "private": true
 }

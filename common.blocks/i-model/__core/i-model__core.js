@@ -659,8 +659,8 @@
             fieldNames.forEach(function(fieldName) {
                 if (deps[fieldName])
                     fieldDecl[fieldName].dependsTo = deps[fieldName].sort(function(a, b) {
-                        var bDeps = deps[b] || [];
-                        var aDeps = deps[a] || [];
+                        var bDeps = deps[b] || [],
+                            aDeps = deps[a] || [];
 
                         if (bDeps.indexOf(a) > -1) {
                             return 1;
