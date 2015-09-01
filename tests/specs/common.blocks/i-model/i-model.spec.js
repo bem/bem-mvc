@@ -442,12 +442,6 @@ describe('i-model', function() {
 
                 expect(BEM.MODEL.create('model', { field: 'val' }).toJSON()).to.eql({ field: 'val' });
             });
-
-            it('should return object without internal fields', function() {
-                BEM.MODEL.decl('model', { field1: { type: '', internal: true }, field2: '' });
-
-                expect(BEM.MODEL.create('model', { field1: 'val1', field2: 'val2' }).toJSON()).to.eql({ field2: 'val2' });
-            });
         });
 
         describe('.getFixedValue', function() {
