@@ -17,10 +17,13 @@
         constructorsCache = {},
 
         /**
+         * Ядро. Реализует глобальный BEM.MODEL, его статические методы и базовый класс
          * @namespace
          * @name BEM.MODEL
          */
-        MODEL = BEM.MODEL = inherit(observable, {
+        MODEL;
+
+    MODEL = BEM.MODEL = inherit(observable, {
 
         /**
          * Минимальное время между событиями на модели
