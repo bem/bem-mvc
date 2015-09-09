@@ -4,7 +4,7 @@ var chai = require('chai'),
     expect = chai.expect,
     sinon = require('sinon'),
 
-    sinonChai = require("sinon-chai"),
+    sinonChai = require('sinon-chai'),
 
     universalBundle = require('fs').readFileSync('./desktop.bundles/universal/_universal.js').toString(),
     createModels = new Function('BEM', universalBundle);
