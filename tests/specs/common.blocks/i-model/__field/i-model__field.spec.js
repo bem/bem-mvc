@@ -211,7 +211,7 @@ describe('i-model__field', function() {
             expect(model.isValid()).to.equal(true);
         });
 
-        it('should define from function', function() {
+        it('could be defined by function', function() {
             BEM.MODEL.decl('model', {
                 field: {
                     type: '',

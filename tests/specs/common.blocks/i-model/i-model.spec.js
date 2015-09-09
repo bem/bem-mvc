@@ -46,7 +46,7 @@ describe('i-model', function() {
                     expect(model.hasField('baseField')).to.equal(true);
                 });
 
-                it('should throw if baseModel is undefined', function() {
+                it('should throw error if baseModel is undefined', function() {
                     expect(function() {
                         BEM.MODEL.decl({ model: 'model', baseModel: 'baseModel' });
                     }).to.Throw();
@@ -118,7 +118,7 @@ describe('i-model', function() {
 
                     BEM.MODEL.create('model');
 
-                    expect(createSpy).calledWith();
+                    expect(createSpy.called).to.equal(true);
                 });
             });
 
@@ -400,7 +400,7 @@ describe('i-model', function() {
                 model.set('field', 'val');
                 model.fix();
 
-                expect(fixSpy).calledWith();
+                expect(fixSpy.called).to.equal(true);
             });
         });
 
@@ -431,7 +431,7 @@ describe('i-model', function() {
                 model.set('field', 'new val');
                 model.rollback();
 
-                expect(rollbackSpy).calledWith();
+                expect(rollbackSpy.called).to.equal(true);
             });
         });
 
@@ -468,7 +468,7 @@ describe('i-model', function() {
 
                 model.trigger('event');
 
-                expect(onEventSpy).calledWith();
+                expect(onEventSpy.called).to.equal(true);
             });
 
             it('should exec callback on event on field', function() {
@@ -481,7 +481,7 @@ describe('i-model', function() {
 
                 model.trigger('field', 'event');
 
-                expect(onEventSpy).calledWith();
+                expect(onEventSpy.called).to.equal(true);
             });
 
             // todo cases
@@ -499,7 +499,7 @@ describe('i-model', function() {
 
                 model.trigger('event');
 
-                expect(onEventSpy).not.calledWith();
+                expect(onEventSpy.called).not.to.equal(true);
             });
 
             // todo cases
@@ -516,7 +516,7 @@ describe('i-model', function() {
 
                 model.trigger('event');
 
-                expect(onEventSpy).calledWith();
+                expect(onEventSpy.called).to.equal(true);
             });
 
             // todo cases
