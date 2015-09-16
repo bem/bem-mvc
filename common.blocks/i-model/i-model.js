@@ -678,7 +678,9 @@
         create: function(modelParams, data) {
             if (typeof modelParams === 'string') modelParams = { name: modelParams };
 
-            var decl = MODEL.decls[modelParams.name];
+            var decl = MODEL.decls[modelParams.name],
+                nameFieldTypeId,
+                modelIdFromData;
 
             if (!decl)
                 throw new Error('unknown model: "' + modelParams.name + '"');
@@ -686,11 +688,20 @@
             // выставляем id из поля типа 'id' или из декларации
             $.each(decl, function(name, field) {
                 if (field.type === 'id')
-                    modelParams.id = (data && data[name]);
+                    nameFieldTypeId = name;
             });
 
+            modelIdFromData = data && nameFieldTypeId && data[nameFieldTypeId];
+
+            // Если id не задан в параметрах - берем id из данных, либо генерируем уникальный
             if (typeof modelParams.id === 'undefined')
-                modelParams.id = $.identify();
+                modelParams.id = modelIdFromData || $.identify();
+
+            // Если в декларации указано поле с типом `id` и оно не равно id модели - задаем
+            if (nameFieldTypeId && modelIdFromData !== modelParams.id) {
+                data = data || {};
+                data[nameFieldTypeId] = modelParams.id;
+            }
 
             // создаем модель
             var model = new (constructorsCache[modelParams.name] || MODEL)(modelParams, data);
