@@ -688,9 +688,10 @@
          * @param {String} [modelParams.parentPath] путь родительской модели
          * @param {Object} [modelParams.parentModel] экземпляр родительской модели
          * @param {Object} [data] данные, которыми будет проинициализирована модель
+         * @param {Object} [opts] дополнительные данные передаваемые в событие
          * @returns {BEM.MODEL}
          */
-        create: function(modelParams, data) {
+        create: function(modelParams, data, opts) {
             if (typeof modelParams === 'string') modelParams = { name: modelParams };
 
             var decl = MODEL.decls[modelParams.name],
@@ -723,7 +724,7 @@
                 model = new modelConstructor(modelParams, data);
 
             MODEL._addModel(model);
-            model.trigger('create', { model: model });
+            model.trigger('create', objects.extend({}, opts, { model: model }));
 
             return model;
         },
@@ -789,15 +790,16 @@
         /**
          * Возвращает созданный или создает экземпляр модели
          * @param {Object|String} modelParams @see get.modelParams
+         * @param {Object} [opts] дополнительные данные для события
          * @returns {BEM.MODEL|undefined}
          */
-        getOrCreate: function(modelParams) {
+        getOrCreate: function(modelParams, opts) {
             if (typeof modelParams === 'string') modelParams = { name: modelParams };
             var modelData = MODEL.modelsData[modelParams.name];
 
             return MODEL.getOne(modelParams) || MODEL.create(
                 modelParams,
-                modelData && modelData[MODEL.buildPath(modelParams)] || {});
+                modelData && modelData[MODEL.buildPath(modelParams)] || {}, opts);
         },
 
         /**
