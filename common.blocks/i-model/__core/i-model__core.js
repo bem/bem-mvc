@@ -711,7 +711,7 @@
 
             // Если id не задан в параметрах - берем id из данных, либо генерируем уникальный
             if (typeof modelParams.id === 'undefined')
-                modelParams.id = modelIdFromData || $.identify();
+                modelParams.id = modelIdFromData || identify();
 
             // Если в декларации указано поле с типом `id` и оно не равно id модели - задаем
             if (nameFieldTypeId && modelIdFromData !== modelParams.id) {
