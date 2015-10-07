@@ -433,6 +433,19 @@ describe('i-model', function() {
 
                 expect(rollbackSpy.called).to.equal(true);
             });
+
+            it('should rollback one field', function() {
+                BEM.MODEL.decl('model', { field: 'field_type' });
+
+                var model = BEM.MODEL.create('model', { field: 'init val' });
+
+                model.fix();
+
+                model.set('field', 'new val');
+                model.rollback('field');
+
+                expect(model.get('field')).to.equal('init val');
+            });
         });
 
         describe('.toJSON', function() {
