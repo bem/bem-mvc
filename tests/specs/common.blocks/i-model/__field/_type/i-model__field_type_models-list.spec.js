@@ -17,7 +17,7 @@ describe('i-model__field_type_models-list', function() {
         createModels(GLOBAL.BEM);
     });
 
-    describe('model with to same models lists', function() {
+    describe('model with two models lists with same modelName', function() {
         beforeEach(function() {
             BEM.MODEL.decl('item-model', { field: 'string' });
 
