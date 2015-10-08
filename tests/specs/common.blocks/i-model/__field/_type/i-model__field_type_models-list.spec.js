@@ -17,6 +17,29 @@ describe('i-model__field_type_models-list', function() {
         createModels(GLOBAL.BEM);
     });
 
+    it('should trigger change if set is done with equal model', function() {
+        BEM.MODEL.decl('item', { f: 'string' });
+
+        BEM.MODEL.decl('model', {
+            list: {
+                type: 'models-list',
+                modelName: 'item'
+            }
+        });
+
+        var model = BEM.MODEL.create('model', {
+                list: [{ f: 1 }]
+            }),
+            onChangeSpy = sinon.spy(),
+            newItem = BEM.MODEL.create('item', { f: 1 });
+
+        model.on('list', 'change', onChangeSpy);
+
+        model.set('list', [newItem]);
+
+        expect(onChangeSpy.called).to.equal(true);
+    });
+
     describe('model with two models lists with same modelName', function() {
         beforeEach(function() {
             BEM.MODEL.decl('item-model', { field: 'string' });

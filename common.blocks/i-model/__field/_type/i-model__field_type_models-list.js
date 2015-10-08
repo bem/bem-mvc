@@ -298,8 +298,11 @@
             isModelList && (val = val.get());
             length = isModelList ? val.length() : val.length;
 
-            return this._value.length() == length && !this._value.some(function(item, i) {
-                return !item.isEqual(isModelList ? val.getByIndex(i) : val[i]);
+            return this._value.length() == length && this._value.every(function(item, i) {
+                if (val[i] instanceof MODEL && val[i].id !== item.id)
+                    return false;
+
+                return item.isEqual(isModelList ? val.getByIndex(i) : val[i]);
             });
         },
 
@@ -327,7 +330,7 @@
                 return this._value.add(itemData);
             }, this);
 
-            this._trigger(opts && opts.isInit ? 'init': 'change', opts);
+            this._trigger(opts && opts.isInit ? 'init' : 'change', opts);
 
             return this;
         },
