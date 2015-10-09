@@ -6,6 +6,27 @@
 
         /**
          * Инициализация поля
+         * @returns {*}
+         * @private
+         * @overrides
+         */
+        _init: function() {
+            var decl = MODEL.decls[this.params.modelName],
+                nameFieldTypeId;
+
+            objects.each(decl, function(field, name) {
+                if (field.type === 'id') nameFieldTypeId = name;
+            });
+
+            if (nameFieldTypeId) {
+                this._idFieldName = nameFieldTypeId;
+            }
+
+            return this.__base.apply(this, arguments);
+        },
+
+        /**
+         * Инициализация поля
          * @param {Object} data
          * @returns {MODEL.FIELD.types.model}
          */
@@ -106,6 +127,12 @@
                     throw new Error('incorrect model "' + data.name +  '", expected model "' +
                         this.params.modelName +  '"');
                 }
+            } else if (this._idFieldName && this._idFieldName in data) {
+                this._unBindEvents();
+                this.params.destruct && opts.destruct !== false && this._value.destruct();
+
+                this._value = MODEL.create({ name: this.params.modelName, parentModel: this.model }, data);
+                this._initEvents();
             } else {
                 this._value.update(data);
             }
