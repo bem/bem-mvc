@@ -191,6 +191,14 @@ describe('i-model', function() {
             });
         });
 
+        describe('.models', function() {
+            it('should store model constructor', function() {
+                BEM.MODEL.decl('model', {});
+
+                expect(typeof BEM.MODEL.models['model']).to.equal('function');
+            });
+        });
+
         describe('.getOrCreate', function() {
             it('should return existing model', function() {
                 //todo

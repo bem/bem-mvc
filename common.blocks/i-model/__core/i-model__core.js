@@ -14,7 +14,6 @@
         MODELS_SEPARATOR = ',',
         ANY_ID = '*',
         modelsGroupsCache = {},
-        constructorsCache = {},
 
         /**
          * Ядро. Реализует глобальный BEM.MODEL, его статические методы и базовый класс
@@ -529,9 +528,14 @@
     }, /** @lends BEM.MODEL */ {
 
         /**
-         * Харанилище экземпляров моделей
+         * Хранилище классов моделей
          */
         models: {},
+
+        /**
+         * Харанилище экземпляров моделей
+         */
+        _modelsStorage: {},
 
         /**
          * Хранилище деклараций
@@ -588,18 +592,18 @@
             });
 
             if (decl.baseModel) {
-                if (!MODEL.models[decl.baseModel])
+                if (!MODEL._modelsStorage[decl.baseModel])
                     throw('baseModel "' + decl.baseModel + '" for "' + decl.model + '" is undefined');
 
                 fields = objects.extend(true, {}, MODEL.decls[decl.baseModel], fields);
             }
 
-            MODEL.models[decl.model] = {};
+            MODEL._modelsStorage[decl.model] = {};
             MODEL.decls[decl.model] = fields;
 
             MODEL.checkModelDecl(decl, fields, staticProps);
 
-            constructorsCache[decl.model] = inherit(constructorsCache[decl.baseModel] || MODEL, staticProps);
+            MODEL.models[decl.model] = inherit(MODEL.models[decl.baseModel] || MODEL, staticProps);
 
             MODEL._buildDeps(fields, decl.model);
 
@@ -719,7 +723,7 @@
                 data[nameFieldTypeId] = modelParams.id;
             }
 
-            var modelConstructor = constructorsCache[modelParams.name] || MODEL,
+            var modelConstructor = MODEL.models[modelParams.name] || MODEL,
                 model = new modelConstructor(modelParams, data);
 
             MODEL._addModel(model);
@@ -749,7 +753,7 @@
             if (typeof modelParams.id === 'undefined') modelParams.id = ANY_ID;
 
             var name = modelParams.name,
-                modelsByName = MODEL.models[name],
+                modelsByName = MODEL._modelsStorage[name],
                 models = [],
                 modelsCacheByName = modelsGroupsCache[name],
 
@@ -986,7 +990,7 @@
          */
         _addModel: function(model) {
 
-            MODEL.models[model.name][model.path()] = model;
+            MODEL._modelsStorage[model.name][model.path()] = model;
             modelsGroupsCache[model.name] = null;
 
             MODEL
@@ -1017,7 +1021,7 @@
                     field.destruct();
                 });
 
-                MODEL.models[this.name][this.path()] = null;
+                MODEL._modelsStorage[this.name][this.path()] = null;
                 this.trigger('destruct', { model: this });
             }, modelParams, true);
 
