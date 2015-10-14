@@ -230,7 +230,7 @@ describe('i-model', function() {
         });
     });
 
-    describe('BEM.MODEL instance', function() {
+    describe('model', function() {
         describe('.path', function() {
             it('should return model\'s path', function() {
                 BEM.MODEL.decl('model', {});
@@ -531,6 +531,34 @@ describe('i-model', function() {
                 model.destruct();
 
                 expect(BEM.MODEL.getOne('model')).to.equal(undefined);
+            });
+
+            it('should unsubscribe from model events', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                var onEventSpy = sinon.spy(),
+                    model = BEM.MODEL.create('model');
+
+                model.on('event', onEventSpy);
+                model.destruct();
+
+                model.trigger('event');
+
+                expect(onEventSpy.called).to.equal(false);
+            });
+
+            it('should unsubscribe from field events', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                var onEventSpy = sinon.spy(),
+                    model = BEM.MODEL.create('model');
+
+                model.on('field', 'change', onEventSpy);
+                model.destruct();
+
+                model.set('field', 'val');
+
+                expect(onEventSpy.called).to.equal(false);
             });
         });
 
