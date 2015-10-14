@@ -577,9 +577,10 @@
          * @param {String} decl.model|decl.name
          * @param {String} [decl.baseModel]
          * @param {Object} fields где ключ имя поля, значение строка с типом или объект вида
+         * @param {Object} protoProps Прототипные методы и поля
          * @param {Object} staticProps Статические методы и поля
          */
-        decl: function(decl, fields, staticProps) {
+        decl: function(decl, fields, protoProps, staticProps) {
             if (typeof decl == 'string') {
                 decl = { model: decl };
             } else if (decl.name) {
@@ -601,9 +602,9 @@
             MODEL._modelsStorage[decl.model] = {};
             MODEL.decls[decl.model] = fields;
 
-            MODEL.checkModelDecl(decl, fields, staticProps);
+            MODEL.checkModelDecl(decl, fields, protoProps);
 
-            MODEL.models[decl.model] = inherit(MODEL.models[decl.baseModel] || MODEL, staticProps);
+            MODEL.models[decl.model] = inherit(MODEL.models[decl.baseModel] || MODEL, protoProps, staticProps);
 
             MODEL._buildDeps(fields, decl.model);
 
@@ -616,10 +617,10 @@
          * @protected
          * @param {Object} decl
          * @param {Object} fields
-         * @param {Object} staticProps
+         * @param {Object} protoProps
          */
-        checkModelDecl: function(decl, fields, staticProps) {
-            staticProps && objects.each(staticProps, function(prop, name) {
+        checkModelDecl: function(decl, fields, protoProps) {
+            protoProps && objects.each(protoProps, function(prop, name) {
                 if (name in MODEL.prototype) throw new Error('method "' + name + '" is protected');
             });
         },
