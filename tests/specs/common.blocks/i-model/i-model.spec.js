@@ -537,6 +537,20 @@ describe('i-model', function() {
                 expect(onEventSpy.called).not.to.equal(true);
             });
 
+            it('should unsubscribe from events on all fileds', function() {
+                BEM.MODEL.decl('model', { field: '' });
+
+                var onEventSpy = sinon.spy(),
+                    model = BEM.MODEL.create('model');
+
+                model.on('field', 'change', onEventSpy);
+                model.un();
+
+                model.set('field', 'val');
+
+                expect(onEventSpy.called).not.to.equal(true);
+            });
+
             // todo cases
         });
 

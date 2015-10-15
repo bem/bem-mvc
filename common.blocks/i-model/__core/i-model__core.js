@@ -396,6 +396,12 @@
                     this.fields[name].un(e, fn, ctx);
                 }, this);
 
+            if (arguments.length === 0) {
+                objects.each(this.fields, function(field) {
+                    field.un();
+                });
+            }
+
             return this;
         },
 
