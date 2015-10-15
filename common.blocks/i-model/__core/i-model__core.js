@@ -304,13 +304,20 @@
 
         /**
          * Восстанавливает значения полей модели из кеша, генерирует событие update на модели
+         * @param {Object} [name] имя поля
          * @param {Object} [opts] доп. параметры
          * @returns {BEM.MODEL}
          */
-        rollback: function(opts) {
-            objects.each(this.fields, function(field) {
-                field.rollback(opts);
-            });
+        rollback: function(name, opts) {
+            if (typeof name === 'string') {
+                this.fields[name].rollback(opts);
+            } else {
+                opts = name;
+
+                objects.each(this.fields, function(field) {
+                    field.rollback(opts);
+                });
+            }
 
             this.trigger('rollback', opts);
 
