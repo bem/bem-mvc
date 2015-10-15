@@ -464,9 +464,9 @@
          * Удаляет модель из хранилища
          */
         destruct: function() {
-            this.un();
-
             this.__self.destruct(this);
+
+            this.un();
         },
 
         /**
