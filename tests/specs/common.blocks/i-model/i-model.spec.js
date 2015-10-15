@@ -61,7 +61,7 @@ describe('i-model', function() {
 
                     var model = BEM.MODEL.create('model', { field: 'str' });
 
-                    expect(model.get('field')).to.be.a('string');
+                    expect(model.get('field')).to.equal('str');
                 });
 
                 it('by object', function() {
@@ -73,10 +73,37 @@ describe('i-model', function() {
 
                     var model = BEM.MODEL.create('model', { field: 'str' });
 
-                    expect(model.get('field')).to.be.a('string');
+                    expect(model.get('field')).to.equal('str');
                 });
             });
 
+            describe('@param protoProps', function() {
+                it('should declare prototype methods', function() {
+                    BEM.MODEL.decl('model', {
+                        field: 'string'
+                    }, {
+                        getVal: function() {
+                            return this.get('field');
+                        }
+                    });
+
+                    var model = BEM.MODEL.create('model', { field: 'str' });
+
+                    expect(model.getVal()).to.equal('str');
+                });
+            });
+
+            describe('@param staticProps', function() {
+                it('should declare static methods', function() {
+                    BEM.MODEL.decl('model', {}, {}, {
+                        getStatVal: function() {
+                            return 'val';
+                        }
+                    });
+
+                    expect(BEM.MODEL.models['model'].getStatVal()).to.equal('val');
+                });
+            });
         });
 
         describe('.create', function() {
@@ -188,6 +215,14 @@ describe('i-model', function() {
                 var model = BEM.MODEL.create({ name: 'model' });
 
                 expect(BEM.MODEL.getOne('model')).to.equal(model);
+            });
+        });
+
+        describe('.models', function() {
+            it('should store model constructor', function() {
+                BEM.MODEL.decl('model', {});
+
+                expect(typeof BEM.MODEL.models['model']).to.equal('function');
             });
         });
 

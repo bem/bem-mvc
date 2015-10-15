@@ -14,7 +14,6 @@
         MODELS_SEPARATOR = ',',
         ANY_ID = '*',
         modelsGroupsCache = {},
-        constructorsCache = {},
 
         /**
          * Ядро. Реализует глобальный BEM.MODEL, его статические методы и базовый класс
@@ -529,9 +528,14 @@
     }, /** @lends BEM.MODEL */ {
 
         /**
-         * Харанилище экземпляров моделей
+         * Хранилище классов моделей
          */
         models: {},
+
+        /**
+         * Харанилище экземпляров моделей
+         */
+        _modelsStorage: {},
 
         /**
          * Хранилище деклараций
@@ -573,9 +577,10 @@
          * @param {String} decl.model|decl.name
          * @param {String} [decl.baseModel]
          * @param {Object} fields где ключ имя поля, значение строка с типом или объект вида
+         * @param {Object} protoProps Прототипные методы и поля
          * @param {Object} staticProps Статические методы и поля
          */
-        decl: function(decl, fields, staticProps) {
+        decl: function(decl, fields, protoProps, staticProps) {
             if (typeof decl == 'string') {
                 decl = { model: decl };
             } else if (decl.name) {
@@ -588,18 +593,18 @@
             });
 
             if (decl.baseModel) {
-                if (!MODEL.models[decl.baseModel])
+                if (!MODEL._modelsStorage[decl.baseModel])
                     throw('baseModel "' + decl.baseModel + '" for "' + decl.model + '" is undefined');
 
                 fields = objects.extend(true, {}, MODEL.decls[decl.baseModel], fields);
             }
 
-            MODEL.models[decl.model] = {};
+            MODEL._modelsStorage[decl.model] = {};
             MODEL.decls[decl.model] = fields;
 
-            MODEL.checkModelDecl(decl, fields, staticProps);
+            MODEL.checkModelDecl(decl, fields, protoProps);
 
-            constructorsCache[decl.model] = inherit(constructorsCache[decl.baseModel] || MODEL, staticProps);
+            MODEL.models[decl.model] = inherit(MODEL.models[decl.baseModel] || MODEL, protoProps, staticProps);
 
             MODEL._buildDeps(fields, decl.model);
 
@@ -612,10 +617,10 @@
          * @protected
          * @param {Object} decl
          * @param {Object} fields
-         * @param {Object} staticProps
+         * @param {Object} protoProps
          */
-        checkModelDecl: function(decl, fields, staticProps) {
-            staticProps && objects.each(staticProps, function(prop, name) {
+        checkModelDecl: function(decl, fields, protoProps) {
+            protoProps && objects.each(protoProps, function(prop, name) {
                 if (name in MODEL.prototype) throw new Error('method "' + name + '" is protected');
             });
         },
@@ -720,7 +725,7 @@
                 data[nameFieldTypeId] = modelParams.id;
             }
 
-            var modelConstructor = constructorsCache[modelParams.name] || MODEL,
+            var modelConstructor = MODEL.models[modelParams.name] || MODEL,
                 model = new modelConstructor(modelParams, data);
 
             MODEL._addModel(model);
@@ -750,7 +755,7 @@
             if (typeof modelParams.id === 'undefined') modelParams.id = ANY_ID;
 
             var name = modelParams.name,
-                modelsByName = MODEL.models[name],
+                modelsByName = MODEL._modelsStorage[name],
                 models = [],
                 modelsCacheByName = modelsGroupsCache[name],
 
@@ -988,7 +993,7 @@
          */
         _addModel: function(model) {
 
-            MODEL.models[model.name][model.path()] = model;
+            MODEL._modelsStorage[model.name][model.path()] = model;
             modelsGroupsCache[model.name] = null;
 
             MODEL
@@ -1019,7 +1024,7 @@
                     field.destruct();
                 });
 
-                MODEL.models[this.name][this.path()] = null;
+                MODEL._modelsStorage[this.name][this.path()] = null;
                 this.trigger('destruct', { model: this });
             }, modelParams, true);
 
