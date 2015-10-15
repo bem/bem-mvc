@@ -1,5 +1,8 @@
-;(function(MODEL, $) {
-    MODEL.FIELD.types['models-list'] = $.inherit(MODEL.FIELD.types['inner-events-storage'], {
+(function(BEM) {
+    var MODEL = BEM.MODEL,
+        objects = MODEL._utils.objects;
+
+    MODEL.FIELD.decl({ field: 'models-list', baseField: 'inner-events-storage' }, {
 
         /**
          * Инициализация поля
@@ -24,15 +27,15 @@
          * @returns {BEM.MODEL.FIELD}
          * @private
          */
-        _trigger: function (event, opts) {
+        _trigger: function(event, opts) {
             var innerField = opts && opts.field;
 
-            return this.__base(event, $.extend({ innerField: innerField }, opts));
+            return this.__base(event, objects.extend({ innerField: innerField }, opts));
         },
 
         /**
          * Создает значение поля типа models-list, которое предоставляет методы для работы со списком
-         * @param field контекст текущего поля
+         * @param {Object} field контекст текущего поля
          * @returns {{
          *   _createModel: Function,
          *   add: Function,
@@ -51,7 +54,7 @@
 
                 /**
                  * Создает модель и инициализирует ее переданными данными
-                 * @param data
+                 * @param {Object} data
                  * @returns {*}
                  * @private
                  */
@@ -68,7 +71,7 @@
                         .on('change', function(e, data) {
                             field._trigger(
                                 'change',
-                                $.extend({
+                                objects.extend({
                                     // @deprecated use model instead
                                     data: model,
                                     model: model
@@ -85,20 +88,20 @@
 
                 /**
                  * Добавляет модель в список
-                 * @param itemData
-                 * @param opts
+                 * @param {Object} itemData
+                 * @param {Object} opts
                  * @returns {*}
                  */
                 add: function(itemData, opts) {
-                    var model = list._createModel(itemData);
-                    var index = field._raw.length;
+                    var model = list._createModel(itemData),
+                        index = field._raw.length;
 
                     field._raw.push(model);
 
                     currentField._bindFieldEventHandlers(model);
 
                     field
-                        .trigger('add', $.extend({}, opts, { model: model, index: index }))
+                        .trigger('add', objects.extend({}, opts, { model: model, index: index }))
                         ._trigger('change', opts);
 
                     return model;
@@ -107,9 +110,9 @@
                 /**
                  * Добавляет модель в список по индексу
                  *
-                 * @param  index
-                 * @param  itemData
-                 * @param  opts
+                 * @param {Number} index
+                 * @param {Object} itemData
+                 * @param {Object} opts
                  * @return {*}
                  */
                 addByIndex: function(index, itemData, opts) {
@@ -118,7 +121,7 @@
                     field._raw.splice(index, 0, model);
 
                     field
-                        .trigger('add', $.extend({}, opts, { model: model, index: index }))
+                        .trigger('add', objects.extend({}, opts, { model: model, index: index }))
                         ._trigger('change', opts);
 
                     return model;
@@ -141,7 +144,7 @@
 
                         currentField._unBindFieldEventHandlers(model);
 
-                        field.trigger('remove', $.extend({}, opts, { model: model, index: index }));
+                        field.trigger('remove', objects.extend({}, opts, { model: model, index: index }));
 
                         opts.keepModel !== true && model.destruct();
 
@@ -151,7 +154,7 @@
 
                 /**
                  * Очищает список
-                 * @param opts
+                 * @param {Object} opts
                  */
                 clear: function(opts) {
                     var tmp = field._raw.slice();
@@ -166,7 +169,7 @@
 
                 /**
                  * Возвращает модель из списка по id
-                 * @param id
+                 * @param {String|Number} id
                  * @returns {BEM.MODEL}
                  */
                 getById: function(id) {
@@ -175,7 +178,7 @@
 
                 /**
                  * Возвращает порядковый номер модели по id
-                 * @param id
+                 * @param {Number} id
                  * @returns {Number}
                  * @private
                  */
@@ -194,7 +197,7 @@
 
                 /**
                  * Возвращает модель из списка по индексу
-                 * @param i
+                 * @param {Number} i
                  * @returns {BEM.MODEL}
                  */
                 getByIndex: function(i) {
@@ -207,7 +210,7 @@
                  * @returns {Array} Массив моделей
                  */
                 where: function(attrs) {
-                    if ($.isEmptyObject(attrs) || !attrs) {
+                    if (objects.isEmpty(attrs) || !attrs) {
                         return [];
                     }
                     return list.filter(function(model) {
@@ -248,7 +251,7 @@
          * @returns {MODEL.FIELD}
          */
         fixData: function() {
-            this._raw.forEach(function (model) {
+            this._raw.forEach(function(model) {
                 model.fix();
             });
 
@@ -267,7 +270,7 @@
         isChanged: function() {
             var fixedValue = this.getFixedValue();
 
-            return (fixedValue !== undefined && this._value.length() !== fixedValue.length) || this._value.some(function (model, i) {
+            return (fixedValue !== undefined && this._value.length() !== fixedValue.length) || this._value.some(function(model, i) {
                 return model.isChanged() || !model.isEqual(this.getFixedValue()[i]);
             }, this);
         },
@@ -390,7 +393,7 @@
         _getValidationRules: function() {
             var field = this;
 
-            return $.extend(this._commonRules(), {
+            return objects.extend(this._commonRules(), {
                 /**
                  * валидация каждой из вложенных моделей
                  */
@@ -409,4 +412,4 @@
             });
         }
     });
-})(BEM.MODEL, jQuery);
+})(BEM);

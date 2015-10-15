@@ -1,10 +1,16 @@
-;(function(MODEL, $) {
+(function(BEM) {
+    var MODEL = BEM.MODEL,
+        utils =  BEM.MODEL._utils,
+        inherit = utils.inherit,
+        observable = utils.observable,
+        objects = utils.objects,
+        functions = utils.functions;
 
     /**
      * @namespace
      * @name BEM.MODEL.FIELD
      */
-    MODEL.FIELD = $.inherit($.observable, {
+    MODEL.FIELD = inherit(observable, {
 
         /**
          * @class Конструктор поля модели
@@ -31,7 +37,7 @@
          * @private
          */
         _trigger: function(event, opts) {
-            opts = $.extend({}, opts, { field: this.name });
+            opts = objects.extend({}, opts, { field: this.name });
 
             this.model.trigger('field-' + event, opts);
             this.trigger(event, opts);
@@ -119,10 +125,11 @@
             this._value = (this.params.preprocess || this._preprocess).call(this, this._raw);
             this._formatted = (this.params.format || this._format).call(this, this._value, this.params.formatOptions || {});
 
-            if (opts)
+            if (opts) {
                 opts.value = this._value;
-            else
+            } else {
                 opts = { value: this._value };
+            }
 
             this._trigger(opts && opts.isInit ? 'init' : 'change', opts);
             
@@ -322,7 +329,7 @@
 
             var _this = this,
                 getOrExec = function(obj, ruleValue) {
-                    return $.isFunction(obj) ? obj.call(_this.model, _this.get(), ruleValue, _this.name) : obj;
+                    return functions.isFunction(obj) ? obj.call(_this.model, _this.get(), ruleValue, _this.name) : obj;
                 },
                 validation = getOrExec(this.params.validation),
                 invalidRules = [];
@@ -343,11 +350,11 @@
             }
 
             if (validation.rules) {
-                $.each(validation.rules, function(ruleName, ruleParams) {
+                objects.each(validation.rules, function(ruleParams, ruleName) {
                     ruleParams = getOrExec(ruleParams);
                     ruleParams = typeof ruleParams === 'object' ? ruleParams : { value: ruleParams };
 
-                    var rule = $.extend({}, _this._validationRules[ruleName], ruleParams),
+                    var rule = objects.extend({}, _this._validationRules[ruleName], ruleParams),
                         invalidRule;
 
                     if (getOrExec(rule.needToValidate) === false) return true;
@@ -379,6 +386,20 @@
         types: {},
 
         /**
+         * Декларирует новый тип поля
+         * @param {String} type
+         * @param {Object} fieldDecl
+         * @returns {*}
+         */
+        decl: function(type, fieldDecl) {
+            if (typeof type === 'string') {
+                type = { field: type };
+            }
+
+            return MODEL.FIELD.types[type.field] = inherit(MODEL.FIELD.types[type.baseField] || MODEL.FIELD, fieldDecl);
+        },
+
+        /**
          * Создает поле модели
          * @param {String} name имя поля
          * @param {Object} params параметры
@@ -389,9 +410,11 @@
             if (typeof params == 'string') params = { type: params };
             params.name = name;
 
-            return new (MODEL.FIELD.types[params.type] || MODEL.FIELD)(params, model);
+            var fieldConstructor = MODEL.FIELD.types[params.type] || MODEL.FIELD;
+
+            return new fieldConstructor(params, model);
         }
 
     });
 
-})(BEM.MODEL, jQuery);
+})(BEM);

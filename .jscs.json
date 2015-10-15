@@ -1,0 +1,35 @@
+{
+  "requireSpaceAfterKeywords": ["if", "else", "for", "while", "do", "switch", "return"],
+  "disallowQuotedKeysInObjects": "allButReserved",
+  "requireMultipleVarDecl": true,
+  "requireSpacesInsideObjectBrackets": "all",
+  "disallowSpaceAfterObjectKeys": true,
+  "disallowSpacesInsideArrayBrackets": true,
+  "requireRightStickedOperators": ["!"],
+  "disallowLeftStickedOperators": ["?", "/", "*", "=", "==", "===", "!=", "!==", ">", ">=", "<", "<="],
+  "disallowRightStickedOperators": ["?", "/", "*", ":", "=", "==", "===", "!=", "!==", ">", ">=", "<", "<="],
+  "requireSpaceBeforeBinaryOperators": ["+"],
+  "disallowSpaceAfterPrefixUnaryOperators": ["++", "--", "+", "-", "~", "!"],
+  "disallowKeywordsOnNewLine": ["else"],
+  "validateJSDoc": {
+    "checkParamNames": true,
+    "checkRedundantParams": true,
+    "requireParamTypes": true
+  },
+  "requireSpacesInAnonymousFunctionExpression": {
+    "beforeOpeningCurlyBrace": true
+  },
+  "requireSpacesInNamedFunctionExpression": {
+    "beforeOpeningCurlyBrace": true
+  },
+  "disallowSpacesInFunctionExpression": {
+    "beforeOpeningRoundBrace": true
+  },
+  "disallowMixedSpacesAndTabs": true,
+  "excludeFiles": [
+    "common.blocks/**/*.deps.js",
+    "common.blocks/**/*.test.js",
+    "common.blocks/i-model/__utils/i-model__utils.js",
+    "common.blocks/i-model/__server-utils/i-model__server-utils.js"
+  ]
+}

@@ -90,7 +90,7 @@ BEM.DOM.decl('i-glue', {
 
     /**
      * Возвращает BEM-блок либо массив BEM-блоков по имени поля из модели
-     * @param name Имя поля
+     * @param {String} name Имя поля
      * @returns {BEM|Array}
      */
     getFieldBlock: function(name) {
@@ -142,11 +142,11 @@ BEM.DOM.decl('i-glue', {
 
     /**
      * Уничтожает блок и созданные им объекты
-     * @param keepDOM
+     * @param {Boolean} keepDOM
      */
     destruct: function(keepDOM) {
         this._fields && Object.keys(this._fields).forEach(function(name) {
-            this._fields[name].forEach(function (field) {
+            this._fields[name].forEach(function(field) {
                 field.destruct(keepDOM);
             });
         }, this);
