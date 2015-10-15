@@ -55,17 +55,18 @@
                 /**
                  * Создает модель и инициализирует ее переданными данными
                  * @param {Object} data
+                 * @param {Object} opts
                  * @returns {*}
                  * @private
                  */
-                _createModel: function(data) {
+                _createModel: function(data, opts) {
                     isAdding = true; // устанавливаем флаг для обработчика на событие create
 
                     var model = data instanceof MODEL ?
                         data :
                         typeof data === 'string' ?
-                            MODEL.getOrCreate({ name: field.params.modelName, id: data, parentModel: field.model }) :
-                            MODEL.create({ name: field.params.modelName, parentModel: field.model }, data);
+                            MODEL.getOrCreate({ name: field.params.modelName, id: data, parentModel: field.model }, opts) :
+                            MODEL.create({ name: field.params.modelName, parentModel: field.model }, data, opts);
 
                     model
                         .on('change', function(e, data) {
@@ -93,7 +94,9 @@
                  * @returns {*}
                  */
                 add: function(itemData, opts) {
-                    var model = list._createModel(itemData),
+                    opts = objects.extend({}, opts, { _fieldName: currentField.name });
+
+                    var model = list._createModel(itemData, opts),
                         index = field._raw.length;
 
                     field._raw.push(model);
@@ -116,7 +119,9 @@
                  * @return {*}
                  */
                 addByIndex: function(index, itemData, opts) {
-                    var model = list._createModel(itemData);
+                    opts = objects.extend({}, opts, { _fieldName: currentField.name });
+
+                    var model = list._createModel(itemData, opts);
 
                     field._raw.splice(index, 0, model);
 
@@ -135,7 +140,7 @@
                  */
                 remove: function(id, opts) {
                     var index = list._getIndex(id);
-                    opts || (opts = {});
+                    opts = objects.extend({}, opts, { _fieldName: currentField.name });
 
                     if (typeof index !== 'undefined') {
                         var model = list.getByIndex(index);
@@ -239,8 +244,12 @@
             });
 
             MODEL.on({ name: field.params.modelName, parentModel: field.model }, 'create', function(e, data) {
-                if (!isAdding && data.model && list._getIndex(data.model.id) === undefined)
+                if (!isAdding && data.model &&
+                    list._getIndex(data.model.id) === undefined &&
+                    (data._fieldName && data._fieldName === currentField.name)) {
+
                     list.add(data.model);
+                }
             });
 
             return list;
@@ -289,8 +298,11 @@
             isModelList && (val = val.get());
             length = isModelList ? val.length() : val.length;
 
-            return this._value.length() == length && !this._value.some(function(item, i) {
-                return !item.isEqual(isModelList ? val.getByIndex(i) : val[i]);
+            return this._value.length() == length && this._value.every(function(item, i) {
+                if (val[i] instanceof MODEL && val[i].id !== item.id)
+                    return false;
+
+                return item.isEqual(isModelList ? val.getByIndex(i) : val[i]);
             });
         },
 
@@ -318,7 +330,7 @@
                 return this._value.add(itemData);
             }, this);
 
-            this._trigger(opts && opts.isInit ? 'init': 'change', opts);
+            this._trigger(opts && opts.isInit ? 'init' : 'change', opts);
 
             return this;
         },
