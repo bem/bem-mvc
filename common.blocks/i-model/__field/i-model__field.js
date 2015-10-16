@@ -175,8 +175,37 @@
         isEqual: function(value) {
             value = (this.params.preprocess || this._preprocess).call(this, value); // fixme: preprocess выполняется 2 разе при вызове _set
             return value === this.get() ||
+                this._isEqualToObject(value) ||
                 this.isEmpty() && this.checkEmpty(value) ||
                 this.isNaN(value) && this.isNaN(this.get());
+        },
+
+        /**
+         *
+         * @param {*} value
+         * @return {Boolean}
+         */
+        _isEqualToObject: function (value) {
+            var currentValue = this.get(),
+                currentValueKeys,
+                valueKeys,
+                keysWithDifferentValues;
+
+            if (!$.isPlainObject(currentValue) || !$.isPlainObject(value)) {
+                return false;
+            }
+
+            currentValueKeys = Object.keys(currentValue);
+            valueKeys = Object.keys(value);
+            if (currentValueKeys.length !== valueKeys.length) {
+                return false;
+            }
+
+            keysWithDifferentValues = valueKeys.filter(function (key) {
+                return value[key] !== currentValue[key];
+            });
+
+            return keysWithDifferentValues.length === 0;
         },
 
         /**
