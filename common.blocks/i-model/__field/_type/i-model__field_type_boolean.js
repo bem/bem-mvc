@@ -12,7 +12,7 @@
         _preprocess: function(value) {
             if (this.checkEmpty(value)) return;
 
-            return !!(typeof value == 'string' ? +value : value);
+            return !!value;
         },
 
         /**
