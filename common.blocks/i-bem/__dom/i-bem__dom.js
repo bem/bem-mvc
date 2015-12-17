@@ -9,7 +9,7 @@ provide(inherit.self(DOM, {}, {
 
         if (nodes.length) nodes.bem('model');
 
-        this.__base.apply(this, arguments);
+        return this.__base.apply(this, arguments);
     }
 }));
 
