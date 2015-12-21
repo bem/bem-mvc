@@ -14,17 +14,17 @@ provide(BEMDOM.decl({ block: 'glue-field_type_select', baseBlock: 'glue-field' }
         this.__base.apply(this, arguments);
 
         this.select.on('change', function() {
-            this.model.set(this.name, this.select.val());
+            this.model.set(this.name, this.select.getVal());
         }, this);
     },
 
     set: function(value) {
         this.__base();
-        this.select.val(value);
+        this.select.setVal(value);
     },
 
     onFieldChange: function(e, data) {
-        this.select.getMod('focused') !== 'yes' && this.select.val(data.value);
+        !this.select.hasMod('focused') && this.select.setVal(data.value);
     }
 
 }));
