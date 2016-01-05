@@ -29,7 +29,7 @@ provide(BEMDOM.decl({ block: 'glue-field_type_input', baseBlock: 'glue-field' },
     },
 
     onFieldChange: function(e, data) {
-        this.input.getMod('focused') !== 'yes' && this.input.setVal(data.value);
+        this.input.hasMod('focused') || this.input.setVal(data.value);
     }
 
 }));
