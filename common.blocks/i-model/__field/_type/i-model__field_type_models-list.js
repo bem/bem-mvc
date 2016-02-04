@@ -125,6 +125,8 @@
 
                     field._raw.splice(index, 0, model);
 
+                    currentField._bindFieldEventHandlers(model);
+
                     field
                         .trigger('add', objects.extend({}, opts, { model: model, index: index }))
                         ._trigger('change', opts);

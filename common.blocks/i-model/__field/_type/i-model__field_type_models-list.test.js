@@ -338,6 +338,31 @@ BEM.TEST.decl('i-model__field_type_model-list', function() {
             model.destruct();
         });
 
+        it('should bubble events from inner models when addByIndex is called', function() {
+            var model = BEM.MODEL.create('model-list-type-field', {
+                    list: [
+                        { id: 1, f: 'f1' },
+                        { id: 2, f: 'f2' }
+                    ]
+                }),
+
+                onCustom = jasmine.createSpy('onCustom'),
+                onCustomDeactive = jasmine.createSpy('onCustomDeactive');
+
+            model.on('list', 'custom-event', onCustom);
+            model.get('list').addByIndex(0, { id: 3, f: 'f3' }).trigger('custom-event');
+
+            model.on('list', 'deact-custom-event', onCustomDeactive);
+            model.un('list', 'deact-custom-event', onCustomDeactive);
+            model.get('list').getByIndex(0).trigger('deact-custom-event');
+            model.get('list').addByIndex(0, { id: 4, f: 'f4' }).trigger('deact-custom-event');
+
+            expect(onCustom.calls.length).toEqual(1);
+            expect(onCustomDeactive).not.toHaveBeenCalled();
+
+            model.destruct();
+        });
+
         it('should not restore model after remove', function() {
             var model = BEM.MODEL.create('model-list-type-field', { list: [{ f: 'str', n: 1 }] });
 
