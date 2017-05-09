@@ -326,9 +326,11 @@
         _set: function(data, opts) {
             this._value.clear({ silent: true });
 
-            this._raw = data.map(function(itemData) {
-                return this._value.add(itemData);
-            }, this);
+            this._raw = data ?
+                data.map(function(itemData) {
+                    return this._value.add(itemData);
+                }, this) :
+                [];
 
             this._trigger(opts && opts.isInit ? 'init' : 'change', opts);
 
