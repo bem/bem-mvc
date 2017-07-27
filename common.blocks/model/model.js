@@ -535,7 +535,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
             if (!MODEL.models[decl.baseModel])
                 throw('baseModel "' + decl.baseModel + '" for "' + decl.model + '" is undefined');
 
-            fields = objects.extend(true, fields, MODEL.decls[decl.baseModel]);
+            fields = objects.extend(true, MODEL.decls[decl.baseModel], fields);
         }
 
         MODEL.models[decl.model] = {};
