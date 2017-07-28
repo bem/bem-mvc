@@ -1,9 +1,14 @@
 var fs = require('fs'),
     path = require('path'),
+    enbBemTechs = require('enb-bem-techs'),
+    bemhtml = require('enb-bemxjst/techs/bemhtml'),
+    bemjsonToHtml = require('enb-bemxjst/techs/bemjson-to-html'),
     DEFAULT_LANGS = ['ru', 'en'];
 
 module.exports = function(config) {
-    var tools = require('enb-bem-docs')(config),
+        config.includeConfig('enb-bem-docs');
+
+    var tools = config.module('enb-bem-docs').createConfigurator('docs'),
         langs = process.env.BEM_I18N_LANGS;
 
     config.setLanguages(langs? langs.split(' ') : [].concat(DEFAULT_LANGS));
@@ -11,14 +16,14 @@ module.exports = function(config) {
     config.nodes(['*.bundles/all-tests', '*.bundles/todos'], function(nodeConfig) {
         nodeConfig.addTechs([
             [require('enb/techs/file-provider'), { target : '?.bemjson.js' }],
-            [require('enb/techs/bemdecl-from-bemjson')],
+            [enbBemTechs.bemjsonToBemdecl],
             [require('enb/techs/bemdecl-from-deps-by-tech'), {
                 sourceTech : 'js',
                 destTech : 'bemhtml',
                 target : '?.bemhtml.bemdecl.js'
             }],
-            [require('enb/techs/deps')],
-            [require('enb/techs/files')],
+            [enbBemTechs.deps],
+            [enbBemTechs.files],
             [require('enb/techs/deps'), {
                 bemdeclTarget : '?.bemhtml.bemdecl.js',
                 depsTarget : '?.bemhtml.deps.js'
@@ -30,8 +35,7 @@ module.exports = function(config) {
             }],
             [require('enb-roole/techs/css-roole'), { target : '?.noprefix.css' }],
             [require('enb-diverse-js/techs/browser-js')],
-            [require('enb-bemxjst/techs/bemhtml-old'), { devMode : false }],
-            [require('enb-bemxjst/techs/bemhtml-old'), {
+            [require('enb-bemxjst/techs/bemhtml'), {
                 target : '?.browser.bemhtml.js',
                 filesTraget : '?.bemhtml.files',
                 devMode : false
@@ -44,7 +48,8 @@ module.exports = function(config) {
                 source : '?.pre.js',
                 target : '?.js'
             }],
-            [require('enb/techs/html-from-bemjson')]
+           [bemhtml, { devMode: process.env.BEMHTML_ENV === 'development' }],
+           [bemjsonToHtml],
         ]);
 
         nodeConfig.addTargets([
@@ -61,7 +66,7 @@ module.exports = function(config) {
         }
 
         nodeConfig.addTechs([
-            [require('enb/techs/levels'), { levels : levels }],
+            [enbBemTechs.levels, { levels : levels }],
             [require('enb-autoprefixer/techs/css-autoprefixer'), {
                 sourceTarget : '?.noprefix.css',
                 destTarget : '?.css',
@@ -88,13 +93,11 @@ module.exports = function(config) {
         });
     });
 
-    tools.configureSets({
-        sets : {
-            destPath : 'desktop.sets',
-            levels : getDesktopLibLevels(config)
-        },
-        jsdocs : {
-            _suffixes : ['vanilla.js', 'node.js', 'browser.js', 'js']
+    tools.configure({
+        destPath : 'desktop.sets',
+        levels : getDesktopLibLevels(config),
+        jsdoc : {
+            suffixes : ['vanilla.js', 'node.js', 'browser.js', 'js']
         },
         examples : {
             levels : getDesktopLibLevels(config),
