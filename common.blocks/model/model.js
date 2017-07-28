@@ -440,7 +440,7 @@ var MODEL = inherit(events.Emitter, /** @lends MODEL.prototype */ {
      * Проверяет модель на валидность, генерирует событие error с описанием ошибки(ок)
      * @returns {Object}
      */
-    validate: function() {
+    validate: function(name) {
         var _this = this,
             res = {},
             validateRes;
